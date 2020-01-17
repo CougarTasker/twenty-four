@@ -21,17 +21,25 @@ class Rect():
 		self.width = width
 		self.height = height
 class Ball():
-	def __init__(self,pos):
+	def __init__(self,stat = False,pos = Vector(-20,-20)):
+		if stat:
+			self.r = 20
+			self.vel = Vector()
+			self.color = "Red"
+		else:
+			self.r = random.randrange(10, 50)
+			self.color = randCol()
+			self.vel = Vector.polar(random.random()*math.pi*2,random.uniform(30,70))
 		self.pos = pos
-		self.r = random.randrange(10, 50)
-		self.color = randCol()
-		self.vel = Vector.polar(random.random()*math.pi*2,random.randrange(50,100))
+		self.acc = Vector()
 	def update(self,time):
 		self.pos +=self.vel * time
 	def draw(self,canvas):
 		if(self.r <= 0):
 			self.r=0.1
 		canvas.draw_circle(self.pos.tuple(),self.r/2,self.r,self.color)
+	def within(self,pos):
+		return (Vector.fTuple(pos)-self.pos).mag()<=self.r
 	def collides(self,rect: Rect):
 		dx = min(abs(self.pos.x-rect.min.x),abs(self.pos.x-rect.max.x))
 		dy = min(abs(self.pos.y-rect.min.y),abs(self.pos.y-rect.max.y))
@@ -40,26 +48,19 @@ class Ball():
 
 #stage = Rect(Vector(10,10),WIDTH-20,HEIGHT-20)
 stage = Rect(Vector(0,0),WIDTH,HEIGHT)
-def addball():
-	global balls
-	balls.append(Ball(Vector(WIDTH/2,HEIGHT/2)))
-# Handler to draw on canvas :
-# this function is called 60 times per second
-balls = []
+ball = Ball(True)
 def draw(canvas):
-	x=0
-	while x<len(balls):
-		balls[x].update(1/60)
-		if balls[x].collides(stage):
-			balls.pop(x)
-		else:
-			balls[x].draw(canvas)
-			balls[x].r-=0.1
-			x+=1
+	ball.update(1/60)
+	ball.draw(canvas)
+def mouse(position):
+	global ball
+	if ball.within(position):
+		ball=Ball(True)
+	else:
+		ball = Ball(True,Vector.fTuple(position))
 # Create a frame and assign the callback to the event handler
 frame = simplegui.create_frame("Points", WIDTH , HEIGHT,0)
 frame.set_draw_handler(draw)
-timer = simplegui.create_timer(100,addball)
-timer.start()
+frame.set_mouseclick_handler(mouse)
 # Start the frame animation
 frame.start()
