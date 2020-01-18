@@ -20,7 +20,13 @@ class Rect():
 		self.max = pos + Vector(width,height)
 		self.width = width
 		self.height = height
+	def draw(self,canvas):
+		canvas.draw_line(self.min.tuple(),self.max.tuple(),10,"Blue")
+
+
 class Ball():
+
+
 	def __init__(self,stat = False,pos = Vector(-20,-20)):
 		if stat:
 			self.r = 50
@@ -32,15 +38,23 @@ class Ball():
 			self.vel = Vector.polar(random.random()*math.pi*2,random.uniform(30,70))
 		self.pos = pos
 		self.acc = Vector()
+
+
 	def update(self,time):
 		self.pos +=self.vel * time
+
+
 	def draw(self,canvas):
 		if(self.r <= 0):
 			self.r=0.1
-		#canvas.draw_circle(self.pos.tuple(),self.r/2,self.r,self.color)
-		canvas.draw_image(image, (512/2,512/2), (512,512), self.pos.tuple(), (self.r*2, self.r*2))
+		canvas.draw_circle(self.pos.tuple(),self.r/2,self.r,self.color)
+		#canvas.draw_image(image, (512/2,512/2), (512,512), self.pos.tuple(), (self.r*2, self.r*2))
+
+
 	def within(self,pos):
 		return (Vector.fTuple(pos)-self.pos).mag()<=self.r
+
+
 	def collides(self,rect: Rect):
 		dx = min(abs(self.pos.x-rect.min.x),abs(self.pos.x-rect.max.x))
 		dy = min(abs(self.pos.y-rect.min.y),abs(self.pos.y-rect.max.y))
@@ -49,28 +63,42 @@ class Ball():
 		touching_edge = (dx<self.r or dy<self.r)
 		center_inside = (abs(mid.x)<rect.width/2 and abs(mid.y)<rect.height/2)
 		return not(center_inside) or (touching_edge or touching_corner) 
+
+
 	def closest(self,rect):
+		print("before")
+		print(self.vel)
+		print(self.pos)
 		x = self.c(rect.min.x,rect.max.x,self.pos.x)
 		y = self.c(rect.min.y,rect.max.y,self.pos.y)
-		if abs(abs(self.pos.x-x)-abs(self.pos.y-y))<=2:
+		if abs(abs(self.pos.x-x)-abs(self.pos.y-y))<=0:
 			self.pos.x = x
 			self.pos.y = y
 			self.vel.x *= -1
 			self.vel.y *= -1
+			print("equal")
 		elif abs(self.pos.x-x)>abs(self.pos.y-y):
 			self.pos.y = y
 			self.vel.y *= -1
+			print("vert")
 		else:
 			self.pos.x = x
 			self.vel.x *= -1
+			print("horosonatal")
+		print("after")
+		print(self.vel)
+		print(self.pos)
+
 			
 	def c(self,a,b,c):
 		if (c-a)>(b-a)/2:
 			return b-self.r
 		else:
 			return a+self.r
-#stage = Rect(Vector(10,10),WIDTH-20,HEIGHT-20)
-stage = Rect(Vector(0,0),WIDTH,HEIGHT)
+
+
+stage = Rect(Vector(20,20),WIDTH-40,HEIGHT-40)
+#stage = Rect(Vector(0,0),WIDTH,HEIGHT)
 ball = Ball(True)
 def draw(canvas):
 	global count
@@ -79,9 +107,11 @@ def draw(canvas):
 
 		ball.closest(stage)
 		#ball.vel.reflect(c[1])
+	stage.draw(canvas)
 	ball.draw(canvas)
 def mouse(position):
 	global ball
+	print("click")
 	if ball.within(position):
 		ball.vel = (Vector.fTuple(position)-ball.pos)*50
 	else:

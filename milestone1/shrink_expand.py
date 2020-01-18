@@ -13,7 +13,7 @@ HEIGHT = 200
 # this function is called 60 times per second
 count =0
 rate = 4*60
-thickness=5
+thickness=1
 def draw(canvas):
 	global count
 	count+=1
