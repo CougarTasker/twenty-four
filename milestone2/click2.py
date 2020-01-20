@@ -51,12 +51,14 @@ class Ball():
 	def closest(self,rect):
 		x = self.c(rect.min.x,rect.max.x,self.pos.x)
 		y = self.c(rect.min.y,rect.max.y,self.pos.y)
-		if abs(abs(self.pos.x-x)-abs(self.pos.y-y))<=2:
+		top = self.pos.y < self.pos.x
+		left = (rect.height -self.pos.y) < self.pos.x 
+		if  self.pos.y == self.pos.x or (rect.height -self.pos.y) == self.pos.x:
 			self.pos.x = x
 			self.pos.y = y
 			self.vel.x *= -1
 			self.vel.y *= -1
-		elif abs(self.pos.x-x)>abs(self.pos.y-y):
+		elif left ^ top:
 			self.pos.y = y
 			self.vel.y *= -1
 		else:

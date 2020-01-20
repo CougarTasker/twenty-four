@@ -1,4 +1,4 @@
-import random,math
+import random,math,time
 from vect import Vector
 try:
     import simplegui
@@ -47,8 +47,8 @@ class Ball():
 	def draw(self,canvas):
 		if(self.r <= 0):
 			self.r=0.1
-		canvas.draw_circle(self.pos.tuple(),self.r/2,self.r,self.color)
-		#canvas.draw_image(image, (512/2,512/2), (512,512), self.pos.tuple(), (self.r*2, self.r*2))
+		#canvas.draw_circle(self.pos.tuple(),self.r/2,self.r,self.color)
+		canvas.draw_image(image, (512/2,512/2), (512,512), self.pos.tuple(), (self.r*2, self.r*2))
 
 
 	def within(self,pos):
@@ -64,30 +64,22 @@ class Ball():
 		center_inside = (abs(mid.x)<rect.width/2 and abs(mid.y)<rect.height/2)
 		return not(center_inside) or (touching_edge or touching_corner) 
 
-
 	def closest(self,rect):
-		print("before")
-		print(self.vel)
-		print(self.pos)
 		x = self.c(rect.min.x,rect.max.x,self.pos.x)
 		y = self.c(rect.min.y,rect.max.y,self.pos.y)
-		if abs(abs(self.pos.x-x)-abs(self.pos.y-y))<=0:
+		top = self.pos.y < self.pos.x
+		left = (rect.height -self.pos.y) < self.pos.x 
+		if  self.pos.y == self.pos.x or (rect.height -self.pos.y) == self.pos.x:
 			self.pos.x = x
 			self.pos.y = y
 			self.vel.x *= -1
 			self.vel.y *= -1
-			print("equal")
-		elif abs(self.pos.x-x)>abs(self.pos.y-y):
+		elif left ^ top:
 			self.pos.y = y
 			self.vel.y *= -1
-			print("vert")
 		else:
 			self.pos.x = x
 			self.vel.x *= -1
-			print("horosonatal")
-		print("after")
-		print(self.vel)
-		print(self.pos)
 
 			
 	def c(self,a,b,c):
@@ -97,17 +89,17 @@ class Ball():
 			return a+self.r
 
 
-stage = Rect(Vector(20,20),WIDTH-40,HEIGHT-40)
-#stage = Rect(Vector(0,0),WIDTH,HEIGHT)
+#stage = Rect(Vector(20,20),WIDTH-40,HEIGHT-40)
+stage = Rect(Vector(0,0),WIDTH,HEIGHT)
 ball = Ball(True)
 def draw(canvas):
-	global count
+	global count,last
 	ball.update(1/60)
 	if(ball.collides(stage)):
 
 		ball.closest(stage)
-		#ball.vel.reflect(c[1])
-	stage.draw(canvas)
+		#ball.vel.reflect(c[1])c
+	#stage.draw(canvas)
 	ball.draw(canvas)
 def mouse(position):
 	global ball
