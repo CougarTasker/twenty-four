@@ -9,7 +9,7 @@ WIDTH = 500
 HEIGHT = 500
 class Camera:
 	"""docstring for Camera"""
-	def __init__(self,pos=Vector(WIDTH/2,HEIGHT/2),fov=90,zoom=10,rotation=0,height=50,rays=500,vrot=0):
+	def __init__(self,pos=Vector(WIDTH/2,HEIGHT/2),fov=60,zoom=10,rotation=0,height=50,rays=50,vrot=0):
 		self.fov = fov
 		self.height = height
 		self.rays = rays
@@ -22,34 +22,31 @@ class Camera:
 			all = self.scaledLines(stage)
 			for i in all:
 				i.draw(canvas)
-			a = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom+self.pos
-			b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom+self.pos
+			a = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov/2)*self.zoom+self.pos
+			b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov/2)*self.zoom
 			Line(a,b).draw(canvas,"green")
 		else:			
 			stage = self.culling(stage)
 			lines = self.lines()
-			direction = Vector(1,0).rotate(self.rot)
-			a = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom+self.pos
-			b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom+self.pos
-
 			x = 0
+			a = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov/2)*self.zoom+self.pos
+			b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov/2)*self.zoom+self.pos
+			plane = Line(a,b)
 			for line in lines:
 				smallest = 10000000
 				for wall in stage:
-					intersection = wall.dist(line)
-					d = intersection[0]*line.norm.dot(direction)# / (direction.length() * line.norm.length())
+					d = wall.dist(line)[0] + plane.dist(line)[0]
 					if d < smallest and d > 0:
 						smallest = d
 						wll = wall
-						realx = intersection[1]
 				if smallest < 10000000:
 					p = self.vline(smallest,wll.height)
-					wall.drawWall(canvas,realx,x*WIDTH/self.rays,WIDTH/self.rays,p)
+					canvas.draw_line((x*10+5,p[0]),(x*10+5,p[1]),10,"green")
 				x+=1
 	def lines(self):
 		out = []
-		a = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom
-		b = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom
+		a = Vector(1,0).rotate(self.rot+self.fov/2)/math.cos(self.fov/2)
+		b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov/2)
 		rays = 5
 		mov = (b-a)/self.rays
 		for x in range(self.rays):
@@ -69,13 +66,14 @@ class Camera:
 		return (point-self.pos).angle(Vector(1,0).rotate(self.rot))*180/math.pi
 
 	def vline(self,dist,wallheight):
-		ph = self.zoom*math.tan(self.fov*math.pi/360)*HEIGHT/WIDTH
+		print(dist)
+		ph = self.zoom*math.tan(self.fov)*HEIGHT/WIDTH
 		va = (Vector(self.zoom,ph)).rotate(self.vrot)
 		vb = (Vector(self.zoom,-ph)).rotate(self.vrot)
 		plane = Line(vb,va)
 		top = Line(Vector(),Vector(dist,wallheight-self.height))
 		bottom = Line(Vector(),Vector(dist,-self.height))
-		return [plane.dist(bottom,False)[1]/(2*ph)*HEIGHT,plane.dist(top,False)[1]/(2*ph)*HEIGHT]
+		return [plane.dist(top,False)[1]/(2*ph)*HEIGHT,plane.dist(bottom,False)[1]/(2*ph)*HEIGHT]
 	def scaledLines(self,stage):
 		lines = self.lines()
 		stage = self.culling(stage)
@@ -89,58 +87,33 @@ class Camera:
 		return lines
 
 class Keyboard:
-	def __init__(self):
-		self.right = False
-		self.left = False
-		self.w = False
-		self.a = False
-		self.s = False
-		self.d = False
-		self.up = False
-		self.down = False
-		self.border = False
-		self.draw = True
-	def keyDown(self, key):
-		if key == simplegui.KEY_MAP['right']:
-			self.right = True
-		if key == simplegui.KEY_MAP['left']:
-			self.left = True
-		if key == simplegui.KEY_MAP['w']:
-			self.w = True
-		if key == simplegui.KEY_MAP['a']:
-			self.a = True
-		if key == simplegui.KEY_MAP['s']:
-			self.s = True
-		if key == simplegui.KEY_MAP['d']:
-			self.d = True
-		if key == simplegui.KEY_MAP['up']:
-			self.up = True
-		if key == simplegui.KEY_MAP['down']:
-			self.down = True
-		if key == simplegui.KEY_MAP['x']:
-			self.border = not self.border
-		if key == simplegui.KEY_MAP['z']:
-			self.draw = not self.draw
+    def __init__(self):
+        self.right = False
+        self.left = False
+        self.up = False
+        self.border = False
+        self.draw = True
+    def keyDown(self, key):
+        if key == simplegui.KEY_MAP['right']:
+            self.right = True
+        if key == simplegui.KEY_MAP['left']:
+            self.left = True
+        if key == simplegui.KEY_MAP['up']:
+            self.up = True
+        if key == simplegui.KEY_MAP['x']:
+            self.border = not self.border
+        if key == simplegui.KEY_MAP['z']:
+            self.draw = not self.draw
 
-	def keyUp(self, key):
-		if key == simplegui.KEY_MAP['right']:
-			self.right = False
-		if key == simplegui.KEY_MAP['left']:
-			self.left = False
-		if key == simplegui.KEY_MAP['w']:
-			self.w = False
-		if key == simplegui.KEY_MAP['a']:
-			self.a = False
-		if key == simplegui.KEY_MAP['s']:
-			self.s = False
-		if key == simplegui.KEY_MAP['d']:
-			self.d = False
-		if key == simplegui.KEY_MAP['up']:
-			self.up = False
-		if key == simplegui.KEY_MAP['down']:
-			self.down = False
+    def keyUp(self, key):
+        if key == simplegui.KEY_MAP['right']:
+            self.right = False
+        if key == simplegui.KEY_MAP['left']:
+            self.left = False
+        if key == simplegui.KEY_MAP['up']:
+            self.up = False
 class Line():
-	def __init__(self,pos,end,is_segment = True,img= None,height=100):
+	def __init__(self,pos,end,is_segment = True,height=100):
 		if(is_segment):
 			self.pos = pos
 			self.end = end
@@ -149,7 +122,6 @@ class Line():
 			self.pos = pos
 			self.end = pos + end
 			self.norm = end
-		self.img = img
 		self.height = height
 		self.norm.normalize()
 		self.len = (self.end-self.pos).length()
@@ -182,12 +154,6 @@ class Line():
 		for v in vals:
 			out.append(Line.fromstring(v))
 		return out
-	def drawWall(self,canvas,realx,screenx,rayWidth,p):
-		canvas.draw_line((screenx+rayWidth/2,p[0]),(screenx+rayWidth/2,p[1]),rayWidth,"green")
-		if not(self.img	is None):
-			c= (self.img.get_width()/WIDTH*rayWidth/2+realx/self.len*self.img.get_width(),self.img.get_height()/2)
-			canvas.draw_image(self.img,c,(self.img.get_width()/WIDTH*rayWidth,self.img.get_height()),(screenx+rayWidth/2,(p[1]-p[0])/2+p[0]),(rayWidth,p[1]-p[0]))
-			
 	def draw(self,canvas,c = "Blue"):
 		canvas.draw_line(self.pos.tuple(),self.end.tuple(),2,c)
 	@staticmethod
@@ -201,7 +167,6 @@ class Line():
 		return "(" + str(self.pos) + "," + str(self.end) + ")"
 lines = []
 last = None
-wallImg = simplegui.load_image("file:///C:/Users/Couga/Documents/repos/twenty-four/testing/wall.png")
 def mouse(pos):
 	#print("click")
 	global lines,last
@@ -210,10 +175,10 @@ def mouse(pos):
 			if last is None:
 				last = Vector.fTuple(pos)
 			else:
-				lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
+				lines.append(Line(last,Vector.fTuple(pos)))
 				last = Vector.fTuple(pos)
 		else:
-			lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
+			lines.append(Line(last,Vector.fTuple(pos)))
 			last = Vector.fTuple(pos)
 			#print(Line.tostrings(lines)
 	else:
@@ -231,13 +196,9 @@ class Rect():
 def draw(canvas):
 	#cam.rot +=0.2
 	if kbd.left:
-		cam.rot -=0.5
-	if kbd.right:
 		cam.rot +=0.5
-	# if kbd.up:
-	# 	cam.vrot +=0.5
-	# if kbd.right:
-	# 	cam.vrot -=0.5
+	if kbd.right:
+		cam.rot -=0.5
 	
 	for i in lines:
 		if cam.insidefov(i):
@@ -249,6 +210,7 @@ def draw(canvas):
 
 
 cam = Camera()
+stage = Rect(Vector(0,0),200,200)
 kbd = Keyboard()
 frame = simplegui.create_frame("Points", WIDTH , HEIGHT )
 frame.set_draw_handler(draw)

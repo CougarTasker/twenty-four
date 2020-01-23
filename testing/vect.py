@@ -86,7 +86,8 @@ class Vector:
     # Returns a normalized version of the vector
     def get_normalized(self):
         return self.copy().normalize()
-
+    def cross(self,other):
+        return self.x*other.y - self.y*other.x
     # Returns the dot product of this vector with another one
     def dot(self, other):
         return self.x * other.x + self.y * other.y
@@ -110,6 +111,12 @@ class Vector:
     def angle(self, other):
         return math.acos(self.dot(other) / (self.length() * other.length()))
 
+    def polarAngle(self):
+        a = self.angle(Vector(1,0))*180/math.pi
+        if self.y >= 0:
+            return a
+        else:
+            return 360-a
     # Rotates the vector 90 degrees anticlockwise
     def rotate_anti(self):
         self.x, self.y = -self.y, self.x
