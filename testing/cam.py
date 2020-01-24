@@ -7,8 +7,8 @@ except ImportError :
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 class Camera:
 	"""docstring for Camera"""
-	WIDTH = 512
-	HEIGHT = 512
+	WIDTH = 500
+	HEIGHT = 500
 	def __init__(self,pos=Vector(),fov=90,zoom=10,rotation=0,height=50,rays=256,vrot=0):
 		if pos == Vector():
 			pos = Vector(self.WIDTH/2,self.HEIGHT/2)
@@ -35,19 +35,39 @@ class Camera:
 			b = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom+self.pos
 
 			x = 0
+
 			for line in lines:
-				smallest = 10000000
+				walls = []
 				for wall in stage:
 					intersection = wall.dist(line)
 					d = intersection[0]*line.norm.dot(direction)# / (direction.length() * line.norm.length())
-					if d < smallest and d > 0:
-						smallest = d
-						wll = wall
-						realx = intersection[1]
-				if smallest < 10000000:
-					p = self.vline(smallest,wll.height)
-					wll.drawWall(canvas,Vector(Camera.WIDTH,Camera.HEIGHT),realx,x*self.WIDTH/self.rays,self.WIDTH/self.rays,p)
+					walls.append([d,wall,intersection[1]])#distance to wall, the wall and the real x value 
+				walls.sort(key = self.wallsorting)
+				out= []
+				for wall in walls:
+					if wall[0] > 0:
+						out.insert(0,wall)
+						if not wall[1].t:
+							break
+
+				for wall in out:
+					p = self.vline(wall[0],wall[1].height,wall[1].y)
+					l = wall[1].norm.copy().rotate(90).dot(wall[1].pos-self.pos)<0
+					wall[1].drawWall(canvas,Vector(Camera.WIDTH,Camera.HEIGHT),wall[2],x*self.WIDTH/self.rays,self.WIDTH/self.rays,p,l)
 				x+=1
+	def wallsorting(self,a):
+		return a[0]
+	def boundry(self):
+		return self.zoom/math.cos(self.fov/360*math.pi)
+	def colides(self,stage):
+		col = []
+		for wall in stage:
+			if (wall.minDist(self.pos)< self.boundry()):
+				col.append(wall)
+		for wall in col:
+			c = wall.closestPoint(self.pos)
+			self.pos = (self.pos-c).normalize()*(self.boundry()+1)+c
+
 	def lines(self):
 		out = []
 		a = Vector(1,0).rotate(self.rot-self.fov/2)/math.cos(self.fov*math.pi/360)*self.zoom
@@ -77,13 +97,13 @@ class Camera:
 	def ang(self,point):
 		return (point-self.pos).angle(Vector(1,0).rotate(self.rot))*180/math.pi
 
-	def vline(self,dist,wallheight):
+	def vline(self,dist,wallheight,y):
 		ph = self.zoom*math.tan(self.fov*math.pi/360)*self.HEIGHT/self.WIDTH
 		va = (Vector(self.zoom,ph)).rotate(self.vrot)
 		vb = (Vector(self.zoom,-ph)).rotate(self.vrot)
 		plane = Line(va,vb)
-		top = Line(Vector(),Vector(dist,wallheight-self.height))
-		bottom = Line(Vector(),Vector(dist,-self.height))
+		top = Line(Vector(),Vector(dist,y+wallheight-self.height))
+		bottom = Line(Vector(),Vector(dist,y-self.height))
 
 		bd = plane.dist(bottom,False)
 		td = plane.dist(top,False)

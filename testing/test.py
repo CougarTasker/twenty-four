@@ -1,4 +1,4 @@
-import random,math
+import random,math,time
 from vect import Vector
 from cam import Camera
 from ln import Line
@@ -6,8 +6,6 @@ try:
 	import simplegui
 except ImportError :
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
-
 
 
 class Keyboard:
@@ -68,7 +66,8 @@ wallImg = simplegui.load_image("file:///C:/Users/Couga/Documents/repos/twenty-fo
 def mouse(pos):
 	#print("click")
 	global lines,last
-	if kbd.border:
+
+	if kbd.border and last is None or kbd.border and last != Vector.fTuple(pos):
 		if len(lines)==0:
 			if last is None:
 				last = Vector.fTuple(pos)
@@ -76,7 +75,12 @@ def mouse(pos):
 				lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
 				last = Vector.fTuple(pos)
 		else:
-			lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
+			if kbd.up:
+				lines.append(Line(last,Vector.fTuple(pos),True,wallImg,height = 40,transparent= True,y=60))
+			elif kbd.down:
+				lines.append(Line(last,Vector.fTuple(pos),True,wallImg,height = 40,transparent= True))
+			else:
+				lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
 			last = Vector.fTuple(pos)
 			#print(Line.tostrings(lines)
 	else:
@@ -90,9 +94,27 @@ class Rect():
 		self.height = height
 	def draw(self,canvas):
 		canvas.draw_line(self.min.tuple(),self.max.tuple(),10,"Blue")
-
+lasttime = time.time()
 def draw(canvas):
+	global lasttime,t
+	if (time.time() - lasttime) > 1/50:
+		if cam.rays>Camera.WIDTH/10:
+			cam.rays -=1
+	elif(time.time() - lasttime) < 1/60:
+		if cam.rays < Camera.WIDTH:
+			cam.rays +=1
+	lasttime = time.time()
 	#cam.rot +=0.2
+
+	if kbd.draw:
+		for i in lines:
+			if cam.insidefov(i):
+				i.draw(canvas)
+			else:
+				i.draw(canvas,"red")
+		#canvas.draw_point(i.closestPoint(cam.pos).tuple())
+	cam.draw(canvas,lines,kbd.draw)
+def pysloop():
 	if kbd.left:
 		cam.rot -=1.5
 	if kbd.right:
@@ -106,23 +128,21 @@ def draw(canvas):
 		mv.x += 1
 	if kbd.s:
 		mv.x -= 1
+	if kbd.up:
+		cam.rays +=1
+	if kbd.down:
+		cam.rays -=1
 	cam.move(mv)
-	for i in lines:
-		if cam.insidefov(i):
-			i.draw(canvas)
-		else:
-			i.draw(canvas,"red")
-		#canvas.draw_point(i.closestPoint(cam.pos).tuple())
-	cam.draw(canvas,lines,kbd.draw)
-
-
+	cam.colides(lines)
 cam = Camera()
 kbd = Keyboard()
-frame = simplegui.create_frame("Points", Camera.WIDTH , Camera.HEIGHT )
+physloop = simplegui.create_timer(1000/60,pysloop)
+frame = simplegui.create_frame("Points", Camera.WIDTH , Camera.HEIGHT,0)
 frame.set_draw_handler(draw)
 frame.set_canvas_background("White")
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 # pos the frame animation
 frame.set_mouseclick_handler(mouse)
+physloop.start()
 frame.start()
