@@ -28,24 +28,26 @@ class Interaction:
 		path.append((CANVAS_WIDTH,CANVAS_HEIGHT))
 		path.append((0,CANVAS_HEIGHT))
 		canvas.draw_polygon(path,1,color,color)
-	def draw_sun(self,canvas,offset):
-		canvas.draw_image(self.sun,(360,197),(360//2,197//2),(CANVAS_WIDTH-offset,offset),(360,197))
+	def draw_sun(self,canvas,height):
+
+		canvas.draw_image(self.sun,(250,250),(500,500),(CANVAS_WIDTH-CANVAS_HEIGHT*height/2,CANVAS_HEIGHT*height/2),(CANVAS_HEIGHT*height,CANVAS_HEIGHT*height))
 	def looping_clouds(self,canvas,frequency,height):
 		offset = self.lastFrameTime%(1/frequency)*frequency
 		dim = (2400,300)
 		cen = (1200,150)
-		canvas.draw_image(self.clouds, cen, dim,(cen[0]-offset*dim[0],height*CANVAS_HEIGHT/2),(dim[0],height*CANVAS_HEIGHT))
-		canvas.draw_image(self.clouds, cen, dim,(cen[0]+dim[0]-offset*dim[0],height*CANVAS_HEIGHT/2),(dim[0],height*CANVAS_HEIGHT))
+		width = dim[0]/dim[1]*height*CANVAS_HEIGHT
+		canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*CANVAS_HEIGHT/2),(width,height*CANVAS_HEIGHT))
+		canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*CANVAS_HEIGHT/2),(width,height*CANVAS_HEIGHT))
 	def draw(self, canvas):
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
 		self.looping_clouds(canvas,0.05,0.2)
-		self.looping_clouds(canvas,0.03,0.25)#
-		self.draw_sun(canvas,100)
+		self.draw_sun(canvas,0.3)
+		self.looping_clouds(canvas,0.03,0.25)
 		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
 		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
 		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
-		
+	
 		
 
 
