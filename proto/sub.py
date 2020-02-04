@@ -13,7 +13,9 @@ class Interaction:
 	def __init__(self,dimensions):
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.clouds = simplegui.load_image("file:///C:/Users/Couga/Documents/repos/twenty-four/proto/background_clouds.png")#"https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/background_clouds.png")
+		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/background_clouds.png")
+		self.sun = simplegui.load_image()
+		self.floor = simplegui.load_image()
 	def update(self):
 		pass
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
