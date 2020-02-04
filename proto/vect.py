@@ -12,23 +12,14 @@ class Vector:
     def __str__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"
 
+    # Tests the equality of this vector and another
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
     # Tests the inequality of this vector and another
-    @staticmethod
-    def fromstring(string):
-        vals = string[1:len(string)-1].rsplit(",")
-        return Vector(vals[0],vals[1])
-
     def __ne__(self, other):
         return not self.__eq__(other)
-    @staticmethod
-    def polar(ang,mag):
-        return Vector(math.cos(ang)*mag,math.sin(ang)*mag)
-    @staticmethod
-    def fTuple(tuple):
-        return Vector(tuple[0],tuple[1])
+
     # Returns a tuple with the point corresponding to the vector
     def get_p(self):
         return (self.x, self.y)
@@ -36,8 +27,7 @@ class Vector:
     # Returns a copy of the vector
     def copy(self):
         return Vector(self.x, self.y)
-    def mag(self):
-        return math.pow(self.x**2+self.y**2,0.5)
+
     # Adds another vector to this vector
     def add(self, other):
         self.x += other.x
@@ -66,9 +56,6 @@ class Vector:
         self.x *= k
         self.y *= k
         return self
-
-    def tuple(self):
-        return(self.x,self.y)
 
     def __mul__(self, k):
         return self.copy().multiply(k)
@@ -130,3 +117,10 @@ class Vector:
     def rotate(self, theta):
         theta_rad = theta / 180 * math.pi
         return self.rotate_rad(theta_rad)
+    
+    # project the vector onto a given vector
+    def get_proj(self, vec):
+        unit = vec.get_normalized()
+        return unit.multiply(self.dot(unit))
+        
+        
