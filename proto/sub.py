@@ -13,7 +13,7 @@ class Interaction:
 	def __init__(self,dimensions):
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/background_clouds.png")
+		self.clouds = simplegui.load_image("file:///C:/Users/Couga/Documents/repos/twenty-four/proto/background_clouds.png")#"https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/background_clouds.png")
 	def update(self):
 		pass
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
@@ -26,14 +26,20 @@ class Interaction:
 		path.append((CANVAS_WIDTH,CANVAS_HEIGHT))
 		path.append((0,CANVAS_HEIGHT))
 		canvas.draw_polygon(path,1,color,color)
-	def looping_clouds(self,canvas,frequency):
+	def looping_clouds(self,canvas,frequency,height):
 		offset = self.lastFrameTime%(1/frequency)*frequency
+		dim = (2400,300)
+		cen = (1200,150)
+		canvas.draw_image(self.clouds, cen, dim,(cen[0]-offset*dim[0],height*CANVAS_HEIGHT/2),(dim[0],height*CANVAS_HEIGHT))
+		canvas.draw_image(self.clouds, cen, dim,(cen[0]+dim[0]-offset*dim[0],height*CANVAS_HEIGHT/2),(dim[0],height*CANVAS_HEIGHT))
 	def draw(self, canvas):
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
-		self.background(canvas,30,4,1,0.3,0.03,"rgb(0,0,100)")
-		self.background(canvas,30,3,-0.6,0.3,0.04,"rgb(0,0,150)")
-		self.background(canvas,50,2,0.2,0.3,0.05,"rgb(0,0,250)")
+		self.looping_clouds(canvas,0.05,0.2)
+		self.looping_clouds(canvas,0.03,0.25)
+		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
+		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
+		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
 		
 		
 
