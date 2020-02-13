@@ -4,12 +4,13 @@ try:
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from vect import Vector as V
+from spritesheet import SpriteSheet as SS
 class School:
 	def __init__(self,count,dim):
 		self.fish = []
 		random.seed(time.time()) 
 		for i in range(count):
-			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.35*dim[1]),V(dim[0],dim[1]))))
+			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.35*dim[1]),V(dim[0],dim[1]*0.65))))
 	def draw(self,canvas,delta):
 		for fish in self.fish:
 			fish.update(delta,self.fish)
