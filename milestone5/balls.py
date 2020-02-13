@@ -74,6 +74,26 @@ class Ball:
         return (self.pos-ball.pos).length()<(self.radius+ball.radius)
     def normal(self,ball):
         return (ball.pos-self.pos).normalize()
+    def resolve(self,other):
+        ab = other.pos-self.pos
+        ba = -ab
+        print("new")
+        print(self.vel)
+        print(other.vel)
+        print(ab)
+        axvel = ab.dot(self.vel)/self.vel.length()*ab.normalize()
+        bxvel = ba.dot(other.vel)/other.vel.length()*ba.normalize()
+        ayvel = self.vel - axvel
+        byvel = other.vel - bxvel
+        print(axvel)
+        print(bxvel)
+        print(ayvel)
+        print(byvel)
+        print(self.vel)
+        print(other.vel)
+        self.vel = ayvel + bxvel
+        other.vel = byvel + axvel
+
 class Interaction:
     def __init__(self, walls, balls):
         self.balls = balls
@@ -92,8 +112,8 @@ class Interaction:
             for other in self.balls:
                 if other != ball:
                     if ball.hit(other):
-                        if not [ball,other] in self.colliding:
-                            ball.bounce(other.normal(ball))
+                        if not [ball,other] in self.colliding and not [other,ball] in self.colliding:
+                            ball.resolve(other)
                         self.colliding.append([ball,other])
                     else: 
                         if [ball,other] in self.colliding:
@@ -114,12 +134,12 @@ CANVAS_HEIGHT = 400
 
 # Creating the objects84
 
-ba = Ball(Vector(200,200), Vector(2,-1), 20, 10, 'blue',True)
+ba = Ball(Vector(200,200), Vector(0,0), 20, 10, 'blue',True)
 bb = Ball(Vector(220,200), Vector(-1,-1), 20, 10, 'green')
 bc = Ball(Vector(100,100), Vector(2,3), 50, 10, 'purple')
-bd = Ball(Vector(300,200), Vector(2,-1), 20, 10, 'blue',True)
-be = Ball(Vector(400,100), Vector(2,-1), 50, 10, 'blue',True)
-bf = Ball(Vector(500,200), Vector(2,-1), 30, 10, 'blue',True)
+bd = Ball(Vector(300,200), Vector(0,0), 20, 10, 'blue',True)
+be = Ball(Vector(400,100), Vector(0,0), 50, 10, 'blue',True)
+bf = Ball(Vector(500,200), Vector(0,0), 30, 10, 'blue',True)
 bg = Ball(Vector(1500,100), Vector(2,3), 20, 10, 'orange')
 
 wt = Wall(10, 5, 'red',"t")

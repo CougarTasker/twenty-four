@@ -21,7 +21,7 @@ def draw(canvas):
 	global count
 	count+=1
 	rad = math.sin((count%shrinkrate)/shrinkrate*math.pi)*(WIDTH/2-thickness)+thickness
-	canvas.draw_circle((WIDTH/2,HEIGHT/2),rad,thickness,"Black")
+	canvas.draw_circle((WIDTH/2,HEIGHT/2),rad,thickness,"Black")12
 	canvas.draw_line(polar((count%rotaterate)/rotaterate*math.pi*2,rad),polar((count%rotaterate)/rotaterate*math.pi*2+math.pi,rad),thickness,"Black")
 # Create a frame and assign the callback to the event handler
 frame = simplegui.create_frame("Points", WIDTH , HEIGHT )
