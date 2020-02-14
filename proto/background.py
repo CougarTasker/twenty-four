@@ -4,6 +4,8 @@ try:
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from vect import Vector as V
+from spritesheet import SpriteSheet as SS
+
 class Background:
 	def __init__(self,dimensions):
 		self.lastFrameTime = time.time()
@@ -11,7 +13,8 @@ class Background:
 		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
 		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
 		self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
-
+		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/bubble2.png",(15,5),time=1250,scale=0.04,pos=V(100,200))
+		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.2,pos=V(100,200))
 		#self.floor = simplegui.load_image()
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
 		path = [(0,self.dimensions[1])]
@@ -100,7 +103,10 @@ class Background:
 		width = dim[0]/dim[1]*height*self.dimensions[1]
 		canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
 		canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-
+	def draw_carol(self,canvas,x):
+		self.carol.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.carol.adim[1]*self.carol.scale/2))
+	def draw_bubbles(self,canvas,top = 0.25):
+		self.bubbles.draw(canvas,(self.dimensions[0]/4,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[1]*(1-top)/2,self.dimensions[1]*(1-top)))
 	def draw_water_world(self,canvas,top = 0.25):
     		canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[0],self.dimensions[1]*(1-top)))
 
@@ -109,9 +115,12 @@ class Background:
 		self.lastFrameTime = time.time()
 
 		
-		# self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
-		# self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
+		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
+		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
 		self.draw_water_world(canvas)
+		self.draw_carol(canvas,0.2)
+		self.draw_carol(canvas,0.7)
+		self.draw_bubbles(canvas)
 		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
 		big = self.poly(40,2,0.2,0.3,0.05) #rgb(0,0,250)
 		middle = self.poly(40,3,-0.6,0.3,0.04) # rgb(0,0,150)
@@ -120,8 +129,8 @@ class Background:
 		smalls = self.sub(40,small,middle,big)
 		self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")
 		self.draw_wave_parts(canvas,smalls,"rgb(0,0,100)")
-
+		
 		self.looping_clouds(canvas,0.05,0.2)
 		self.draw_sun(canvas,0.3)
 		self.looping_clouds(canvas,0.03,0.25)
-
+		

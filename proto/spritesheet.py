@@ -26,13 +26,16 @@ class SpriteSheet(object):
 		self.scale =scale
 	def done(self):
 		return self.fno == self.framecount-1
-	def draw(self,canvas,rotation=0):
+	def draw(self,canvas,center=(-1,-1),size=(-1,-1),rotation=0):
 		self.fno = round((time.time()%(self.time/1000))/(self.time/1000)*(self.framecount-1))
 		x = self.fno  % self.size[0]
 		y = (self.fno - x)/self.size[0]
-
+		if center[0] < 0:
+			center = self.pos.get_p()
+		if size[0] <0:
+			size =(self.adim[0]*self.scale,self.adim[1]*self.scale)
 		loc = Vector(x*self.adim[0],y*self.adim[1])
-		canvas.draw_image(self.img,(self.cent+loc).get_p(),self.adim, self.pos.get_p(), (self.bdim*self.scale).get_p(),rotation)
+		canvas.draw_image(self.img,(self.cent+loc).get_p(),self.adim,center,size,rotation)
 		
 
 def draw(canvas):
