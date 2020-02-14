@@ -113,7 +113,7 @@ class Background:
 	def draw(self, canvas):
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
-
+		print("fps: "+ str(1/delta))
 		
 		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
 		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")

@@ -14,8 +14,8 @@ except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 # The canvas dimensions
-CANVAS_WIDTH = 600
-CANVAS_HEIGHT = 400
+CANVAS_WIDTH = 1000
+CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
 
 class Interaction:
 	def __init__(self,dimensions):#,pearl, carol):
@@ -43,7 +43,7 @@ i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT))#,pearl,carol)
 
 
 # Create a frame and assign callbacks to event handlers
-frame = simplegui.create_frame("ball-wall", CANVAS_WIDTH, CANVAS_HEIGHT)
+frame = simplegui.create_frame("ball-wall", CANVAS_WIDTH, CANVAS_HEIGHT,0)
 
 frame.set_canvas_background("rgb(87,150,250)")
 frame.set_draw_handler(i.draw)
