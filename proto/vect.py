@@ -105,7 +105,8 @@ class Vector:
     def rotate_anti(self):
         self.x, self.y = -self.y, self.x
         return self
-
+    def cross(self,other):
+        return self.x*other.y - self.y*other.x
     # Rotates the vector according to an angle theta given in radians
     def rotate_rad(self, theta):
         rx = self.x * math.cos(theta) - self.y * math.sin(theta)
