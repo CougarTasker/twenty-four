@@ -100,9 +100,10 @@ class Background:
 		offset = self.lastFrameTime%(1/frequency)*frequency
 		dim = (2400,300)
 		cen = (1200,150)
-		width = dim[0]/dim[1]*height*self.dimensions[1]
+		width = math.floor(dim[0]/dim[1]*height*self.dimensions[1])
 		canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
 		canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
+		canvas.draw_image(self.clouds, cen, dim,(width/2+width*2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
 	def draw_carol(self,canvas,x):
 		self.carol.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.carol.adim[1]*self.carol.scale/2))
 	def draw_bubbles(self,canvas,top = 0.25):
