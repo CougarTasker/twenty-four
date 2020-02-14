@@ -43,7 +43,8 @@ class Camera:
 					d = intersection[0]*line.norm.dot(direction)# / (direction.length() * line.norm.length())
 					walls.append([d,wall,intersection[1]])#distance to wall, the wall and the real x value 
 				walls.sort(key = self.wallsorting)
-				out= []
+				out = []]
+				
 				for wall in walls:
 					if wall[0] > 0:
 						out.insert(0,wall)
@@ -55,6 +56,19 @@ class Camera:
 					l = wall[1].norm.copy().rotate(90).dot(wall[1].pos-self.pos)<0
 					wall[1].drawWall(canvas,Vector(Camera.WIDTH,Camera.HEIGHT),wall[2],x*self.WIDTH/self.rays,self.WIDTH/self.rays,p,l)
 				x+=1
+	def project(self,pos,y=0):
+		cpos = pos-self.pos
+		y = y - self.height
+		cpos.rotate(-self.rot)
+		wid = self.zoom*math.tan(self.fov*math.pi/360)
+		hig = wid*self.HEIGHT/self.WIDTH
+		cx = cpos.y*self.zoom/2/cpos.x/ wid * Camera.WIDTH
+		cy = y *self.zoom/2/cpos.x/hig * Camera.HEIGHT
+		return (cx+Camera.WIDTH/2,-cy+Camera.HEIGHT/2)
+	def drawfloor(self,canvas,size):
+		pass
+	def drawsquare():
+		pass
 	def wallsorting(self,a):
 		return a[0]
 	def boundry(self):

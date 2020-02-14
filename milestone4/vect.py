@@ -12,11 +12,15 @@ class Vector:
     def __str__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"
 
-    # Tests the equality of this vector and another
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
     # Tests the inequality of this vector and another
+    @staticmethod
+    def fromstring(string):
+        vals = string[1:len(string)-1].rsplit(",")
+        return Vector(vals[0],vals[1])
+
     def __ne__(self, other):
         return not self.__eq__(other)
     @staticmethod

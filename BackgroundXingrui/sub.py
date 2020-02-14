@@ -1,10 +1,14 @@
 from vect import Vector
-from background import Background
+#from player import Player
+from background import Background as Bg
+from fish import School 
+
 import random,math,time
 try:
 	import simplegui
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+
 # The canvas dimensions
 CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 400
@@ -13,7 +17,8 @@ class Interaction:
     def __init__(self,dimensions):
         self.lastFrameTime = time.time()
         self.dimensions = dimensions
-        self.back = Background(dimensions)
+        self.back = Bg(dimensions)
+
     def update(self):
         pass
     def draw(self, canvas):
