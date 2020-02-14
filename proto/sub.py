@@ -1,4 +1,5 @@
 from vect import Vector
+#from player import Player
 from background import Background
 import random,math,time
 try:
