@@ -67,19 +67,16 @@ def mouse(pos):
 	#print("click")
 	global lines,last
 
-	if kbd.border and last is None or kbd.border and last != Vector.fTuple(pos):
-		if len(lines)==0:
-			if last is None:
-				last = Vector.fTuple(pos)
-			else:
-				lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
-				last = Vector.fTuple(pos)
+	if kbd.border and ((last is None) or  (last != Vector.fTuple(pos))):
+		
+		if last is None:
+			last = Vector.fTuple(pos)
 		else:
 			if kbd.up:
 				lines.append(Line(last,Vector.fTuple(pos),True,wallImg,height = 40,transparent= True,y=60))
-			elif kbd.down:
+			if kbd.down:
 				lines.append(Line(last,Vector.fTuple(pos),True,wallImg,height = 40,transparent= True))
-			else:
+			if not kbd.up and not kbd.down:
 				lines.append(Line(last,Vector.fTuple(pos),True,wallImg))
 			last = Vector.fTuple(pos)
 			#print(Line.tostrings(lines)
@@ -105,15 +102,18 @@ def draw(canvas):
 			cam.rays +=1
 	lasttime = time.time()
 	#cam.rot +=0.2
-
+	cam.draw(canvas,lines,kbd.draw)
 	if kbd.draw:
 		for i in lines:
 			if cam.insidefov(i):
 				i.draw(canvas)
 			else:
 				i.draw(canvas,"red")
+	else:
+		canvas.draw_circle(cam.project(Vector(300,100)),5,2,"blue","blue")
+		canvas.draw_circle(cam.project(Vector(300,200)),5,2,"blue","blue")
 		#canvas.draw_point(i.closestPoint(cam.pos).tuple())
-	cam.draw(canvas,lines,kbd.draw)
+	
 def pysloop():
 	if kbd.left:
 		cam.rot -=1.5
@@ -134,6 +134,8 @@ def pysloop():
 		cam.rays -=1
 	cam.move(mv)
 	cam.colides(lines)
+
+lines.append(Line(Vector(300,100),Vector(300,200),True,wallImg))
 cam = Camera()
 kbd = Keyboard()
 physloop = simplegui.create_timer(1000/60,pysloop)

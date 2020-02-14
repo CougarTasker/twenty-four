@@ -9,7 +9,7 @@ height=100
 def draw_handler(canvas):
     global width
     global height
-    canvas.set_canvas_background("White")
+    frame.set_canvas_background("White")
     canvas.draw_line((0, 0), (width, height), 5, 'Blue')
     canvas.draw_line([0, height], [width, 0], 5, 'Blue')
 

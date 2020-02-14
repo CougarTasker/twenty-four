@@ -1,6 +1,8 @@
 from vect import Vector
 #from player import Player
-from background import Background
+from background import Background as Bg
+from fish import School
+
 import random,math,time
 try:
 	import simplegui
@@ -15,13 +17,15 @@ class Interaction:
 	def __init__(self,dimensions):
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.back = Background(dimensions)
+		self.back = Bg(dimensions)
+		self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
 	def update(self):
 		pass
 	def draw(self, canvas):
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
 		self.back.draw(canvas)
+		self.fish.draw(canvas,delta)
 
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT))
 

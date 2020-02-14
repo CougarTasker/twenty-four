@@ -1,5 +1,5 @@
 from vect import Vector
-import random 
+import random,math
 try:
     import simplegui
 except ImportError:
