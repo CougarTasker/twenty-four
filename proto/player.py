@@ -10,7 +10,7 @@ class Player:
             self.canvas_dim = dimensions
 
             ##image info + dimensions (constants)
-            self.img = simplegui.load_image("file:///Users/tiger-lily-goldsmith/Documents/RHUL/gitStuff/twenty-four/proto/boat.png")
+            self.img = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/boat.png")
             #self.img = simplegui.load_image("https://i.ya-webdesign.com/images/cartoon-sailboat-png-1.png")
             self.dim = (1961, 1703)
             self.cen = (self.dim[0]/2, self.dim[1]/2)
