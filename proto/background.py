@@ -7,9 +7,9 @@ class Background:
 	def __init__(self,dimensions):
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/background_clouds.png")
-		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/sun.png")
-		self.water_world = simplegui.load_image("underwater-seamless-landscape-cartoon-background-vector-7524975.png")
+		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
+		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
+		self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
 
 		#self.floor = simplegui.load_image()
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):

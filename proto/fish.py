@@ -9,7 +9,8 @@ class School:
 	def __init__(self,count,dim):
 		self.fish = []
 		random.seed(time.time()) 
-		self.img = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/fishss.png",(2,2),time=700,scale=0.1)
+		self.imgr = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/right.png",(2,2),time=700,scale=0.1)
+		self.imgl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/left.png",(2,2),time=700,scale=0.1)
 		for i in range(count):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.35*dim[1]),V(dim[0],dim[1]*0.65)),self.img))
 	def draw(self,canvas,delta):
