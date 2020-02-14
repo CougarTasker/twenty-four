@@ -1,5 +1,5 @@
 from vect import Vector
-import random,math
+import random,math,time
 try:
     import simplegui
 except ImportError:
@@ -21,26 +21,19 @@ class SpriteSheet(object):
 		self.adim = (self.bdim.x/self.size[0],self.bdim.y/self.size[1]) # after dimaentions
 		self.cent = Vector(self.adim[0]/2,self.adim[1]/2)
 		self.fno = 0
-		self.count = 0
-		total = (time/1000)*60
-		self.ratio = int((total-framecount)/framecount)
+		self.time = time
 		self.pos = pos
 		self.scale =scale
 	def done(self):
 		return self.fno == self.framecount-1
 	def draw(self,canvas,rotation=0):
+		self.fno = round((time.time()%(self.time/1000))/(self.time/1000)*(self.framecount-1))
 		x = self.fno  % self.size[0]
 		y = (self.fno - x)/self.size[0]
 
 		loc = Vector(x*self.adim[0],y*self.adim[1])
 		canvas.draw_image(self.img,(self.cent+loc).get_p(),self.adim, self.pos.get_p(), (self.bdim*self.scale).get_p(),rotation)
 		
-		self.count +=1
-		if self.count >= self.ratio:
-			self.count = 0
-			self.fno +=1
-		if self.fno >= self.framecount:
-			self.fno = 0
 
 def draw(canvas):
 	anim.draw(canvas)
