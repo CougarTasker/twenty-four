@@ -1,7 +1,7 @@
 from vect import Vector
-from carol import Carol
-from pearl import Pearl
-from bubble import bubblesheet
+# from carol import Carol
+# from pearl import Pearl
+# from bubble import bubblesheet
 
 #from player import Player
 from background import Background as Bg
@@ -18,11 +18,11 @@ CANVAS_WIDTH = 600
 CANVAS_HEIGHT = 400
 
 class Interaction:
-	def __init__(self,dimensions,pearl, carol):
+	def __init__(self,dimensions):#,pearl, carol):
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.perl = pearl
-		self.carol = carol
+		# self.perl = pearl
+		# self.carol = carol
 		self.back = Bg(dimensions)
 		self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
 
@@ -32,14 +32,14 @@ class Interaction:
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
 		self.back.draw(canvas)
-		self.carol.draw_canvas(canvas)
-		self.perl.draw_canvas(canvas)
+		# self.carol.draw_canvas(canvas)
+		# self.perl.draw_canvas(canvas)
 		self.fish.draw(canvas,delta)
 
 
-pearl = Pearl(Vector(417,383))
-carol = Carol(Vector(136,331))
-i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),pearl,carol)
+#pearl = Pearl(Vector(417,383))
+#carol = Carol(Vector(136,331))
+i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT))#,pearl,carol)
 
 
 # Create a frame and assign callbacks to event handlers

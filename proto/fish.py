@@ -12,27 +12,35 @@ class School:
 		self.imgr = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/right.png",(2,2),time=700,scale=0.1)
 		self.imgl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/left.png",(2,2),time=700,scale=0.1)
 		for i in range(count):
-			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.35*dim[1]),V(dim[0],dim[1]*0.65)),self.img))
+			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.35*dim[1]),V(dim[0],dim[1]*0.65)),self.imgr,self.imgl))
 	def draw(self,canvas,delta):
 		for fish in self.fish:
 			fish.update(delta,self.fish)
 			fish.draw(canvas)
 class Fsh:
-	def __init__(self,pos,bounds,img):
+	def __init__(self,pos,bounds,imgr,imgl):
 		self.bounds = bounds
 		self.max_vel = 75
-		self.img = img 
+		self.imgr = imgr 
+		self.imgl = imgl
 		self.per = self.max_vel*1.2 
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
 	def draw(self,canvas):
 		#canvas.draw_circle(self.pos.get_p(),4,1,"red","red"
-		self.img.pos = self.pos
-		a = self.vel.angle(V(1,0))
-		if self.vel.y < 0: 
+		
+		a = self.vel.angle(V(0,1))
+		if self.vel.x > 0: 
 			a *= -1 
-		self.img.draw(canvas,a)
+			img = self.imgr
+			a += math.pi/2
+		else:
+			a -= math.pi/2
+			img = self.imgl
+		
+		img.pos = self.pos
+		img.draw(canvas,a)
 		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.per,1,"black",)
 	def allign(self,fish):
