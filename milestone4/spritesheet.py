@@ -33,7 +33,7 @@ class SpriteSheet(object):
 		y = (self.fno - x)/self.size[0]
 
 		loc = Vector(x*self.adim[0],y*self.adim[1])
-		canvas.draw_image(self.img,(self.cent+loc).tuple(),self.adim, self.pos.tuple(), (self.bdim*self.scale).tuple())
+		canvas.draw_image(self.img,(self.cent+loc).get_p(),self.adim, self.pos.get_p(), (self.bdim*self.scale).get_p())
 		
 		self.count +=1
 		if self.count >= self.ratio:
