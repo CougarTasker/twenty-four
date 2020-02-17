@@ -32,6 +32,7 @@ class Player:
       return self.vel
    def addVel(self, velocity):
       self.vel.add(velocity)
+      print(self.vel)
 
    def getLives(self):
       return self.lives
@@ -44,6 +45,24 @@ class Player:
       self.points = newP
    def getPoints(self):
       return self.points
+
+   def update(self):
+      self.pos.add(self.vel)
+      self.vel.multiply(0.85)
+      print(self.pos.get_p())
+      
+   def inBounds(self):
+      return ((0 <= self.pos.get_p()[0]) and (self.canvas_dim[0] >= self.pos.get_p()[0]))
+
+   
+   def set(self):
+      if (0 > self.pos.get_p()[0]):
+         self.pos = Vector(1,self.draw_dim[1]/2+15)
+         print("updated")
+      else:
+         self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+15)
+         print("updated")
+      
         
    def draw(self,canvas):
        canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim) 
