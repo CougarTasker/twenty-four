@@ -13,16 +13,17 @@ class School:
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
 		for i in range(count):
-			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgr,self.imgl))
+			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
+		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
 	def draw(self,canvas,delta):
 		for fish in self.fish:
 			fish.update(delta,self.fish)
 			fish.draw(canvas)
 class Fsh:
-	def __init__(self,pos,bounds,imgr,imgl):
+	def __init__(self,pos,bounds,imgl,imgr):
 		self.bounds = bounds
 		self.max_vel = 75
-		self.imgr = imgr 
+		self.imgr = imgr
 		self.imgl = imgl
 		self.size = 25
 		self.per = self.size*3
@@ -105,6 +106,15 @@ class Fsh:
 		self.vel.rotate((random.random()*2-1)*delta*20)
 		self.pos += self.vel * delta
 		self.pos = self.bounds.correct(self)
+
+class Shark(Fsh):
+	def __init__(self,pos,bounds):
+		addr = os.getcwd()
+		super().__init__(pos,bounds,SS("file:///"+addr+"/images/sharkleft.png",(5,1),time=600,scale=1),SS("file:///"+addr+"/images/sharkright.png",(5,1),time=600,scale=1))
+		self.size = 40
+		self.max_vel = 100
+		self.per = self.size*3
+		
 
 class Bounds:
 	def __init__(self,pos,dim):
