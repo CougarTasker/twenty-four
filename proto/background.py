@@ -11,12 +11,12 @@ class Background:
 		addr = os.getcwd()
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
-		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
-		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")#https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images
+		self.clouds = simplegui.load_image("file:///"+addr+"/images/background_clouds.png")
+		self.sun = simplegui.load_image("file:///"+addr+"/images/sun.png")
 		self.water_world = simplegui.load_image("file:///"+addr+"/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
-		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png",(6,5),time=1250,scale=0.22)
-		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.22)
-		self.perl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False)
+		self.bubbles = SS("file:///"+addr+"/images/Bubble1.png",(6,5),time=1250,scale=0.22)
+		self.carol = SS("file:///"+addr+"/images/carol.png",(5,1),time=800,scale=0.22)
+		self.perl = SS("file:///"+addr+"/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False)
 		#self.floor = simplegui.load_image()
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
 		path = [(0,self.dimensions[1])]
