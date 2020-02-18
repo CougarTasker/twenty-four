@@ -1,3 +1,4 @@
+import os
 from vect import Vector 
 try:
 	import simplegui
@@ -8,9 +9,9 @@ except ImportError:
 class Player:
    def __init__(self, dimensions):
       self.canvas_dim = dimensions
-
+      addr = os.getcwd()
       ##image info + dimensions (constants)
-      self.img = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/boatman.png")
+      self.img = simplegui.load_image("file:///"+addr+"/images/boatman.png")
       self.dim = (4096, 3790)
       self.cen = (self.dim[0]/2, self.dim[1]/2)
       self.draw_dim = (140, 140)
