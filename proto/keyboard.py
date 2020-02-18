@@ -14,16 +14,16 @@ class Keyboard:
             self.right = True
         if key == simplegui.KEY_MAP['left']:
             self.left = True
-        if key == simple.gui.KEY_MAP['down']:
-            self.up = True
+        if key == simplegui.KEY_MAP['down']:
+            self.down = True
   
     def keyUp(self, key):
         if key == simplegui.KEY_MAP['right']:
             self.right = False
         if key == simplegui.KEY_MAP['left']:
             self.left = False
-        if key == simplegui.KEY_MAP['up']:
-            self.up = False
+        if key == simplegui.KEY_MAP['down']:
+            self.down = False
 
             
     def isMoving(self):
