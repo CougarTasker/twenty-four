@@ -13,10 +13,10 @@ class Player:
       self.img = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/boatman.png")
       self.dim = (4096, 3790)
       self.cen = (self.dim[0]/2, self.dim[1]/2)
-      self.draw_dim = (190, 190)
+      self.draw_dim = (140, 140)
 
       ##player position and other attributes (variables)
-      self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+15)
+      self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+65)
       self.vel = Vector(0,0)
       self.lives = 3
       self.points = 0
@@ -57,10 +57,10 @@ class Player:
    
    def set(self):
       if (0 > self.pos.get_p()[0]):
-         self.pos = Vector(1,self.draw_dim[1]/2+15)
+         self.pos = Vector(1,self.draw_dim[1]/2+ 65)
          print("updated")
       else:
-         self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+15)
+         self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+65)
          print("updated")
       
         
