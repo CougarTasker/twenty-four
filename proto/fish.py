@@ -1,4 +1,4 @@
-import random,math,time
+import random,math,time,os
 try:
 	import simplegui
 except ImportError:
@@ -9,8 +9,9 @@ class School:
 	def __init__(self,count,dim):
 		self.fish = []
 		random.seed(time.time()) 
-		self.imgr = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/right.png",(2,2),time=400,scale=0.2)
-		self.imgl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/left.png",(2,2),time=400,scale=0.2)
+		addr = os.getcwd()
+		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
+		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
 		for i in range(count):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgr,self.imgl))
 	def draw(self,canvas,delta):
