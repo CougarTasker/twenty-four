@@ -9,6 +9,7 @@ class School:
 	def __init__(self,count,dim):
 		self.fish = []
 		random.seed(time.time()) 
+		addr = os.getcwd()
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
 		for i in range(count):
