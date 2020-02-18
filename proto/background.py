@@ -1,4 +1,4 @@
-import random,math,time
+import random,math,time,os
 try:
 	import simplegui
 except ImportError:
@@ -8,11 +8,12 @@ from spritesheet import SpriteSheet as SS
 
 class Background:
 	def __init__(self,dimensions):
+		addr = os.getcwd()
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
 		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
-		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
-		self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
+		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")#https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images
+		self.water_world = simplegui.load_image("file:///"+addr+"/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
 		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png",(6,5),time=1250,scale=0.22)
 		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.22)
 		self.perl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False)
@@ -117,19 +118,19 @@ class Background:
 		delta = time.time()-self.lastFrameTime
 		self.lastFrameTime = time.time()
 		print("fps: "+ str(1/delta))
-		
 		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
 		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
 		self.draw_water_world(canvas)
 		self.draw_carol(canvas,0.2)
 		self.draw_carol(canvas,0.7)
 		self.draw_perl(canvas,0.5)
-		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
-		big = self.poly(40,2,0.2,0.3,0.05) #rgb(0,0,250)
-		middle = self.poly(40,3,-0.6,0.3,0.04) # rgb(0,0,150)
-		small = self.poly(40,4,1,0.3,0.03) #rgb(0,0,100)
-		middles = self.sub(40,middle,big,big)
-		smalls = self.sub(40,small,middle,big)
+		pollycount = 50
+		self.background(canvas,pollycount,2,0.2,0.3,0.05,"rgb(0,0,250)")
+		big = self.poly(pollycount,2,0.2,0.3,0.05) #rgb(0,0,250)
+		middle = self.poly(pollycount,3,-0.6,0.3,0.04) # rgb(0,0,150)
+		small = self.poly(pollycount,4,1,0.3,0.03) #rgb(0,0,100)
+		middles = self.sub(pollycount,middle,big,big)
+		smalls = self.sub(pollycount,small,middle,big)
 		self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")
 		self.draw_wave_parts(canvas,smalls,"rgb(0,0,100)")
 		
