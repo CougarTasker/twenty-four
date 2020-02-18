@@ -11,13 +11,17 @@ class Player:
       self.canvas_dim = dimensions
       addr = os.getcwd()
       ##image info + dimensions (constants)
-      self.img = simplegui.load_image("file:///"+addr+"/images/boatman.png")
-      self.dim = (4096, 3790)
+
+      self.img = simplegui.load_image("file:///"+addr+"/images/colouredBoth.png")
+      self.dim = (4096, 4096)
+
       self.cen = (self.dim[0]/2, self.dim[1]/2)
-      self.draw_dim = (140, 140)
+      self.draw_dim = (140, 160)
+      self.y_offset = 45
+      #self.x_offset
 
       ##player position and other attributes (variables)
-      self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+65)
+      self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+self.y_offset)
       self.vel = Vector(0,0)
       self.lives = 3
       self.points = 0
@@ -33,7 +37,6 @@ class Player:
       return self.vel
    def addVel(self, velocity):
       self.vel.add(velocity)
-      print(self.vel)
 
    def getLives(self):
       return self.lives
@@ -58,11 +61,9 @@ class Player:
    
    def set(self):
       if (0 > self.pos.get_p()[0]):
-         self.pos = Vector(1,self.draw_dim[1]/2+ 65)
-         print("updated")
+         self.pos = Vector(1,self.draw_dim[1]/2+self.y_offset)
       else:
-         self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+65)
-         print("updated")
+         self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+self.y_offset)
       
         
    def draw(self,canvas):

@@ -32,7 +32,7 @@ class Interaction:
    def update(self):
       if self.player.inBounds():
          if self.keyboard.right:
-            self.player.addVel(Vector(1,0))#
+            self.player.addVel(Vector(1,0))
          elif self.keyboard.left:
             self.player.addVel(Vector(-1,0))
       else:
