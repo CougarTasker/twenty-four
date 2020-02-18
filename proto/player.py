@@ -12,7 +12,7 @@ class Player:
       addr = os.getcwd()
       ##image info + dimensions (constants)
 
-      self.img = simplegui.load_image("file:///"+addr+"/images/boatman.png")
+      self.img = simplegui.load_image("file:///"+addr+"/images/colouredBoth.png")
       self.dim = (4096, 4096)
 
       self.cen = (self.dim[0]/2, self.dim[1]/2)
