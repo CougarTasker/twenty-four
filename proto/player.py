@@ -53,7 +53,7 @@ class Player:
    def update(self):
       self.pos.add(self.vel)
       self.vel.multiply(0.85)
-      print(self.pos.get_p())
+      #print(self.pos.get_p())
       
    def inBounds(self):
       return ((0 <= self.pos.get_p()[0]) and (self.canvas_dim[0] >= self.pos.get_p()[0]))

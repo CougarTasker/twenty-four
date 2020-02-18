@@ -91,8 +91,12 @@ class Fsh:
 		for boid in fish:
 			distance = (self.pos-boid.pos).length()
 			if  distance < minDistance and distance != 0:
+				if isinstance(boid,Shark):
+					fact = 10
+				else:
+					fact = 1
 				numClose += 1
-				distsum += (boid.pos-self.pos)/distance**2
+				distsum += (boid.pos-self.pos)*fact/distance**2
 
 		if numClose == 0:
 			return V()
