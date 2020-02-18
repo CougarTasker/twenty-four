@@ -1,4 +1,4 @@
-import random,math,time
+import random,math,time,os
 try:
 	import simplegui
 except ImportError:
