@@ -13,8 +13,9 @@ class Background:
 		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
 		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
 		self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
-		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/bubble2.png",(15,5),time=1250,scale=0.04,pos=V(100,200))
-		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.2,pos=V(100,200))
+		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png",(6,5),time=1250,scale=0.22)
+		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.22)
+		self.perl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False)
 		#self.floor = simplegui.load_image()
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
 		path = [(0,self.dimensions[1])]
@@ -104,10 +105,11 @@ class Background:
 		canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
 		canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
 		canvas.draw_image(self.clouds, cen, dim,(width/2+width*2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-	def draw_carol(self,canvas,x):
+	def draw_carol(self,canvas,x=0.5):
 		self.carol.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.carol.adim[1]*self.carol.scale/2))
-	def draw_bubbles(self,canvas,top = 0.25):
-		self.bubbles.draw(canvas,(self.dimensions[0]/4,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[1]*(1-top)/2,self.dimensions[1]*(1-top)))
+		self.bubbles.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.bubbles.adim[1]*self.bubbles.scale/2))
+	def draw_perl(self,canvas,x = 0.5):
+		self.perl.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.perl.adim[1]*self.perl.scale/2))
 	def draw_water_world(self,canvas,top = 0.25):
     		canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[0],self.dimensions[1]*(1-top)))
 
@@ -121,7 +123,7 @@ class Background:
 		self.draw_water_world(canvas)
 		self.draw_carol(canvas,0.2)
 		self.draw_carol(canvas,0.7)
-		self.draw_bubbles(canvas)
+		self.draw_perl(canvas,0.5)
 		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
 		big = self.poly(40,2,0.2,0.3,0.05) #rgb(0,0,250)
 		middle = self.poly(40,3,-0.6,0.3,0.04) # rgb(0,0,150)

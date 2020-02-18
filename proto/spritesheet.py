@@ -10,12 +10,13 @@ HEIGHT = 500
 
 class SpriteSheet(object):
 	"""docstring for SpriteSheet"""
-	def __init__(self, url,size=(1,1),pos = Vector(),framecount = -1,time = 1000,scale = 1):
+	def __init__(self, url,size=(1,1),pos = Vector(),framecount = -1,time = 1000,scale = 1,looping=True):
 		if framecount == -1:
 			framecount = size[0]*size[1]
 		self.framecount = framecount
 		self.url = url
 		self.size = size
+		self.looping = looping
 		self.img = simplegui.load_image(url)
 		self.bdim = Vector(self.img.get_width(),self.img.get_height()) # before dimentions
 		self.adim = (self.bdim.x/self.size[0],self.bdim.y/self.size[1]) # after dimaentions
@@ -27,7 +28,10 @@ class SpriteSheet(object):
 	def done(self):
 		return self.fno == self.framecount-1
 	def draw(self,canvas,center=(-1,-1),size=(-1,-1),rotation=0):
-		self.fno = round((time.time()%(self.time/1000))/(self.time/1000)*(self.framecount-1))
+		if self.looping:
+			self.fno = round((time.time()%(self.time/1000))/(self.time/1000)*(self.framecount-1))
+		else:
+			self.fno = round(abs((time.time()%(self.time/1000))/(self.time/1000)-0.5)*2*(self.framecount-1))
 		x = self.fno  % self.size[0]
 		y = (self.fno - x)/self.size[0]
 		if center[0] < 0:
