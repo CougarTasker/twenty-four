@@ -1,161 +1,23 @@
 import random,math,time
-<<<<<<< HEAD
-try:
-	import simplegui
-except ImportError:
-	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-from vect import Vector as V
-from spritesheet import SpriteSheet as SS
-
-class Background:
-	def __init__(self,dimensions):
-		self.lastFrameTime = time.time()
-		self.dimensions = dimensions
-		self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
-		self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
-		self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
-		self.bubbles = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png",(6,5),time=1250,scale=0.22)
-		self.carol = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.22)
-		self.perl = SS("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False)
-		#self.floor = simplegui.load_image()
-	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
-		path = [(0,self.dimensions[1])]
-		offset = self.lastFrameTime%(1/frequency)*frequency
-		for x in range(pollycount+1):
-			ang = x/pollycount*wavecount + offset
-			ang *= 2*math.pi
-			path.append((x/pollycount*self.dimensions[0],((math.sin(ang)*waveheight/2+height)*self.dimensions[1])))
-		path.append((self.dimensions[0],0))
-		path.append((0,0))
-		canvas.draw_polygon(path,1,color,color)
-	def draw_wave_parts(self,canvas,poly,color):
-		for path in poly:
-			if len(path) > 2:
-				canvas.draw_polygon(path,1,color,color)
-	def poly(self,pollycount,wavecount,frequency,height,waveheight):
-		path = []
-		offset = self.lastFrameTime%(1/frequency)*frequency
-		for x in range(pollycount+1):
-			ang = x/pollycount*wavecount + offset
-			ang *= 2*math.pi
-			path.append((x/pollycount*self.dimensions[0],((math.sin(ang)*waveheight/2+height)*self.dimensions[1])))
-		return path
-	def sub(self,pollycount,a,b,c):
-		paths = []
-		drawing = False
-		forward = []
-		backward = []
-		for x in range(pollycount+1):
-			if a[x][1] <= b[x][1] and a[x][1] <= c[x][1]:
-				if not drawing:
-					drawing = True
-					forward = []
-					if x>0:
-						bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-						cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-						if bint[1] < cint[1]:
-							forward.append(bint)
-						else:
-							forward.append(cint)
-						
-					backward = []
-				forward.append(a[x])
-				if b[x][1]<c[x][1]:
-					backward.append(b[x])
-				else:
-					backward.append(c[x])
-			else:
-				if drawing:
-					bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-					cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-					if bint[1] < cint[1]:
-						forward.append(bint)
-					else:
-						forward.append(cint)
-
-					drawing = False
-					backward.reverse()
-					paths.append(forward+backward)
-
-		if drawing: 
-			drawing = False
-			backward.reverse()
-			paths.append(forward+backward)
-		return paths
-
-	def intersection(self,a,b,c,d):
-		a = V(a[0],a[1])
-		b = V(b[0],b[1])
-		c = V(c[0],c[1])
-		d = V(d[0],d[1])
-		cd = d-c
-		ab = b-a
-		u = (a.cross(ab)-c.cross(ab))/cd.cross(ab)
-		l = (c.cross(cd)-a.cross(cd))/ab.cross(cd)
-		if u>=0 and u<= 1 and l >= 0 and l <= 1:
-			return (u * cd + c).get_p()	
-		else:
-			return (0,1000)
-	def draw_sun(self,canvas,height):
-		canvas.draw_image(self.sun,(250,250),(500,500),(self.dimensions[0]-self.dimensions[1]*height/2,self.dimensions[1]*height/2),(self.dimensions[1]*height,self.dimensions[1]*height))
-	def looping_clouds(self,canvas,frequency,height):
-		offset = self.lastFrameTime%(1/frequency)*frequency
-		dim = (2400,300)
-		cen = (1200,150)
-		width = math.floor(dim[0]/dim[1]*height*self.dimensions[1])
-		canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-		canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-		canvas.draw_image(self.clouds, cen, dim,(width/2+width*2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-	def draw_carol(self,canvas,x=0.5):
-		self.carol.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.carol.adim[1]*self.carol.scale/2))
-		self.bubbles.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.bubbles.adim[1]*self.bubbles.scale/2))
-	def draw_perl(self,canvas,x = 0.5):
-		self.perl.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.perl.adim[1]*self.perl.scale/2))
-	def draw_water_world(self,canvas,top = 0.25):
-    		canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[0],self.dimensions[1]*(1-top)))
-
-	def draw(self, canvas):
-		delta = time.time()-self.lastFrameTime
-		self.lastFrameTime = time.time()
-		print("fps: "+ str(1/delta))
-		
-		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
-		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
-		self.draw_water_world(canvas)
-		self.draw_carol(canvas,0.2)
-		self.draw_carol(canvas,0.7)
-		self.draw_perl(canvas,0.5)
-		self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
-		big = self.poly(40,2,0.2,0.3,0.05) #rgb(0,0,250)
-		middle = self.poly(40,3,-0.6,0.3,0.04) # rgb(0,0,150)
-		small = self.poly(40,4,1,0.3,0.03) #rgb(0,0,100)
-		middles = self.sub(40,middle,big,big)
-		smalls = self.sub(40,small,middle,big)
-		self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")
-		self.draw_wave_parts(canvas,smalls,"rgb(0,0,100)")
-		
-		self.looping_clouds(canvas,0.05,0.2)
-		self.draw_sun(canvas,0.3)
-		self.looping_clouds(canvas,0.03,0.25)
-=======
-from vect import Vector
+from user305_o32FtUyCKk_0 import Vector
 try:
     import simplegui
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
+
 class Background:
     def __init__(self,dimensions):
         self.lastFrameTime = time.time()
         self.dimensions = dimensions
-        self.carol1bubble = bubblesheet(Vector(200,680))
-        self.carol2bubble = bubblesheet(Vector(690,680))
-        self.pearl = Pearl(Vector(500,700))
         self.clouds = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/background_clouds.png")
         self.sun = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/sun.png")
         self.water_world = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
-        self.carol = SpriteSheet("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png",(5,1),time=800,scale=0.2,pos=Vector(100,200))
-
+        self.morebubble = simplegui.load_image("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/bubble2.png")
+        self.bubbles = SpriteSheet("https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/bubble2.png",(15,5),time=1250,scale=0.04,pos=Vector(659,200))
+        self.pearl = Pearl(Vector(695,700))
+        self.carol = Carol(Vector(227,700))
+        self.carolbubble = bubblesheet(Vector(227,680))
     def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
         path = [(0,self.dimensions[1])]
         offset = self.lastFrameTime%(1/frequency)*frequency
@@ -163,136 +25,54 @@ class Background:
             ang = x/pollycount*wavecount + offset
             ang *= 2*math.pi
             path.append((x/pollycount*self.dimensions[0],((math.sin(ang)*waveheight/2+height)*self.dimensions[1])))
-        path.append((self.dimensions[0],0))
-        path.append((0,0))
+        path.append((self.dimensions[0],self.dimensions[1]))
+        path.append((0,self.dimensions[1]))
         canvas.draw_polygon(path,1,color,color)
-    def draw_wave_parts(self,canvas,poly,color):
-        for path in poly:
-            if len(path) > 2:
-                canvas.draw_polygon(path,1,color,color)
-    def poly(self,pollycount,wavecount,frequency,height,waveheight):
-        path = []
-        offset = self.lastFrameTime%(1/frequency)*frequency
-        for x in range(pollycount+1):
-            ang = x/pollycount*wavecount + offset
-            ang *= 2*math.pi
-            path.append((x/pollycount*self.dimensions[0],((math.sin(ang)*waveheight/2+height)*self.dimensions[1])))
-        return path
-    def sub(self,pollycount,a,b,c):
-        paths = []
-        drawing = False
-        forward = []
-        backward = []
-        for x in range(pollycount+1):
-            if a[x][1] <= b[x][1] and a[x][1] <= c[x][1]:
-                if not drawing:
-                    drawing = True
-                    forward = []
-                    if x>0:
-                        bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-                        cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-                        if bint[1] < cint[1]:
-                            forward.append(bint)
-                        else:
-                            forward.append(cint)
-                        
-                    backward = []
-                forward.append(a[x])
-                if b[x][1]<c[x][1]:
-                    backward.append(b[x])
-                else:
-                    backward.append(c[x])
-            else:
-                if drawing:
-                    bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-                    cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-                    if bint[1] < cint[1]:
-                        forward.append(bint)
-                    else:
-                        forward.append(cint)
-
-                    drawing = False
-                    backward.reverse()
-                    paths.append(forward+backward)
-
-        if drawing: 
-            drawing = False
-            backward.reverse()
-            paths.append(forward+backward)
-        return paths
-
-    def intersection(self,a,b,c,d):
-        a = Vector(a[0],a[1])
-        b = Vector(b[0],b[1])
-        c = Vector(c[0],c[1])
-        d = Vector(d[0],d[1])
-        cd = d-c
-        ab = b-a
-        u = (a.cross(ab)-c.cross(ab))/cd.cross(ab)
-        l = (c.cross(cd)-a.cross(cd))/ab.cross(cd)
-        if u>=0 and u<= 1 and l >= 0 and l <= 1:
-            return (u * cd + c).get_p()	
-        else:
-            return (0,1000)
+    
+    def draw_bubbles(self,canvas,top = 0.25):
+        self.bubbles.draw(canvas,(self.dimensions[0]/4,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[1]*(1-top)/2,self.dimensions[1]*(1-top)))
     def draw_sun(self,canvas,height):
         canvas.draw_image(self.sun,(250,250),(500,500),(self.dimensions[0]-self.dimensions[1]*height/2,self.dimensions[1]*height/2),(self.dimensions[1]*height,self.dimensions[1]*height))
     def looping_clouds(self,canvas,frequency,height):
         offset = self.lastFrameTime%(1/frequency)*frequency
         dim = (2400,300)
         cen = (1200,150)
-        width = math.floor(dim[0]/dim[1]*height*self.dimensions[1])
+        width = dim[0]/dim[1]*height*self.dimensions[1]
         canvas.draw_image(self.clouds, cen, dim,(width/2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
         canvas.draw_image(self.clouds, cen, dim,(width/2+width-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-        canvas.draw_image(self.clouds, cen, dim,(width/2+width*2-offset*width,height*self.dimensions[1]/2),(width,height*self.dimensions[1]))
-    def draw_carol(self,canvas,x):
-        self.carol.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.carol.adim[1]*self.carol.scale/2))
-    def draw_water_world(self,canvas,top = 0.25):
-        canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[0],self.dimensions[1]*(1-top)))
-
+    def draw_water_world(self,canvas):
+            canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,2*self.dimensions[1]/3),(self.dimensions[0],2*self.dimensions[1]/3))
     def draw(self, canvas):
         delta = time.time()-self.lastFrameTime
         self.lastFrameTime = time.time()
-        print("fps: "+ str(1/delta))
-        
-        self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
-        self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")
+        self.looping_clouds(canvas,0.05,0.2)
+        self.looping_clouds(canvas,0.03,0.25)
+        self.background(canvas,20,4,1,0.3,0.03,"rgb(255,255,255)")
+        self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,204,255)")
+        self.background(canvas,20,2,0.2,0.3,0.05,"rgb(66,236,245)")
         self.draw_water_world(canvas)
         self.pearl.draw_canvas(canvas)
-        self.carol1bubble.draw_canvas(canvas)
-        self.carol2bubble.draw_canvas(canvas)
-        self.draw_carol(canvas,0.2)
-        self.draw_carol(canvas,0.7)
-        self.background(canvas,20,2,0.2,0.3,0.05,"rgb(0,0,250)")
-        big = self.poly(40,2,0.2,0.3,0.05) #rgb(0,0,250)
-        middle = self.poly(40,3,-0.6,0.3,0.04) # rgb(0,0,150)
-        small = self.poly(40,4,1,0.3,0.03) #rgb(0,0,100)
-        middles = self.sub(40,middle,big,big)
-        smalls = self.sub(40,small,middle,big)
-        self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")
-        self.draw_wave_parts(canvas,smalls,"rgb(0,0,100)")
-        
-        self.looping_clouds(canvas,0.05,0.2)
+        self.carol.draw_canvas(canvas)
+        self.carolbubble.draw_canvas(canvas)
         self.draw_sun(canvas,0.3)
-        self.looping_clouds(canvas,0.03,0.25)
-        
+        #self.draw_bubbles(canvas)
 
-class bubblesheet(object):
-    
+class Carol(object):
     def __init__(self,pos):
-        self.img_url = "https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png"
-        self.row = 5
-        self.column = 6
+        self.img_url = "https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/carol.png"
+        self.row = 1
+        self.column = 5
         self.img = simplegui.load_image(self.img_url)
         self.bdim = Vector(self.img.get_width(),self.img.get_height())
         self.adim = (self.bdim.x/self.column, self.bdim.y/self.row)
         self.center = Vector(self.adim[0]/2, self.adim[1]/2)
         self.pos = pos
-        self.ratio = 0.15
+        self.ratio = 0.2
         self.frame_index = [1,1]
         self.count = 0
     def draw_canvas(self,canvas):
         self.count += 1
-        if self.count % 1 == 0:
+        if self.count % 5 == 0:
             self.frame_index = self.next_frame()
         canvas.draw_image(self.img,(self.center.get_p()[0]*(2*self.frame_index[1]-1),self.center.get_p()[1]*(2*self.frame_index[0]-1)),self.adim,self.pos.get_p(),(self.adim[0]*self.ratio,self.adim[1]*self.ratio))
     def next_frame(self):
@@ -339,7 +119,35 @@ class Pearl(object):
         elif self.frame_index == [1,1]:
             self.order = True
         return self.frame_index
+class bubblesheet(object):
+
+    def __init__(self,pos):
+        self.img_url = "https://raw.githubusercontent.com/CougarTasker/twenty-four/master/proto/images/Bubble1.png"
+        self.row = 5
+        self.column = 6
+        self.img = simplegui.load_image(self.img_url)
+        self.bdim = Vector(self.img.get_width(),self.img.get_height())
+        self.adim = (self.bdim.x/self.column, self.bdim.y/self.row)
+        self.center = Vector(self.adim[0]/2, self.adim[1]/2)
+        self.pos = pos
+        self.ratio = 0.1
+        self.frame_index = [1,1]
+        self.count = 0
+    def draw_canvas(self,canvas):
+        self.count += 1
+        if self.count % 3 == 0:
+            self.frame_index = self.next_frame()
+        canvas.draw_image(self.img,(self.center.get_p()[0]*(2*self.frame_index[1]-1),self.center.get_p()[1]*(2*self.frame_index[0]-1)),self.adim,self.pos.get_p(),(self.adim[0]*self.ratio,self.adim[1]*self.ratio))
+    def next_frame(self):
+        self.frame_index[1] += 1
+        if self.frame_index[1] > self.column:
+            self.frame_index[0] += 1
+            self.frame_index[1] = 1
+        if self.frame_index[0] > self.row:
+            self.frame_index = [1,1]
+        return self.frame_index
     
+
 class SpriteSheet(object):
     """docstring for SpriteSheet"""
     def __init__(self, url,size=(1,1),pos = Vector(),framecount = -1,time = 1000,scale = 1):
@@ -491,15 +299,17 @@ class Bounds:
             return mx-val.size
         return val.pos.y
 
+
+# The canvas dimensions
 CANVAS_WIDTH = 1000
 CANVAS_HEIGHT = 750
 
 class Interaction:
-    def __init__(self,dimensions):#,pearl, carol):
+    def __init__(self,dimensions):
         self.lastFrameTime = time.time()
         self.dimensions = dimensions
         self.back = Background(dimensions)
-        self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
+        self.fish = School(30,(CANVAS_WIDTH,CANVAS_HEIGHT))
 
     def update(self):
         pass
@@ -509,16 +319,12 @@ class Interaction:
         self.back.draw(canvas)
         self.fish.draw(canvas,delta)
 
-
-
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT))
 
-
 # Create a frame and assign callbacks to event handlers
-frame = simplegui.create_frame("Game", CANVAS_WIDTH, CANVAS_HEIGHT,0)
+frame = simplegui.create_frame("Background", CANVAS_WIDTH, CANVAS_HEIGHT)
 
 frame.set_canvas_background("rgb(87,221,255)")
 frame.set_draw_handler(i.draw)
 # Start the frame animation
 frame.start()
->>>>>>> 53936c6c7302082362127f3baa998e7f03ae0dcf

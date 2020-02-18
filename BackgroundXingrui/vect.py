@@ -122,6 +122,10 @@ class Vector:
     # project the vector onto a given vector
     def get_proj(self, vec):
         unit = vec.get_normalized()
+<<<<<<< HEAD
+        return unit.multiply(self.dot(unit))
+=======
         return unit.multiply(self.dot(unit))
         
         
+>>>>>>> 53936c6c7302082362127f3baa998e7f03ae0dcf
