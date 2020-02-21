@@ -1,4 +1,4 @@
-import random, math
+import random, math, os
 from  vect import Vector
 try:
     import simplegui
@@ -112,7 +112,12 @@ right = True
 org = True
 hookRotate = 0
 kbd = Keyboard()
-rod = Rod(radius, "/Users/mihirgosai/Desktop/milestones/hook.png", "/Users/mihirgosai/Desktop/colouredBoth.png")
+
+addr = os.getcwd()
+rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
+
+
+
 inter = Interaction(rod, kbd)
 
 def draw(canvas):
