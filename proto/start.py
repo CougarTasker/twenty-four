@@ -3,6 +3,7 @@ from keyboard import Keyboard
 from player import Player
 from background import Background as Bg
 from fish import School
+#from rod import Rod
 
 import random,math,time
 try:
@@ -22,6 +23,7 @@ class Interaction:
       self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
       self.player = Player(dimensions)
       self.keyboard = kbd
+      #self.rod = Rod("/Users/mihirgosai/Desktop/milestones/hook.png", self.player)
 
    def update(self):
       if self.player.inBounds():
