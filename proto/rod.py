@@ -8,15 +8,15 @@ except ImportError:
 
 
 def polar(x,y,ang):
-    pX = radius * math.cos(ang * (math.pi / 180)) + x
-    pY = radius * math.sin(ang * (math.pi / 180)) + y
+    pX = 50 * math.cos(ang * (math.pi / 180)) + x
+    pY = 50 * math.sin(ang * (math.pi / 180)) + y
     return [round(pX),round(pY)]
 
 class Rod:
-    def __init__(self,radius,hook_url, rod_url):
+    def __init__(self,hook_url, rod_url):
             self.hook = simplegui.load_image(hook_url)
             self.rod = simplegui.load_image(rod_url)
-            self.radius = radius
+            self.radius = 50
             self.swing = True
             self.rodX = 300 #90 340
             self.rodY = 250	#140
