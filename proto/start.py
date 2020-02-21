@@ -22,7 +22,7 @@ class Interaction:
       self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
       self.player = Player(dimensions)
       self.keyboard = kbd
-      self.rod = Rod("/Users/mihirgosai/Desktop/milestones/hook.png", self.player)
+      #self.rod = Rod("/Users/mihirgosai/Desktop/milestones/hook.png", self.player)
 
    def update(self):
       if self.player.inBounds():
