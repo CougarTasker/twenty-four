@@ -15,10 +15,10 @@ class School:
 		for i in range(count):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
 		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
-	def draw(self,canvas,delta):
+	def draw(self,canvas,delta,playerx = 0):
 		for fish in self.fish:
 			fish.update(delta,self.fish)
-			fish.draw(canvas)
+			fish.draw(canvas,playerx,fish=self.fish)
 class Fsh:
 	def __init__(self,pos,bounds,imgl,imgr):
 		self.bounds = bounds
@@ -30,7 +30,7 @@ class Fsh:
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
-	def draw(self,canvas):
+	def draw(self,canvas,playerx =0,fish=[]):
 		#canvas.draw_circle(self.pos.get_p(),4,1,"red","red")
 		
 		a = self.vel.angle(V(0,1))
@@ -42,9 +42,9 @@ class Fsh:
 			a -= math.pi/2
 			img = self.imgl
 		
-		img.pos = self.pos
+		img.pos = self.pos+V(-playerx,0)
 		img.draw(canvas,rotation=a)
-		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
+		#canvas.draw_line(self.pos.get_p(),(self.pos+self.seperation(fish,self.per*3/5)* self.max_vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 	def allign(self,fish):
 		if len(fish) < 1:
@@ -105,7 +105,7 @@ class Fsh:
 	def update(self,delta,fish):
 		self.vel += self.allign(fish)* self.max_vel/50
 		self.vel += self.cohesion(fish)* self.max_vel/50
-		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
+		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/15
 		self.vel = self.vel.normalize() * self.max_vel
 		self.vel.rotate((random.random()*2-1)*delta*20)
 		self.pos += self.vel * delta
@@ -116,8 +116,16 @@ class Shark(Fsh):
 		addr = os.getcwd()
 		super().__init__(pos,bounds,SS("file:///"+addr+"/images/sharkleft.png",(5,1),time=600,scale=1),SS("file:///"+addr+"/images/sharkright.png",(5,1),time=600,scale=1))
 		self.size = 40
-		self.max_vel = 100
+		self.max_vel = 150
 		self.per = self.size*3
+	def update(self,delta,fish):
+		self.vel += self.allign(fish)* -self.max_vel/50
+		self.vel += self.cohesion(fish)* self.max_vel/20
+		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
+		self.vel = self.vel.normalize() * self.max_vel
+		self.vel.rotate((random.random()*2-1)*delta*20)
+		self.pos += self.vel * delta
+		self.pos = self.bounds.correct(self)
 		
 
 class Bounds:
