@@ -1,5 +1,6 @@
 import os
-from vect import Vector 
+from vect import Vector
+from rod import Rod
 try:
 	import simplegui
 except ImportError:
@@ -25,7 +26,7 @@ class Player:
       self.vel = Vector(0,0)
       self.lives = 3
       self.points = 0
-      #self.rod = Rod(xxx)
+      #self.rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
 
 
    def getPos(self):
