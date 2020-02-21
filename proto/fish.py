@@ -44,7 +44,7 @@ class Fsh:
 		
 		img.pos = self.pos+V(-playerx,0)
 		img.draw(canvas,rotation=a)
-		#canvas.draw_line(self.pos.get_p(),(self.pos+self.seperation(fish,self.per*3/5)* self.max_vel).get_p(),2,"blue")
+		#canvas.draw_line(self.pos.get_p(),(self.pos+self.bounds.repel(self)*self.max_vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 	def allign(self,fish):
 		if len(fish) < 1:
@@ -90,13 +90,26 @@ class Fsh:
 		distsum = V()
 		for boid in fish:
 			distance = (self.pos-boid.pos).length()
-			if  distance < minDistance and distance != 0:
-				if isinstance(boid,Shark):
-					fact = 10
-				else:
-					fact = 1
+			if distance < minDistance and distance != 0:
 				numClose += 1
-				distsum += (boid.pos-self.pos)*fact/distance**2
+				distsum += (boid.pos-self.pos)/distance**2
+
+		if numClose == 0:
+			return V()
+
+		return  (-distsum/numClose).normalize()
+	def sharkawarness(self,fish):
+		if len(fish) < 1:
+			return V()
+
+		distance = 0
+		numClose = 0
+		distsum = V()
+		for boid in fish:
+			distance = (self.pos-boid.pos).length()
+			if distance < self.per*2 and distance != 0 and isinstance(boid,Shark):
+				numClose += 1
+				distsum += (boid.pos-self.pos)/distance**2
 
 		if numClose == 0:
 			return V()
@@ -105,7 +118,9 @@ class Fsh:
 	def update(self,delta,fish):
 		self.vel += self.allign(fish)* self.max_vel/50
 		self.vel += self.cohesion(fish)* self.max_vel/50
-		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/15
+		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
+		self.vel += self.sharkawarness(fish) * self.max_vel*1.5
+		self.vel += self.bounds.repel(self)*self.max_vel * 0.4
 		self.vel = self.vel.normalize() * self.max_vel
 		self.vel.rotate((random.random()*2-1)*delta*20)
 		self.pos += self.vel * delta
@@ -114,7 +129,7 @@ class Fsh:
 class Shark(Fsh):
 	def __init__(self,pos,bounds):
 		addr = os.getcwd()
-		super().__init__(pos,bounds,SS("file:///"+addr+"/images/sharkleft.png",(5,1),time=600,scale=1),SS("file:///"+addr+"/images/sharkright.png",(5,1),time=600,scale=1))
+		super().__init__(pos,bounds,SS("file:///"+addr+"/images/Sharkleft.png",(5,1),time=600,scale=1),SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1))
 		self.size = 40
 		self.max_vel = 150
 		self.per = self.size*3
@@ -122,10 +137,28 @@ class Shark(Fsh):
 		self.vel += self.allign(fish)* -self.max_vel/50
 		self.vel += self.cohesion(fish)* self.max_vel/20
 		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
-		self.vel = self.vel.normalize() * self.max_vel
+		self.vel += self.bounds.repel(self)*self.max_vel * 0.4
+		self.vel = self.vel.normalize() * self.max_vel  
 		self.vel.rotate((random.random()*2-1)*delta*20)
 		self.pos += self.vel * delta
 		self.pos = self.bounds.correct(self)
+	def seperation(self,fish, minDistance):
+		if len(fish) < 1:
+			return V()
+
+		distance = 0
+		numClose = 0
+		distsum = V()
+		for boid in fish:
+			distance = (self.pos-boid.pos).length()
+			if distance < minDistance and distance != 0:
+				numClose += 1
+				distsum += (boid.pos-self.pos)/distance**2
+
+		if numClose == 0:
+			return V()
+
+		return  (-distsum/numClose).normalize()
 		
 
 class Bounds:
@@ -148,4 +181,20 @@ class Bounds:
 			val.vel.y *= -1
 			return mx-val.size
 		return val.pos.y
+	def repel(self,fish):
+		a = self.pos.y + fish.size
+		b = self.pos.y + self.dim.y - fish.size
+		r = (b-a)/2
+		p = -(fish.pos.y-r-a)/r
+		safe = 0.8
+		if abs(p) < safe:
+			p = 0
+		else:
+			if p >0:
+				p -=safe
+			else:
+				p +=safe
+			
+			p *= 1/(1-safe) 
+		return V(0,p)
 
