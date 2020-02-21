@@ -98,7 +98,7 @@ hookRotate = 0
 kbd = Keyboard()
 
 addr = os.getcwd()
-rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
+rod = Rod("file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
 
 
 
