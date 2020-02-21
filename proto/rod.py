@@ -1,9 +1,11 @@
 import random, math, os
 from  vect import Vector
+from keyboard import Keyboard 
 try:
     import simplegui
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+
 
 def polar(x,y,ang):
     pX = radius * math.cos(ang * (math.pi / 180)) + x
@@ -65,24 +67,6 @@ class Rod:
 
 
         print(ang)
-class Keyboard:
-    def __init__(self):
-        self.down = False
-        self.up = False
-
-    def keyDown(self, key):
-        # if key == simplegui.KEY_MAP['w']:
-        #     self.up = True
-        if key == simplegui.KEY_MAP['s']:
-            self.down = True
-            self.up = False
-
-    def keyUp(self, key):
-        # if key == simplegui.KEY_MAP['w']:
-        #     self.up = False
-        if key == simplegui.KEY_MAP['s']:
-            self.down = False
-            self.up = True
 
 class Interaction:
     def __init__(self, rod, keyboard):
