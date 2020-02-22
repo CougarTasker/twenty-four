@@ -54,7 +54,7 @@ class Interaction:
       self.back.draw(canvas)
       self.fish.draw(canvas,delta)
       self.player.draw(canvas)
-
+      self.rod.draw(canvas,self.player,org)
 
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
