@@ -26,10 +26,31 @@ class Rod:
 			self.direction = 0
 			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
 			self.rmax = windowheight-(position).y-50/2
+			self.courtFish = []
 	def down(self):
 		self.direction = 1
 	def up(self):
 		self.direction = -1
+	def catch_fish(self,school,player):
+		if self.direction != 0:
+			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos(player),10))
+		school.move_fish(self.hookpos(player),self.courtFish)
+	def mergerlist(self,a,b):
+		for item in b:
+			if not item in a:
+				a.append(item)
+		return a
+	def hookpos(self,player):
+		global ltime
+		delta = time.time()-ltime
+		ltime = time.time()
+
+		frequency = 3
+		ang = math.sin((ltime%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1) +90
+		position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
+		endPos = (polar(ang,self.r)+position)
+
+		return endPos+Vector(15,-5).rotate(ang)
 	def update_length(self,delta):
 		self.r += self.direction * delta * 80
 		if(self.r< self.rnorm):

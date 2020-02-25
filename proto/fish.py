@@ -26,6 +26,7 @@ class School:
 				out.append(boid)
 		return out
 	def move_fish(self,pos,fish):
+		print(fish)
 		for boid in fish:
 			boid.fixed = True
 			boid.pos = pos
