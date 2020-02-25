@@ -3,7 +3,7 @@ from keyboard import Keyboard
 from player import Player
 from background import Background as Bg
 from fish import School
-#from rod import Rod
+from rod import Rod
 
 import random,math,time
 try:
@@ -23,14 +23,25 @@ class Interaction:
       self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
       self.player = Player(dimensions)
       self.keyboard = kbd
-      #self.rod = Rod("/Users/mihirgosai/Desktop/milestones/hook.png", self.player)
+      self.rod = Rod(self.player)
 
    def update(self):
+      global org
       if self.player.inBounds():
          if self.keyboard.right:
             self.player.addVel(Vector(1,0))
          elif self.keyboard.left:
             self.player.addVel(Vector(-1,0))
+         elif self.keyboard.down:
+            self.rod.swing = False
+            self.rod.pos.add(Vector(0,4))
+            org = False
+         elif self.keyboard.up:
+            if self.rod.pos.y < 4:
+                self.rod.swing = True
+                org = True
+            if not org:
+                self.rod.pos.add(Vector(0,-5))
       else:
          self.player.set()
           
@@ -43,11 +54,11 @@ class Interaction:
       self.back.draw(canvas)
       self.fish.draw(canvas,delta)
       self.player.draw(canvas)
-
+      self.rod.draw(canvas,self.player,org)
 
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
-
+org = True
 
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("ball-wall", CANVAS_WIDTH, CANVAS_HEIGHT,0)
