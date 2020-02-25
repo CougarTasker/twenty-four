@@ -12,9 +12,11 @@ class School:
 		addr = os.getcwd()
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
-		for i in range(count):
+		for i in range(int(count/2)):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
 		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
+		for i in range(int(count/2)):
+			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
 	def draw(self,canvas,delta,playerx = 0):
 		for fish in self.fish:
 			fish.update(delta,self.fish)
@@ -26,7 +28,6 @@ class School:
 				out.append(boid)
 		return out
 	def move_fish(self,pos,fish):
-		print(fish)
 		for boid in fish:
 			boid.fixed = True
 			boid.pos = pos
