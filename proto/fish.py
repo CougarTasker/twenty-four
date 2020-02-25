@@ -8,27 +8,44 @@ from spritesheet import SpriteSheet as SS
 class School:
 	def __init__(self,count,dim):
 		self.fish = []
+		self.predator = []
 		random.seed(time.time()) 
 		addr = os.getcwd()
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
+		self.shark = Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)))
 		for i in range(count):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
-		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
+		self.predator.append(self.shark)
+		self.count = 1
+		self.dead_fish = []
 	def draw(self,canvas,delta,playerx = 0):
+		self.changemode()
+		self.iteration()
+		for shark in self.predator:
+			shark.update(delta,self.shark)
+			shark.draw(canvas,playerx,fish=self.predator)
 		for fish in self.fish:
 			fish.update(delta,self.fish)
-			fish.draw(canvas,playerx,fish=self.fish)#
-	def touching_fish(self,pos,r):
-		out = []
-		for boid in self.fish:
-			if (boid.pos- pos).length() < (boid.size+r):
-				out.append(boid)
-		return out
-	def move_fish(self,pos,fish):
-		for boid in fish:
-			boid.fixed = True
-			boid.pos = pos
+			fish.draw(canvas,playerx,fish=self.fish)
+		self.count += 1
+	def changemode(self):
+		if self.count % 4000 == 0:
+			self.shark.hungry_mode()
+		if len(self.dead_fish) == 10:
+			self.shark.full_mode()
+			self.dead_fish = []
+			self.count = 1
+	def iteration(self):
+			if self.shark.eat_fish:
+				for fish in self.fish:
+					distance = math.sqrt((self.shark.pos.get_p()[0]-fish.pos.get_p()[0])*(self.shark.pos.get_p()[0]-fish.pos.get_p()[0])+(self.shark.pos.get_p()[1]-fish.pos.get_p()[1])*(self.shark.pos.get_p()[1]-fish.pos.get_p()[1]))
+					if distance <= 10:
+						self.dead_fish.append(fish)
+				for fish in self.dead_fish:
+					self.fish.remove(fish)
+
+    			
 class Fsh:
 	def __init__(self,pos,bounds,imgl,imgr):
 		self.bounds = bounds
@@ -37,7 +54,6 @@ class Fsh:
 		self.imgl = imgl
 		self.size = 25
 		self.per = self.size*3
-		self.fixed = False
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
@@ -127,16 +143,15 @@ class Fsh:
 
 		return  (-distsum/numClose).normalize()
 	def update(self,delta,fish):
-		if not self.fixed:
-			self.vel += self.allign(fish)* self.max_vel/50
-			self.vel += self.cohesion(fish)* self.max_vel/50
-			self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
-			self.vel += self.sharkawarness(fish) * self.max_vel*1.5
-			self.vel += self.bounds.repel(self)*self.max_vel * 0.4
-			self.vel = self.vel.normalize() * self.max_vel
-			self.vel.rotate((random.random()*2-1)*delta*20)
-			self.pos += self.vel * delta
-			self.pos = self.bounds.correct(self)
+		self.vel += self.allign(fish)* self.max_vel/50
+		self.vel += self.cohesion(fish)* self.max_vel/50
+		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
+		self.vel += self.sharkawarness(fish) * self.max_vel*1.5
+		self.vel += self.bounds.repel(self)*self.max_vel * 0.4
+		self.vel = self.vel.normalize() * self.max_vel
+		self.vel.rotate((random.random()*2-1)*delta*20)
+		self.pos += self.vel * delta
+		self.pos = self.bounds.correct(self)
 
 class Shark(Fsh):
 	def __init__(self,pos,bounds):
@@ -145,6 +160,7 @@ class Shark(Fsh):
 		self.size = 40
 		self.max_vel = 150
 		self.per = self.size*3
+		self.eat_fish = False
 	def update(self,delta,fish):
 		self.vel += self.allign(fish)* -self.max_vel/50
 		self.vel += self.cohesion(fish)* self.max_vel/20
@@ -171,6 +187,11 @@ class Shark(Fsh):
 			return V()
 
 		return  (-distsum/numClose).normalize()
+	def hungry_mode(self):
+		self.eat_fish = True
+	def full_mode(self):
+		self.eat_fish = False
+    		
 		
 
 class Bounds:
