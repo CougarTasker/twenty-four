@@ -23,7 +23,7 @@ class Interaction:
       self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
       self.player = Player(dimensions)
       self.keyboard = kbd
-      self.rod = Rod(self.player)
+      self.rod = Rod(self.player,CANVAS_HEIGHT)
 
    def update(self):
       global org
@@ -33,9 +33,7 @@ class Interaction:
          elif self.keyboard.left:
             self.player.addVel(Vector(-1,0))
          elif self.keyboard.down:
-            self.rod.swing = False
-            self.rod.pos.add(Vector(0,4))
-            org = False
+            self.rod.down()
          elif self.keyboard.up:
             if self.rod.pos.y < 4:
                 self.rod.swing = True

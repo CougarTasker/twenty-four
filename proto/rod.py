@@ -1,60 +1,66 @@
-import random, math, os
+import random, math, os,time
 from  vect import Vector
 from keyboard import Keyboard 
 try:
-    import simplegui
+	import simplegui
 except ImportError:
-    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 
-def polar(x,y,ang):
-    pX = 40 * math.cos(ang * (math.pi / 180)) + x - 10
-    pY = 40 * math.sin(ang * (math.pi / 180)) + y - 10
-    return [round(pX),round(pY)]
+def polar(ang,r):
+	pX = r * math.cos(ang * (math.pi / 180))
+	pY = r * math.sin(ang * (math.pi / 180))
+	return Vector(round(pX),round(pY))
 
+ltime = time.time()
 class Rod:
-    def __init__(self,player):
-            addr = os.getcwd()
-            self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
-            #self.radius = 50
-            self.swing = True
-            self.playerPos = player.getPos()
-            self.pos = Vector()
+	def __init__(self,player,windowheight):
+			addr = os.getcwd()
+			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
+			#self.radius = 50
+			self.swing = True
+			self.playerPos = player.getPos()
+			self.pos = Vector()
+			self.rnorm = 150
+			self.r = self.rnorm
+			self.direction = 0
+			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
+			self.rmax = windowheight-(position).y-50/2
+	def down(self):
+		self.direction = 1
+	def up(self):
+		self.direction = -1
+	def update_length(self,delta):
+		self.r += self.direction * delta * 80
+		if(self.r< self.rnorm):
+			self.r = self.rnorm
+			self.direction = 0
+		if(self.r > self.rmax):
+			self.r = self.rmax
+			self.direction = -1
+	def draw(self,canvas,player,org):
+		global ltime
+		delta = time.time()-ltime
+		ltime = time.time()
 
-    def draw(self,canvas,player,org):
-        global ang, left, right
+		frequency = 3
+		self.update_length(delta)
+		ang = math.sin((ltime%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1) +90
+		position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
+		endPos = (polar(ang,self.r)+position)
+		canvas.draw_line(position.get_p(),endPos.get_p(), 1, 'Black')
 
-        if self.swing:
-            org = True
-            if ang == 180:
-                left = True
-                right = False
-            elif ang == 0:
-                left = False
-                right = True
+		source_centre = (self.hook.get_width() / 2, self.hook.get_height() / 2)
+		source_size = (self.hook.get_width(), self.hook.get_height())
+		dest_size = (50,50)
 
-            if left:
-                ang -= 2
-            elif right:
-                ang += 2
+		canvas.draw_image(self.hook,
+						source_centre,
+						source_size,
+						(endPos+Vector(15,-5).rotate(ang)).get_p(),
+						dest_size,(ang-90)*math.pi/180)
 
-        position = Vector(player.getPos().x+100,player.getPos().y-10) + self.pos
-        canvas.draw_line([player.getPos().x + 65, player.getPos().y- 70],polar(position.x, position.y, ang), 1, 'Black')
 
-        source_centre = (self.hook.get_width() / 2, self.hook.get_height() / 2)
-        source_size = (self.hook.get_width(), self.hook.get_height())
-        dest_size = (50,50)
-        position = Vector(player.getPos().x+105,player.getPos().y+12) + self.pos
-
-        canvas.draw_image(self.hook,
-                        source_centre,
-                        source_size,
-                        polar(position.x, position.y, ang),
-                        dest_size)
-
-ang = 0
-left = False
-right = True
 #org = True
 #hookRotate = 0
 #kbd = Keyboard()
@@ -67,8 +73,8 @@ right = True
 #inter = Interaction(rod, kbd)
 
 #def draw(canvas):
-    #inter.update()
-    #rod.draw_handler(canvas)
+	#inter.update()
+	#rod.draw_handler(canvas)
 
 #frame = simplegui.create_frame('Testing', 1980, 1080)
 #frame.set_draw_handler(draw)
