@@ -30,9 +30,11 @@ class Interaction:
       self.rod.catch_fish(self.fish,self.player)
       if self.player.inBounds():
          if self.keyboard.right:
-            self.player.addVel(Vector(1,0))
+             if self.rod.direction == 0:
+                self.player.addVel(Vector(1,0))
          elif self.keyboard.left:
-            self.player.addVel(Vector(-1,0))
+             if self.rod.direction == 0:
+                self.player.addVel(Vector(-1,0))
          elif self.keyboard.down:
             self.rod.down()
          elif self.keyboard.up:
