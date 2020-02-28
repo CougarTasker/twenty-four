@@ -43,6 +43,10 @@ class Fsh:
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
+
+	def reset(self):
+		self.bounds.random_start(self)
+		self.fixed = False
 	def draw(self,canvas,playerx =0,fish=[]):
 		#canvas.draw_circle(self.pos.get_p(),4,1,"red","red")
 		
@@ -179,6 +183,13 @@ class Bounds:
 	def __init__(self,pos,dim):
 		self.pos = pos
 		self.dim = dim
+	def random_start(self,fish):
+		if random.random() > 0.5:
+			fish.pos = self.pos + V(self.dim.x+fish.size,0)
+			fish.pos.y = self.dim.y * random.random()
+		else:
+			fish.pos = self.pos - V(fish.size,0)
+			fish.pos.y = self.dim.y * random.random()
 	def correct(self,fish):
 		return V(self.cord(self.pos.x,self.pos.x+self.dim.x,fish),self.cora(self.pos.y,self.pos.y+self.dim.y,fish))
 	def cord(self,mn,mx,val):

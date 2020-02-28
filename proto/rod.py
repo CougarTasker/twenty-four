@@ -34,7 +34,13 @@ class Rod:
 	def catch_fish(self,school,player):
 		if self.direction != 0:
 			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos(player),10))
+		else:
+			for fish in self.courtFish:
+				fish.reset()
+			self.courtFish = []
 		school.move_fish(self.hookpos(player),self.courtFish)
+		if self.direction == 1 and len(self.courtFish)>0:
+			self.up()
 	def mergerlist(self,a,b):
 		for item in b:
 			if not item in a:
