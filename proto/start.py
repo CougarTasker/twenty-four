@@ -36,9 +36,8 @@ class Interaction:
 			self.gametime -= 1
 
 	def update(self):
-		global org
 		self.time()
-		self.rod.catch_fish(self.fish,self.player)
+		self.rod.catch_fish(self.fish)
 		if self.player.inBounds():
 			if self.keyboard.right:
 				if self.rod.direction == 0:
@@ -48,12 +47,6 @@ class Interaction:
 					self.player.addVel(Vector(-1,0))
 			elif self.keyboard.down:
 				self.rod.down()
-			elif self.keyboard.up:
-				if self.rod.pos.y < 4:
-					self.rod.swing = True
-					org = True
-				if not org:
-					self.rod.pos.add(Vector(0,-5))
 		else:
 			self.player.set()
 		self.player.loseheart(self.rod)
@@ -68,7 +61,7 @@ class Interaction:
 		self.back.draw(canvas)
 		self.fish.draw(canvas,delta)
 		self.player.draw(canvas)
-		self.rod.draw(canvas,self.player,org)
+		self.rod.draw(canvas)
 		self.hearts.update(canvas, self.player)
 		canvas.draw_text('Score:',(15,50),30,'rgb(237,28,0)')
 		canvas.draw_text(str(self.player.points),(15,80),30,'rgb(237,28,0)')
@@ -78,7 +71,6 @@ class Interaction:
 		canvas.draw_text(str(self.overscore),(CANVAS_WIDTH/2,50),20,'rgb(149,26,237)','serif')
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
-org = True
 
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("ball-wall", CANVAS_WIDTH, CANVAS_HEIGHT,0)

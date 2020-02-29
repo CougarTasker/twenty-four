@@ -20,7 +20,7 @@ class Rod:
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
 			#self.radius = 50
 			self.swing = True
-			self.playerPos = player.getPos()
+			self.player = player
 			self.pos = Vector()
 			self.rnorm = 150
 			self.r = self.rnorm
@@ -37,9 +37,9 @@ class Rod:
 	def updatecatch(self):
 		self.catch = []
 		self.hasshark = False
-	def catch_fish(self,school,player):
+	def catch_fish(self,school):
 		if self.direction != 0:
-			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos(player),10))
+			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos()[0],10))
 		else:
 			for fish in self.courtFish:
 				if type(fish) == Shark:
@@ -49,7 +49,7 @@ class Rod:
 				fish.reset()
 			self.courtFish = []
 		
-		school.move_fish(self.hookpos(player),self.courtFish)
+		school.move_fish(self.hookpos()[0],self.courtFish)
 		if self.direction == 1 and len(self.courtFish)>0:
 			self.up()
 	def mergerlist(self,a,b):
@@ -57,17 +57,16 @@ class Rod:
 			if not item in a:
 				a.append(item)
 		return a
-	def hookpos(self,player):
-		global ltime
-		delta = time.time()-ltime
-		ltime = time.time()
-
+	def hookpos(self):
 		frequency = 3
-		ang = math.sin((ltime%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1) +90
-		position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
-		endPos = (polar(ang,self.r)+position)
+		ang = math.sin((time.time()%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1)+90
+		endPos = (polar(ang,self.r)+self.rodpos())
 
-		return endPos+Vector(15,-5).rotate(ang)
+		return [endPos+Vector(15,-5).rotate(ang),endPos,(ang-90)*math.pi/180]
+	def rodpos(self):
+		return Vector(self.player.getPos().x+65,self.player.getPos().y-70) + self.pos
+	def hookvel(self):
+		pass
 	def update_length(self,delta):
 		self.r += self.direction * delta * 80
 		if(self.r< self.rnorm):
@@ -76,17 +75,14 @@ class Rod:
 		if(self.r > self.rmax):
 			self.r = self.rmax
 			self.direction = -1
-	def draw(self,canvas,player,org):
+	def draw(self,canvas):
 		global ltime
 		delta = time.time()-ltime
 		ltime = time.time()
-
-		frequency = 3
 		self.update_length(delta)
-		ang = math.sin((ltime%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1) +90
-		position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
-		endPos = (polar(ang,self.r)+position)
-		canvas.draw_line(position.get_p(),endPos.get_p(), 1, 'Black')
+
+		hookpos = self.hookpos()
+		canvas.draw_line(self.rodpos().get_p(),hookpos[1].get_p(), 1, 'Black')
 
 		source_centre = (self.hook.get_width() / 2, self.hook.get_height() / 2)
 		source_size = (self.hook.get_width(), self.hook.get_height())
@@ -95,8 +91,8 @@ class Rod:
 		canvas.draw_image(self.hook,
 						source_centre,
 						source_size,
-						(endPos+Vector(15,-5).rotate(ang)).get_p(),
-						dest_size,(ang-90)*math.pi/180)
+						hookpos[0].get_p(),
+						dest_size,hookpos[2])
 
 
 #org = True
