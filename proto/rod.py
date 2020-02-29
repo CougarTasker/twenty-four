@@ -1,6 +1,7 @@
 import random, math, os,time
 from  vect import Vector
 from keyboard import Keyboard 
+from fish import Shark
 try:
 	import simplegui
 except ImportError:
@@ -27,17 +28,27 @@ class Rod:
 			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
 			self.rmax = windowheight-(position).y-50/2
 			self.courtFish = []
+			self.catch = []
+			self.hasshark = False
 	def down(self):
 		self.direction = 1
 	def up(self):
 		self.direction = -1
+	def updatecatch(self):
+		self.catch = []
+		self.hasshark = False
 	def catch_fish(self,school,player):
 		if self.direction != 0:
 			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos(player),10))
 		else:
 			for fish in self.courtFish:
+				if type(fish) == Shark:
+					self.hasshark = True
+			self.catch = self.courtFish
+			for fish in self.courtFish:
 				fish.reset()
 			self.courtFish = []
+		
 		school.move_fish(self.hookpos(player),self.courtFish)
 		if self.direction == 1 and len(self.courtFish)>0:
 			self.up()
