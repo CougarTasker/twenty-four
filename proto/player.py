@@ -1,6 +1,6 @@
 import os
 from vect import Vector
-from rod import Rod
+#from rod import Rod
 try:
 	import simplegui
 except ImportError:
