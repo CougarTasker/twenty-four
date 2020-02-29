@@ -4,6 +4,7 @@ from player import Player
 from background import Background as Bg
 from fish import School
 from rod import Rod
+from hearts import Hearts
 
 import random,math,time
 try:
@@ -22,8 +23,10 @@ class Interaction:
       self.back = Bg(dimensions)
       self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
       self.player = Player(dimensions)
+      self.hearts = Hearts(dimensions)
       self.keyboard = kbd
       self.rod = Rod(self.player,CANVAS_HEIGHT)
+      
 
    def update(self):
       global org
@@ -49,13 +52,13 @@ class Interaction:
    def draw(self, canvas):
       self.update()
       self.player.update()
-      
       delta = time.time()-self.lastFrameTime
       self.lastFrameTime = time.time()
       self.back.draw(canvas)
       self.fish.draw(canvas,delta)
       self.player.draw(canvas)
       self.rod.draw(canvas,self.player,org)
+      self.hearts.update(canvas, self.player)
 
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)

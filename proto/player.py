@@ -1,6 +1,7 @@
+
 import os
 from vect import Vector
-#from rod import Rod
+from rod import Rod
 try:
 	import simplegui
 except ImportError:
@@ -11,8 +12,8 @@ class Player:
    def __init__(self, dimensions):
       self.canvas_dim = dimensions
       addr = os.getcwd()
+      
       ##image info + dimensions (constants)
-
       self.img = simplegui.load_image("file:///"+addr+"/images/colouredBoth.png")
       self.dim = (4096, 4096)
 
