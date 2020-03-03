@@ -29,12 +29,18 @@ class Interaction:
 		self.gametime = 120
 		self.count = 1
 		self.overscore = 100 #* numberoflevel
+		self.playing = True
       
 	def time(self):
 		self.count += 1
 		if self.count % 33 == 0:
 			self.gametime -= 1
-
+	def play(self):
+		self.playing = True 
+	def pause(self):
+		self.playing = False
+	def alt(self):
+		self.playing = not self.playing
 	def update(self):
 		self.time()
 		self.rod.catch_fish(self.fish)
@@ -54,21 +60,28 @@ class Interaction:
 		self.rod.updatecatch()
 		
 	def draw(self, canvas):
-		self.update()
-		self.player.update()
-		delta = time.time()-self.lastFrameTime
-		self.lastFrameTime = time.time()
-		self.back.draw(canvas)
-		self.fish.draw(canvas,delta)
-		self.player.draw(canvas)
-		self.rod.draw(canvas)
-		self.hearts.update(canvas, self.player)
-		canvas.draw_text('Score:',(15,50),30,'rgb(237,28,0)')
-		canvas.draw_text(str(self.player.points),(15,80),30,'rgb(237,28,0)')
-		canvas.draw_text('Time:',(90,50),30,'rgb(40,237,0)','serif')
-		canvas.draw_text(str(self.gametime),(90,80),30,'rgb(40,237,0)','serif')
-		canvas.draw_text('Goal Score:',(CANVAS_WIDTH/2,30),20,'rgb(149,26,237)','serif')
-		canvas.draw_text(str(self.overscore),(CANVAS_WIDTH/2,50),20,'rgb(149,26,237)','serif')
+		if kbd.p:
+			self.alt()
+			kbd.p = False
+		if self.playing:
+			self.update()
+			self.player.update()
+			delta = time.time()-self.lastFrameTime
+			self.lastFrameTime = time.time()
+			self.back.draw(canvas)
+			self.fish.draw(canvas,delta)
+			self.player.draw(canvas)
+			self.rod.draw(canvas)
+			self.hearts.update(canvas, self.player)
+			canvas.draw_text('Score:',(15,50),30,'rgb(237,28,0)')
+			canvas.draw_text(str(self.player.points),(15,80),30,'rgb(237,28,0)')
+			canvas.draw_text('Time:',(90,50),30,'rgb(40,237,0)','serif')
+			canvas.draw_text(str(self.gametime),(90,80),30,'rgb(40,237,0)','serif')
+			canvas.draw_text('Goal Score:',(CANVAS_WIDTH/2,30),20,'rgb(149,26,237)','serif')
+			canvas.draw_text(str(self.overscore),(CANVAS_WIDTH/2,50),20,'rgb(149,26,237)','serif')
+		else:
+			self.player.draw(canvas)
+			self.back.draw(canvas)
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
 
