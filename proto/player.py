@@ -84,7 +84,7 @@ class Player:
       
         
 	def draw(self,canvas):
-		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim) 
+		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
                         
 ##def draw(canvas):
 ##    play = Player((900,400))

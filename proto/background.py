@@ -9,6 +9,7 @@ from spritesheet import SpriteSheet as SS
 class Background:
 	def __init__(self,dimensions):
 		addr = os.getcwd()
+		self.playing = True
 		self.lastFrameTime = time.time()
 		self.dimensions = dimensions
 		self.clouds = simplegui.load_image("file:///"+addr+"/images/background_clouds.png")
@@ -113,10 +114,19 @@ class Background:
 		self.perl.draw(canvas,center=(x*self.dimensions[0],self.dimensions[1]-self.perl.adim[1]*self.perl.scale/2))
 	def draw_water_world(self,canvas,top = 0.25):
     		canvas.draw_image(self.water_world,(997/2,647/2),(997,647),(self.dimensions[0]/2,(top+(1-top)/2)*self.dimensions[1]),(self.dimensions[0],self.dimensions[1]*(1-top)))
+	def play(self):
+		self.playing = True 
+	def pause(self):
+		self.playing = False
+	def alt(self):
+		self.playing = not self.playing
 
 	def draw(self, canvas):
-		delta = time.time()-self.lastFrameTime
-		self.lastFrameTime = time.time()
+		if not self.playing:
+			delta = 0
+		else:
+			delta = time.time()-self.lastFrameTime
+			self.lastFrameTime = time.time()
 		#print("fps: "+ str(1/delta))
 		self.background(canvas,20,4,1,0.3,0.03,"rgb(0,0,100)")
 		self.background(canvas,20,3,-0.6,0.3,0.04,"rgb(0,0,150)")

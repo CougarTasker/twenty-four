@@ -8,8 +8,10 @@ from spritesheet import SpriteSheet as SS
 class School:
 	def __init__(self,count,dim):
 		self.fish = []
+		self.lastFrameTime = time.time()
 		random.seed(time.time()) 
 		addr = os.getcwd()
+		self.playing = True
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
 		for i in range(int(count/2)):
@@ -17,16 +19,26 @@ class School:
 		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
-	def draw(self,canvas,delta,playerx = 0):
+	def draw(self,canvas,playerx = 0):
+		delta = time.time()-self.lastFrameTime
+		self.lastFrameTime = time.time()
 		for fish in self.fish:
-			fish.update(delta,self.fish)
-			fish.draw(canvas,playerx,fish=self.fish)#
+			if self.playing:
+				fish.update(delta,self.fish)
+			fish.draw(canvas,playerx,fish=self.fish)
+
 	def touching_fish(self,pos,r):
 		out = []
 		for boid in self.fish:
 			if (boid.pos- pos).length() < (boid.size+r):
 				out.append(boid)
 		return out
+	def play(self):
+		self.playing = True 
+	def pause(self):
+		self.playing = False
+	def alt(self):
+		self.playing = not self.playing
 	def move_fish(self,pos,fish,vel = None):
 		for boid in fish:
 			boid.fixed = True
