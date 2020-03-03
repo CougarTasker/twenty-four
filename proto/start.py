@@ -37,14 +37,17 @@ class Interaction:
 	def play(self):
 		self.playing = True 
 		self.back.play()
+		self.rod.play()
 		self.back.play()
 	def pause(self):
 		self.playing = False
 		self.back.pause()
 		self.fish.pause()
+		self.rod.pause()
 	def alt(self):
 		self.playing = not self.playing
 		self.back.alt()
+		self.rod.alt()
 		self.fish.alt()
 	def update(self):
 		self.time()
@@ -70,11 +73,12 @@ class Interaction:
 			self.keyboard.p = False
 		self.back.draw(canvas)
 		self.fish.draw(canvas)
+		self.player.draw(canvas)
+		self.rod.draw(canvas)
+
 		if self.playing:
 			self.update()
 			self.player.update()
-			self.player.draw(canvas)
-			self.rod.draw(canvas)
 			self.hearts.update(canvas, self.player)
 			canvas.draw_text('Score:',(15,50),30,'rgb(237,28,0)')
 			canvas.draw_text(str(self.player.points),(15,80),30,'rgb(237,28,0)')

@@ -13,11 +13,11 @@ def polar(ang,r):
 	pY = r * math.sin(ang * (math.pi / 180))
 	return Vector(round(pX),round(pY))
 
-ltime = time.time()
 class Rod:
 	def __init__(self,player,windowheight):
 			addr = os.getcwd()
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
+			self.playing = True
 			#self.radius = 50
 			self.swing = True
 			self.player = player
@@ -29,6 +29,7 @@ class Rod:
 			self.rmax = windowheight-(position).y-50/2
 			self.courtFish = []
 			self.catch = []
+			self.lastFrameTime = time.time()
 			self.hasshark = False
 	def down(self):
 		if self.direction == 0:
@@ -58,9 +59,16 @@ class Rod:
 			if not item in a:
 				a.append(item)
 		return a
+	def play(self):
+		self.playing = True 
+	def pause(self):
+		self.playing = False
+	def alt(self):
+		self.playing = not self.playing
 	def hookpos(self):
 		frequency = 3
-		ang = math.sin((time.time()%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1)+90
+
+		ang = math.sin(((self.lastFrameTime)%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1)+90
 		endPos = (polar(ang,self.r)+self.rodpos())
 
 		return [endPos+Vector(15,-5).rotate(ang),endPos,(ang-90)*math.pi/180]
@@ -78,9 +86,11 @@ class Rod:
 			self.r = self.rmax
 			self.direction = -1
 	def draw(self,canvas):
-		global ltime
-		delta = time.time()-ltime
-		ltime = time.time()
+		if self.playing:
+			delta = time.time()-self.lastFrameTime
+			self.lastFrameTime = time.time()
+		else:
+			delta = 0
 		self.update_length(delta)
 
 		hookpos = self.hookpos()
