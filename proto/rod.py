@@ -31,7 +31,8 @@ class Rod:
 			self.catch = []
 			self.hasshark = False
 	def down(self):
-		self.direction = 1
+		if self.direction == 0:
+			self.direction = 1
 	def up(self):
 		self.direction = -1
 	def updatecatch(self):
@@ -49,7 +50,7 @@ class Rod:
 				fish.reset()
 			self.courtFish = []
 		
-		school.move_fish(self.hookpos()[0],self.courtFish)
+		school.move_fish(self.hookpos()[0],self.courtFish,self.hookvel())
 		if self.direction == 1 and len(self.courtFish)>0:
 			self.up()
 	def mergerlist(self,a,b):
@@ -66,7 +67,8 @@ class Rod:
 	def rodpos(self):
 		return Vector(self.player.getPos().x+65,self.player.getPos().y-70) + self.pos
 	def hookvel(self):
-		pass
+		direction = self.hookpos()[0] - self.rodpos()
+		return self.direction * direction.normalize()
 	def update_length(self,delta):
 		self.r += self.direction * delta * 80
 		if(self.r< self.rnorm):

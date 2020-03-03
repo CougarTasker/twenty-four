@@ -27,10 +27,12 @@ class School:
 			if (boid.pos- pos).length() < (boid.size+r):
 				out.append(boid)
 		return out
-	def move_fish(self,pos,fish):
+	def move_fish(self,pos,fish,vel = None):
 		for boid in fish:
 			boid.fixed = True
 			boid.pos = pos
+			if not vel is None:
+				boid.vel = vel
 class Fsh:
 	def __init__(self,pos,bounds,imgl,imgr):
 		self.bounds = bounds
@@ -61,7 +63,7 @@ class Fsh:
 		
 		img.pos = self.pos+V(-playerx,0)
 		img.draw(canvas,rotation=a)
-		#canvas.draw_line(self.pos.get_p(),(self.pos+self.bounds.repel(self)*self.max_vel).get_p(),2,"blue")
+		canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 	def allign(self,fish):
 		if len(fish) < 1:
@@ -152,14 +154,15 @@ class Shark(Fsh):
 		self.max_vel = 150
 		self.per = self.size*3
 	def update(self,delta,fish):
-		self.vel += self.allign(fish)* -self.max_vel/50
-		self.vel += self.cohesion(fish)* self.max_vel/20
-		self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
-		self.vel += self.bounds.repel(self)*self.max_vel * 0.4
-		self.vel = self.vel.normalize() * self.max_vel  
-		self.vel.rotate((random.random()*2-1)*delta*20)
-		self.pos += self.vel * delta
-		self.pos = self.bounds.correct(self)
+		if not self.fixed:
+			self.vel += self.allign(fish)* -self.max_vel/50
+			self.vel += self.cohesion(fish)* self.max_vel/20
+			self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
+			self.vel += self.bounds.repel(self)*self.max_vel * 0.4
+			self.vel = self.vel.normalize() * self.max_vel  
+			self.vel.rotate((random.random()*2-1)*delta*20)
+			self.pos += self.vel * delta
+			self.pos = self.bounds.correct(self)
 	def seperation(self,fish, minDistance):
 		if len(fish) < 1:
 			return V()
