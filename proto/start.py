@@ -14,8 +14,7 @@ except ImportError:
 
 # The canvas dimensions
 CANVAS_WIDTH = 1000
-CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
-
+CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16) 
 class Interaction:
     def __init__(self,dimensions, kbd):
         self.lastFrameTime = time.time()
@@ -31,6 +30,7 @@ class Interaction:
         self.overscore = 100 #* numberoflevel
         self.playing = True
         self.gameoover = False
+        self.dest_centre = (-1000,-1000)
     def time(self):
         self.count += 1
         if self.count % 33 == 0:
@@ -69,27 +69,44 @@ class Interaction:
         self.rod.updatecatch()
         
     def gameover(self,canvas):
-        addr = os.getcwd()
-        img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
-        source_centre = (img.get_width() / 2, img.get_height() / 2)
-        source_size = (img.get_width(), img.get_height())
-        dest_size = (500,500)
-        dest_centre = (500,300)
-        canvas.draw_image(img,
-                source_centre,
-                source_size,
-                dest_centre,
-                dest_size)
+        #global imggameover
+        #addr = os.getcwd()
+        #img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
+        #img = [imggameover]
+        #source_centre = (img.get_width() / 2, img.get_height() / 2)
+        #source_size = (img.get_width(), img.get_height())
+        #dest_size = (500,500)
+        self.dest_centre = (500,300)
         
     def draw(self, canvas):
         if self.keyboard.p and not self.gameoover:
             self.alt()
             self.keyboard.p = False
-        
+        if self.keyboard.r and self.gameoover:
+            self.gametime = 120
+            self.dest_centre = (-1000,-1000)
+            self.count = 1
+            self.player.lives = 3
+            self.player.points = 0
+            self.play()
+            self.fish.playing = True
+            self.gameoover = False
+        addr = os.getcwd()
+        img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
+        #img = [imggameover]
+        source_centre = (img.get_width() / 2, img.get_height() / 2)
+        source_size = (img.get_width(), img.get_height())
+        dest_size = (500,500)
+
         self.back.draw(canvas)
         self.fish.draw(canvas)
         self.player.draw(canvas)
         self.rod.draw(canvas)
+        canvas.draw_image(img,
+                source_centre,
+                source_size,
+                self.dest_centre,
+                dest_size)
         if self.gameoover:
             self.gameover(canvas)
         if self.playing:
