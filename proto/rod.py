@@ -1,7 +1,6 @@
 import random, math, os,time
 from  vect import Vector
 from keyboard import Keyboard 
-from fish import Shark
 try:
 	import simplegui
 except ImportError:
@@ -14,10 +13,11 @@ def polar(ang,r):
 	return Vector(round(pX),round(pY))
 
 class Rod:
-	def __init__(self,player,windowheight):
+	def __init__(self,player,windowheight,time,catch):
+			self.catch = catch
+			self.time = time
 			addr = os.getcwd()
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
-			self.playing = True
 			#self.radius = 50
 			self.swing = True
 			self.player = player
@@ -28,25 +28,17 @@ class Rod:
 			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
 			self.rmax = windowheight-(position).y-50/2
 			self.courtFish = []
-			self.catch = []
-			self.lastFrameTime = time.time()
-			self.hasshark = False
+			self.lastFrameTime = self.time.time()
 	def down(self):
 		if self.direction == 0:
 			self.direction = 1
 	def up(self):
 		self.direction = -1
-	def updatecatch(self):
-		self.catch = []
-		self.hasshark = False
 	def catch_fish(self,school):
 		if self.direction != 0:
 			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos()[0],10))
 		else:
-			for fish in self.courtFish:
-				if type(fish) == Shark:
-					self.hasshark = True
-			self.catch = self.courtFish
+			self.catch.catch(self.courtFish)
 			for fish in self.courtFish:
 				fish.reset()
 			self.courtFish = []
@@ -59,12 +51,6 @@ class Rod:
 			if not item in a:
 				a.append(item)
 		return a
-	def play(self):
-		self.playing = True 
-	def pause(self):
-		self.playing = False
-	def alt(self):
-		self.playing = not self.playing
 	def hookpos(self):
 		frequency = 3
 
@@ -86,11 +72,8 @@ class Rod:
 			self.r = self.rmax
 			self.direction = -1
 	def draw(self,canvas):
-		if self.playing:
-			delta = time.time()-self.lastFrameTime
-			self.lastFrameTime = time.time()
-		else:
-			delta = 0
+		delta = self.time.time()-self.lastFrameTime
+		self.lastFrameTime = self.time.time()
 		self.update_length(delta)
 
 		hookpos = self.hookpos()

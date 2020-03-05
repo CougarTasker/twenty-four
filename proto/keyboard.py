@@ -6,11 +6,13 @@ except ImportError:
 class Keyboard:
 #class used for recognising keyboard events, these events are handled in sub.py
     def __init__(self):
+        self.space  = False
         self.right = False
         self.left = False
         self.down= False 
         self.up = False
         self.p = False
+        self.r= False
     def keyDown(self, key):
         #print(key)
         if key == simplegui.KEY_MAP['right'] or key == simplegui.KEY_MAP['d']:
@@ -23,6 +25,10 @@ class Keyboard:
             self.up = True
         if key == simplegui.KEY_MAP['p']:
             self.p = True
+        if key == simplegui.KEY_MAP['r']:
+            self.r = True
+        if key == simplegui.KEY_MAP['space']:
+            self.space = True
   
     def keyUp(self, key):
         if key == simplegui.KEY_MAP['right']or key == simplegui.KEY_MAP['d']:
@@ -31,6 +37,10 @@ class Keyboard:
             self.left = False
         if key == simplegui.KEY_MAP['down'] or key == simplegui.KEY_MAP['s']:
             self.down = False
-        if key == simplegui.KEY_MAP['p'] :
+        if key == simplegui.KEY_MAP['p']:
             self.p = False
+        if key == simplegui.KEY_MAP['r']:
+            self.r = False
+        if key == simplegui.KEY_MAP['space']:
+            self.space = False
 

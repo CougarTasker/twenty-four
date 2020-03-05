@@ -10,7 +10,8 @@ except ImportError:
 
 
 class Player:
-	def __init__(self, dimensions):
+	def __init__(self, dimensions,time):
+		self.time = time
 		self.canvas_dim = dimensions
 		addr = os.getcwd()
 		##image info + dimensions (constants)
@@ -25,10 +26,6 @@ class Player:
       ##player position and other attributes (variables)
 		self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+self.y_offset)
 		self.vel = Vector(0,0)
-		self.lives = 3
-		self.points = 0
-		self.fishscore = 5
-		self.overpoint = 100 #* numberoflevel
       #self.rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
 
 
@@ -62,20 +59,6 @@ class Player:
 	def inBounds(self):
 		return ((0 <= self.pos.get_p()[0]) and (self.canvas_dim[0] >= self.pos.get_p()[0]))
 
-	def loseheart(self,rod):
-		hasshark = False
-		if len(rod.catch) != 0:
-			for fish in rod.catch:
-				if type(fish)==Shark:
-					hasshark = True
-		if hasshark:
-			self.lives -= 1
-	def calculatescore(self,rod):
-		if len(rod.catch) != 0:
-			if rod.hasshark:
-				self.points += (len(rod.catch)-1) * self.fishscore
-			else:
-				self.points += len(rod.catch) * self.fishscore
 	def set(self):
 		if (0 > self.pos.get_p()[0]):
 			self.pos = Vector(1,self.draw_dim[1]/2+self.y_offset)

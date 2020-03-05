@@ -6,24 +6,24 @@ except ImportError:
 from vect import Vector as V
 from spritesheet import SpriteSheet as SS
 class School:
-	def __init__(self,count,dim):
+	def __init__(self,count,dim,time):
 		self.fish = []
-		self.lastFrameTime = time.time()
+		self.time = time
+		self.lastFrameTime = self.time.time()
 		random.seed(time.time()) 
 		addr = os.getcwd()
-		self.playing = True
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2)
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
-		self.fish.append(Shark(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675))))
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],random.random()*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
 	def draw(self,canvas,playerx = 0):
-		delta = time.time()-self.lastFrameTime
-		self.lastFrameTime = time.time()
+		delta = self.time.time()-self.lastFrameTime
+		self.lastFrameTime = self.time.time()
 		for fish in self.fish:
-			if self.playing:
+			if self.time.isPlaying():
 				fish.update(delta,self.fish)
 			fish.draw(canvas,playerx,fish=self.fish)
 
@@ -33,12 +33,6 @@ class School:
 			if (boid.pos- pos).length() < (boid.size+r):
 				out.append(boid)
 		return out
-	def play(self):
-		self.playing = True 
-	def pause(self):
-		self.playing = False
-	def alt(self):
-		self.playing = not self.playing
 	def move_fish(self,pos,fish,vel = None):
 		for boid in fish:
 			boid.fixed = True
@@ -75,7 +69,9 @@ class Fsh:
 		
 		img.pos = self.pos+V(-playerx,0)
 		img.draw(canvas,rotation=a)
-		canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
+		#
+
+		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 	def allign(self,fish):
 		if len(fish) < 1:

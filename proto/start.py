@@ -1,128 +1,16 @@
-from vect import Vector
 from keyboard import Keyboard 
-from player import Player
-from background import Background as Bg
-from fish import School
-from rod import Rod
-from hearts import Hearts
-
-import random,math,time,os
+from inter import Interaction
+import random,math,os
 try:
-    import simplegui
+	import simplegui
 except ImportError:
-    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 # The canvas dimensions
 CANVAS_WIDTH = 1000
-CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16) 
-class Interaction:
-    def __init__(self,dimensions, kbd):
-        self.lastFrameTime = time.time()
-        self.dimensions = dimensions
-        self.back = Bg(dimensions)
-        self.fish = School(30,(CANVAS_WIDTH, CANVAS_HEIGHT))
-        self.player = Player(dimensions)
-        self.hearts = Hearts(dimensions)
-        self.keyboard = kbd
-        self.rod = Rod(self.player,CANVAS_HEIGHT)
-        self.gametime = 120
-        self.count = 1
-        self.overscore = 100 #* numberoflevel
-        self.playing = True
-        self.gameoover = False
-        self.dest_centre = (-1000,-1000)
-    def time(self):
-        self.count += 1
-        if self.count % 33 == 0:
-            self.gametime -= 1
-    def play(self):
-        self.playing = True 
-        self.back.play()
-        self.rod.play()
-        self.back.play()
-    def pause(self):
-        self.playing = False
-        self.back.pause()
-        self.fish.pause()
-        self.rod.pause()
-    def alt(self):
-        self.playing = not self.playing
-        self.back.alt()
-        self.rod.alt()
-        self.fish.alt()
-    def update(self):
-        self.time()
-        self.rod.catch_fish(self.fish)
-        if self.player.inBounds():
-            if self.keyboard.right:
-                if self.rod.direction == 0:
-                    self.player.addVel(Vector(1,0))
-            elif self.keyboard.left:
-                if self.rod.direction == 0:
-                    self.player.addVel(Vector(-1,0))
-            elif self.keyboard.down:
-                self.rod.down()
-        else:
-            self.player.set()
-        self.player.loseheart(self.rod)
-        self.player.calculatescore(self.rod)
-        self.rod.updatecatch()
-        
-    def gameover(self,canvas):
-        #global imggameover
-        #addr = os.getcwd()
-        #img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
-        #img = [imggameover]
-        #source_centre = (img.get_width() / 2, img.get_height() / 2)
-        #source_size = (img.get_width(), img.get_height())
-        #dest_size = (500,500)
-        self.dest_centre = (500,300)
-        
-    def draw(self, canvas):
-        if self.keyboard.p and not self.gameoover:
-            self.alt()
-            self.keyboard.p = False
-        if self.keyboard.r and self.gameoover:
-            self.gametime = 120
-            self.dest_centre = (-1000,-1000)
-            self.count = 1
-            self.player.lives = 3
-            self.player.points = 0
-            self.play()
-            self.fish.playing = True
-            self.gameoover = False
-        addr = os.getcwd()
-        img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
-        #img = [imggameover]
-        source_centre = (img.get_width() / 2, img.get_height() / 2)
-        source_size = (img.get_width(), img.get_height())
-        dest_size = (500,500)
+CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
+		
 
-        self.back.draw(canvas)
-        self.fish.draw(canvas)
-        self.player.draw(canvas)
-        self.rod.draw(canvas)
-        canvas.draw_image(img,
-                source_centre,
-                source_size,
-                self.dest_centre,
-                dest_size)
-        if self.gameoover:
-            self.gameover(canvas)
-        if self.playing:
-            self.update()
-            self.player.update()
-            self.hearts.update(canvas, self.player)
-            canvas.draw_text('Score:',(15,50),30,'rgb(237,28,0)')
-            canvas.draw_text(str(self.player.points),(15,80),30,'rgb(237,28,0)')
-            canvas.draw_text('Time:',(90,50),30,'rgb(40,237,0)','serif')
-            canvas.draw_text(str(self.gametime),(90,80),30,'rgb(40,237,0)','serif')
-            canvas.draw_text('Goal Score:',(CANVAS_WIDTH/2,30),20,'rgb(149,26,237)','serif')
-            canvas.draw_text(str(self.overscore),(CANVAS_WIDTH/2,50),20,'rgb(149,26,237)','serif')
-        if self.player.lives == 2:
-            self.gameoover = True
-            self.pause()
-            #self.over.draw(canvas)
 kbd = Keyboard()
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
 
