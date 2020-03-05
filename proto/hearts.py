@@ -19,8 +19,9 @@ class Hearts:
 		self.size = 0.65
 		self.cen = (self.dim[0]/2, self.dim[1]/2)
 		self.draw_dim = (self.dim[0]*self.size, self.dim[1]*self.size)
-		self.pos = Vector(self.dim[0]*self.size, self.dim[1]*self.size)
-		self.offset = self.draw_dim[0]
+		self.pading = 5
+		self.pos = Vector(self.dim[0]*self.size/2, self.dim[1]*self.size/2)
+		self.offset = Vector(self.draw_dim[0],0)
 		self.lives_max = 3
 		self.lives = self.lives_max
 	def resetLives(self):
@@ -31,6 +32,10 @@ class Hearts:
 		self.lives -= 1 
 		if self.lives <= 0:
 			self.die.gameover()
+	def getHeight(self):
+		return self.draw_dim[1] + self.pading*2
+	def getWidth(self):
+		return self.draw_dim[0]*self.lives_max + self.pading*2
 	def draw(self,canvas):
 		if self.lives < 0:
 			self.lives = 0
@@ -39,6 +44,6 @@ class Hearts:
 		for i in range(self.lives, self.lives_max):
 			self.drawheart(canvas, self.img_empty,i)
 	def drawheart(self,canvas,img,i):
-		canvas.draw_image(img, self.cen, self.dim, (self.pos+Vector(self.offset,0)*i).get_p(),self.draw_dim)
+		canvas.draw_image(img, self.cen, self.dim, (self.pos+Vector(self.pading,self.pading)+self.offset*i).get_p(),self.draw_dim)
 		
 		
