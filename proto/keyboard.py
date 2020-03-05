@@ -11,6 +11,7 @@ class Keyboard:
         self.down= False 
         self.up = False
         self.p = False
+        self.r = False
     def keyDown(self, key):
         #print(key)
         if key == simplegui.KEY_MAP['right'] or key == simplegui.KEY_MAP['d']:
@@ -23,7 +24,8 @@ class Keyboard:
             self.up = True
         if key == simplegui.KEY_MAP['p']:
             self.p = True
-  
+        if key == simplegui.KEY_MAP['r']:
+            self.r = True
     def keyUp(self, key):
         if key == simplegui.KEY_MAP['right']or key == simplegui.KEY_MAP['d']:
             self.right = False
@@ -33,4 +35,5 @@ class Keyboard:
             self.down = False
         if key == simplegui.KEY_MAP['p'] :
             self.p = False
-
+        if key == simplegui.KEY_MAP['r']:
+            self.r = False
