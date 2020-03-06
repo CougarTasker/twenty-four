@@ -12,11 +12,11 @@ CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
 		
 
 kbd = Keyboard()
-i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd)
+
 
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("ball-wall", CANVAS_WIDTH, CANVAS_HEIGHT,0)
-
+i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd,frame)
 
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)

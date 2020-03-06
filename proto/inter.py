@@ -15,20 +15,21 @@ try:
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 class Interaction:
-	def __init__(self,dimensions, kbd):
+	def __init__(self,dimensions, kbd,frame):
+		self.frame = frame
 		self.time = TimeHandeler()
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
 		self.back = Bg(dimensions,self.time)
 		self.fish = School(30,dimensions,self.time)
 		self.keyboard = kbd
-		self.overlay = Overlay(kbd,self,dimensions)
+		self.overlay = Overlay(kbd,self,dimensions,self.frame)
 		self.start()
 
 	def start(self): #separte method tos and reset the game without calling init
 		self.player = Player(self.dimensions,self.time)
 		self.hearts = Hearts(self.dimensions,self.time,self.overlay)
-		self.score = Score(self.time,self.dimensions,self.overlay)
+		self.score = Score(self.time,self.dimensions,self.overlay,self.frame)
 		self.rod = Rod(self.player,self.dimensions[1],self.time,self)
 		self.time.pause()
 	def update(self):

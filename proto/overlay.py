@@ -7,7 +7,8 @@ import os
 from spritesheet import SpriteSheet as SS
 from vect import Vector
 class Overlay:
-	def __init__(self,kbd,inter,dimensions):
+	def __init__(self,kbd,inter,dimensions,frame):
+		self.frame = frame
 		self.dimensions = dimensions
 		self.kbd = kbd
 		self.inter = inter
@@ -39,14 +40,17 @@ class Overlay:
 				self.inter.start()
 				self.inter.time.play()
 				self.kbd.space = False
+	def centerString(self,canvas,text):
+		w = self.frame.get_canvas_textwidth(text, 30)
+		canvas.draw_text(text, ((self.dimensions[0]-w)/2,self.dimensions[1]*0.8), 30, "red")
 	def draw(self,canvas):
 		self.checkKbd()
 		if self.state == State.START:
-			canvas.draw_text("press space to start", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
+			self.centerString(canvas,"press space to start")
 		if self.state == State.PLAYING:
-			canvas.draw_text("press p to pause", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
+			self.centerString(canvas,"press p to pause")
 		if self.state == State.PAUSED:
-			canvas.draw_text("press p to play", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
+			self.centerString(canvas,"press p to play")
 		if self.state == State.GAMEOVER:
 			addr = os.getcwd()
 			img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
