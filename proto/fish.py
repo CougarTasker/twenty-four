@@ -19,6 +19,8 @@ class School:
 		self.shrl = SS("file:///"+addr+"/images/Sharkleft.png",(5,1),time=600,scale=1,timehand = self.time)
 		self.shrr = SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1,timehand = self.time)
 		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
 	def draw(self,canvas,playerx = 0):
