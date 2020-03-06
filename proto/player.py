@@ -23,10 +23,10 @@ class Player:
 		self.y_offset = 45
 		#self.x_offset
 
-      ##player position and other attributes (variables)
+	  ##player position and other attributes (variables)
 		self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+self.y_offset)
 		self.vel = Vector(0,0)
-      #self.rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
+	  #self.rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
 
 
 	def getPos(self):
@@ -55,7 +55,7 @@ class Player:
 		self.pos.add(self.vel)
 		self.vel.multiply(0.85)
 		#print(self.pos.get_p())
-      
+	  
 	def inBounds(self):
 		return ((0 <= self.pos.get_p()[0]) and (self.canvas_dim[0] >= self.pos.get_p()[0]))
 
@@ -64,11 +64,10 @@ class Player:
 			self.pos = Vector(1,self.draw_dim[1]/2+self.y_offset)
 		else:
 			self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+self.y_offset)
-      
-        
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
-                        
+		canvas.draw_circle((self.getPos()-Vector(40,0)).get_p(),3,3,"red","red")
+						
 ##def draw(canvas):
 ##    play = Player((900,400))
 ##

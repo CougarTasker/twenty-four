@@ -15,14 +15,14 @@ class School:
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2,timehand = self.time)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2,timehand = self.time)
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time))
 		self.shrl = SS("file:///"+addr+"/images/Sharkleft.png",(5,1),time=600,scale=1,timehand = self.time)
 		self.shrr = SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1,timehand = self.time)
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time))
 	def draw(self,canvas,playerx = 0):
 		delta = self.time.time()-self.lastFrameTime
 		self.lastFrameTime = self.time.time()
@@ -43,22 +43,59 @@ class School:
 			boid.pos = pos
 			if not vel is None:
 				boid.vel = vel
+class Anim:
+	def __init__(self,fsh,time):
+		self.g = V(0,120)
+		self.time = time
+		self.timel = 2 + random.random()
+		self.startt = 0  
+		self.fsh = fsh
+		self.startp = V()
+		self.startv = V()
+		self.anim = False
+		self.endscale = 0.5
+	def scale(self):
+		return self.endscale + (self.startt+self.timel- self.time.time())/self.timel * (1-self.endscale)
+	def start(self,end):
+		self.startt = self.time.time()
+		self.startp = self.fsh.pos
+		self.startv = ((end - self.startp)-1/2 * self.g * self.timel**2)/self.timel
+		self.anim = True
+	def isAnim(self):
+		if self.anim:
+			if self.time.time() -self.startt > self.timel:
+				self.anim = False
+				self.fsh.reset()
+		return self.anim
+	def pos(self):
+		t = self.time.time() - self.startt
+		return self.startp + self.startv * t + 0.5 * self.g * t**2
+	def vel(self):
+		t = self.time.time() - self.startt
+		return self.startv + self.g *t
+
 class Fsh:
-	def __init__(self,pos,bounds,imgl,imgr):
+	def __init__(self,pos,bounds,imgl,imgr,time):
 		self.bounds = bounds
 		self.max_vel = 75
 		self.imgr = imgr
 		self.imgl = imgl
+		self.time = time
 		self.size = 25
+		self.scale = 1
 		self.per = self.size*3
 		self.fixed = False
+		self.g = V(0,100)
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
-
+		self.anim =Anim(self,time)
 	def reset(self):
 		self.bounds.random_start(self)
+		self.scale = 1
 		self.fixed = False
+	def animstart(self,end):
+		self.anim.start(end)
 	def draw(self,canvas,playerx =0,fish=[]):
 		#canvas.draw_circle(self.pos.get_p(),4,1,"red","red")
 		
@@ -72,7 +109,10 @@ class Fsh:
 			img = self.imgl
 		
 		img.pos = self.pos+V(-playerx,0)
+		old = img.scale
+		img.scale = old * self.scale
 		img.draw(canvas,rotation=a)
+		img.scale = old
 		#
 
 		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
@@ -157,14 +197,21 @@ class Fsh:
 			self.vel.rotate((random.random()*2-1)*delta*20)
 			self.pos += self.vel * delta
 			self.pos = self.bounds.correct(self)
+		elif self.anim.isAnim():
+			self.vel = self.anim.vel()
+			self.pos = self.anim.pos()
+			self.scale = self.anim.scale()
 
 class Shark(Fsh):
-	def __init__(self,pos,bounds,imgl,imgr):
+	def __init__(self,pos,bounds,imgl,imgr,time):
 		addr = os.getcwd()
-		super().__init__(pos,bounds,imgl,imgr)
+		self.time = time
+		super().__init__(pos,bounds,imgl,imgr,time)
 		self.size = 40
 		self.max_vel = 150
 		self.per = self.size*3
+	def animstart(self,end):
+		self.reset()
 	def update(self,delta,fish):
 		if not self.fixed:
 			self.vel += self.allign(fish)* -self.max_vel/50

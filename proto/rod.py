@@ -40,7 +40,7 @@ class Rod:
 		else:
 			self.catch.catch(self.courtFish)
 			for fish in self.courtFish:
-				fish.reset()
+				fish.animstart(self.player.getPos()-Vector(40,0))
 			self.courtFish = []
 		
 		school.move_fish(self.hookpos()[0],self.courtFish,self.hookvel())
