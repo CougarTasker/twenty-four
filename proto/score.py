@@ -1,13 +1,14 @@
 from vect import Vector
 class Score:
-	def __init__(self,time,pos,die):
+	def __init__(self,time,dim,die):
 		self.score = 0
 		self.time = time
 		self.maxtime = 99
 		self.starttime = self.time.time()
-		self.pos = pos
-		self.die = die
 		self.size = Vector(160,60)
+		self.pos = Vector(((Vector(dim[0],dim[1]) - self.size)/2).x,0)
+		self.die = die
+		
 	def timeleft(self):
 		t = self.maxtime - (self.time.time() - self.starttime)
 		if t <= 0:
