@@ -44,9 +44,9 @@ class Overlay:
 		if self.state == State.START:
 			canvas.draw_text("press space to start", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
 		if self.state == State.PLAYING:
-			canvas.draw_text("press space to p to pause", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
+			canvas.draw_text("press p to pause", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
 		if self.state == State.PAUSED:
-			canvas.draw_text("press space to p to play", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
+			canvas.draw_text("press p to play", (self.dimensions[0]/2,self.dimensions[1]*0.8), 30, "red")
 		if self.state == State.GAMEOVER:
 			addr = os.getcwd()
 			img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
