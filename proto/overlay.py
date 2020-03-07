@@ -1,86 +1,133 @@
 try:
-    import simplegui
+	import simplegui
 except ImportError:
-    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from enum import Enum
 import os
 from spritesheet import SpriteSheet as SS
+from timehandel import TimeHandeler
 from vect import Vector
 class Overlay:
-    def __init__(self,kbd,inter,dimensions,frame):
-        self.frame = frame
-        self.dimensions = dimensions
-        self.kbd = kbd
-        self.inter = inter
-        self.state = State.START
-        self.pressSpace = SS("file:///"+os.getcwd()+"/images/press_space.png",(1,8),time=800,scale=1,pos=Vector(dimensions[0]/2,dimensions[1]*0.8),looping=False)
-    def gameover(self):
-        self.state = State.GAMEOVER
-        self.inter.time.pause()
-    def checkKbd(self):
-        if self.state == State.START:
-            if self.kbd.space:
-                self.state = State.PLAYING
-                self.inter.start()
-                self.inter.time.play()
-                self.kbd.space = False
-        if self.state == State.PLAYING:
-            if self.kbd.p:
-                self.state = State.PAUSED
-                self.inter.time.pause()
-                self.kbd.p = False
-        if self.state == State.PAUSED:
-            if self.kbd.p:
-                self.state = State.PLAYING
-                self.inter.time.play()
-                self.kbd.p = False
-        if self.state == State.GAMEOVER:
-            if self.kbd.space:
-                self.state = State.PLAYING
-                self.inter.start()
-                self.inter.time.play()
-                self.kbd.space = False
-    def centerString(self,canvas,text):
-        w = self.frame.get_canvas_textwidth(text, 30)
-        canvas.draw_text(text, ((self.dimensions[0]-w)/2,self.dimensions[1]*0.8), 30, "red")
-    def pausescreen(self,canvas):
-        addr = os.getcwd()
-        img = simplegui.load_image("file:///"+addr+"/images/pause.png")
-        source_centre = (img.get_width() / 2, img.get_height() / 2)
-        source_size = (img.get_width(), img.get_height())
-        dest_size = (300,300)
-        dest_centre = (500,300)
-        canvas.draw_image(img,
-            source_centre,
-            source_size,
-            dest_centre,
-            dest_size)
-    def draw(self,canvas):
-        self.checkKbd()
-        if self.state == State.START:
-            self.centerString(canvas,"press space to start")
-        if self.state == State.PLAYING:
-            self.centerString(canvas,"press p to pause")
-        if self.state == State.PAUSED:
-            self.pausescreen(canvas)
-            self.centerString(canvas,"press p to play")
-        if self.state == State.GAMEOVER:
-            addr = os.getcwd()
-            img = simplegui.load_image("file:///"+addr+"/images/game_over.png")
-            source_centre = (img.get_width() / 2, img.get_height() / 2)
-            source_size = (img.get_width(), img.get_height())
-            dest_size = (500,500)
-            dest_centre = (self.dimensions[0]/2,self.dimensions[1]/2)
-            canvas.draw_image(img,
-                    source_centre,
-                    source_size,
-                    dest_centre,
-                    dest_size)
-            self.pressSpace.draw(canvas)
+	def __init__(self,kbd,inter,dim,frame):
+		self.time = TimeHandeler()
+		self.frame = frame
+		self.dim = dim
+		self.kbd = kbd
+		self.inter = inter
+		
+		self.start = Screen(self.time,self.dim,self.frame,"press space to start")
+		self.playing = Screen(self.time,self.dim,self.frame,"press p to pause")
+		self.paused = Screen(self.time,self.dim,self.frame,"press p to play","pause.png")
+		self.gameover = Screen(self.time,self.dim,self.frame,"press space to try again","game_over.png")
+
+		self.state = self.start
+		self.start.show()
+	def gameover(self):
+		self.swapState(self.gameover)
+		self.inter.time.pause()
+	def swapState(self,now):
+		self.state.hide()
+		self.state = now
+		now.show()
+	def checkKbd(self):
+		if self.state == self.start:
+			if self.kbd.space:
+				self.swapState(self.playing)
+				self.inter.start()
+				self.inter.time.play()
+				self.kbd.space = False
+		if self.state == self.playing:
+			if self.kbd.p:
+				self.swapState(self.paused)
+				self.inter.time.pause()
+				self.kbd.p = False
+		if self.state == self.paused:
+			if self.kbd.p:
+				self.swapState(self.playing)
+				self.inter.time.play()
+				self.kbd.p = False
+		if self.state == self.gameover:
+			if self.kbd.space:
+				self.swapState(self.playing)
+				self.inter.start()
+				self.inter.time.play()
+				self.kbd.space = False
+	def draw(self,canvas):
+		self.checkKbd()
+		self.start.draw(canvas)
+		self.playing.draw(canvas)
+		self.paused.draw(canvas)
+		self.gameover.draw(canvas)
+
 
 class State(Enum):
-    START = 0
-    PLAYING = 1
-    PAUSED = 2
-    GAMEOVER = 3
+	START = 0
+	PLAYING = 1
+	PAUSED = 2
+	GAMEOVER = 3
+class Screen:
+	def __init__(self,time,dim,frame,text="",img=""):
+		self.frame = frame
+		self.showing = False
+		self.length = 1
+		
+		self.time = time
+		self.start = time.time()
+		addr = os.getcwd()
+		if img == "":
+			self.img = None
+		else:
+			self.img = simplegui.load_image("file:///"+addr+"/images/"+img)
+		self.text = text
+		self.dim = dim
+	def show(self):
+		if not self.showing:
+			self.showing = True
+			self.start = self.time.time()
+	def state(self):# 0 fully hidden 1= showing
+		s = (self.time.time() - self.start)/self.length
+		if self.showing:
+			s -= 1
+			if s < 0:
+				s = 0
+		if s > 1:
+			s = 1
+		if not self.showing:
+			s = 1-s
+		return 3*s**2-2*s**3
 
+	def drawImg(self,canvas):
+		s = self.state()
+		width = 300
+		if self.img != None and s*width>1:
+			source_centre = (self.img.get_width() / 2, self.img.get_height() / 2)
+			source_size = (self.img.get_width(), self.img.get_height())
+			dest_size = (width*s,width*self.img.get_height()/self.img.get_width()*s)
+			dest_centre = (self.dim[0]/2,self.dim[1]/2)
+			canvas.draw_image(self.img,
+				source_centre,
+				source_size,
+				dest_centre,
+				dest_size)
+	def drawString(self,canvas):
+		if self.text != "":
+			h=30
+			p=5
+			top = h + 3*p
+			offset = (1-self.state()) * top
+			w = self.frame.get_canvas_textwidth(self.text, h)
+			pos =((self.dim[0]-w)/2,self.dim[1]-h/2-p+offset)
+			self.back(canvas,(self.dim[0]/2,self.dim[1]-(h+p*2)/2-p+offset),w+p*2,h+p*2)
+			canvas.draw_text(self.text,pos, h, "red")
+	def back(self,canvas,pos,w,h):
+		pos = (pos[0]-w/2,pos[1]-h/2)
+		dim = (w+pos[0],h+pos[1])
+		canvas.draw_polygon((pos,(pos[0],dim[1]),dim,(dim[0],pos[1])),1,"rgba(255,255,255,0)","rgba(100,100,100,0.5)")
+	def draw(self,canvas):
+		self.drawString(canvas)
+		self.drawImg(canvas)
+
+	def hide(self):
+		if self.showing:
+			self.showing = False
+			self.start = self.time.time()
