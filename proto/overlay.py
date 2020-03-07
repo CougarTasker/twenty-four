@@ -26,9 +26,10 @@ class Overlay:
 		self.swapState(self.gameover)
 		self.inter.time.pause()
 	def swapState(self,now):
-		self.state.hide()
-		self.state = now
-		now.show()
+		if now != self.state:
+			self.state.hide()
+			self.state = now
+			now.show()
 	def checkKbd(self):
 		if self.state == self.start:
 			if self.kbd.space:
@@ -98,11 +99,11 @@ class Screen:
 
 	def drawImg(self,canvas):
 		s = self.state()
-		width = 300
-		if self.img != None and s*width>1:
+		height = 300
+		if self.img != None and s*height>1:
 			source_centre = (self.img.get_width() / 2, self.img.get_height() / 2)
 			source_size = (self.img.get_width(), self.img.get_height())
-			dest_size = (width*s,width*self.img.get_height()/self.img.get_width()*s)
+			dest_size = (height*s*self.img.get_width()/self.img.get_height(),height*s)
 			dest_centre = (self.dim[0]/2,self.dim[1]/2)
 			canvas.draw_image(self.img,
 				source_centre,

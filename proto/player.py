@@ -57,13 +57,14 @@ class Player:
 		#print(self.pos.get_p())
 	  
 	def inBounds(self):
-		return ((0 <= self.pos.get_p()[0]) and (self.canvas_dim[0] >= self.pos.get_p()[0]))
+		return ((self.draw_dim[0]/2 <= self.pos.x) and (self.canvas_dim[0] - self.draw_dim[0]/2 >= self.pos.x))
 
 	def set(self):
-		if (0 > self.pos.get_p()[0]):
-			self.pos = Vector(1,self.draw_dim[1]/2+self.y_offset)
+		self.vel *= -1
+		if (self.pos.get_p()[0]< self.canvas_dim[0]/2):
+			self.pos = Vector(self.draw_dim[0]/2+1,self.draw_dim[1]/2+self.y_offset)
 		else:
-			self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+self.y_offset)
+			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.draw_dim[1]/2+self.y_offset)
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
 		#canvas.draw_circle((self.getPos()-Vector(30,-25)).get_p(),3,3,"red","red")
