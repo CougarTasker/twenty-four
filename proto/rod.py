@@ -48,7 +48,7 @@ class Rod:
 		if self.direction == 0:
 			self.direction = 1
 	def up(self):
-		print("up")
+		#print("up")
 		self.direction = -1
 	def moveable(self):
 		return len(self.courtFish) ==0 and len(self.flyingFish) ==0 and self.direction == 0

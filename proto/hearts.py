@@ -31,7 +31,7 @@ class Hearts:
 	def loseLife(self):
 		self.lives -= 1 
 		if self.lives <= 0:
-			self.die.gameover()
+			self.die.gameOver()
 	def getHeight(self):
 		return self.draw_dim[1] + self.pading*2
 	def getWidth(self):

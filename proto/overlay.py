@@ -22,7 +22,7 @@ class Overlay:
 
 		self.state = self.start
 		self.start.show()
-	def gameover(self):
+	def gameOver(self):
 		self.swapState(self.gameover)
 		self.inter.time.pause()
 	def swapState(self,now):
