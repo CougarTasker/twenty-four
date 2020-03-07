@@ -63,7 +63,7 @@ class Rod:
 			school.move_fish(self.hookpos()[0],self.courtFish,self.hookvel())
 		else:
 			for fish in self.courtFish:
-				fish.animstart(self.player.getPos()-Vector(40,0))
+				fish.animstart(self.player.getPos()-Vector(30,-25))
 				self.flyingFish.append(fish)
 			self.courtFish = []
 	def mergerlist(self,a,b):

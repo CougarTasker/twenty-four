@@ -15,7 +15,7 @@ class Player:
 		self.canvas_dim = dimensions
 		addr = os.getcwd()
 		##image info + dimensions (constants)
-		self.img = simplegui.load_image("file:///"+addr+"/images/colouredBoth.png")
+		self.img = simplegui.load_image("file:///"+addr+"/images/Boat2.png")
 		self.dim = (4096, 4096)
 	
 		self.cen = (self.dim[0]/2, self.dim[1]/2)
@@ -66,7 +66,7 @@ class Player:
 			self.pos = Vector(self.canvas_dim[0]-1,self.draw_dim[1]/2+self.y_offset)
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
-		canvas.draw_circle((self.getPos()-Vector(40,0)).get_p(),3,3,"red","red")
+		#canvas.draw_circle((self.getPos()-Vector(30,-25)).get_p(),3,3,"red","red")
 						
 ##def draw(canvas):
 ##    play = Player((900,400))
