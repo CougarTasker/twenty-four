@@ -6,7 +6,7 @@ except ImportError:
 from vect import Vector as V
 from spritesheet import SpriteSheet as SS
 class School:
-	def __init__(self,count,dim,time):
+	def __init__(self,count,dim,time,die):
 		self.fish = []
 		self.time = time
 		self.lastFrameTime = self.time.time()
@@ -15,14 +15,14 @@ class School:
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2,timehand = self.time)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2,timehand = self.time)
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
 		self.shrl = SS("file:///"+addr+"/images/Sharkleft.png",(5,1),time=600,scale=1,timehand = self.time)
 		self.shrr = SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1,timehand = self.time)
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
-		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time,die))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time,die))
+		self.fish.append(Shark(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time,die))
 		for i in range(int(count/2)):
-			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time))
+			self.fish.append(Fsh(V(random.random()*dim[0],(random.random()*0.675+0.325)*dim[1]),Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
 	def draw(self,canvas,playerx = 0):
 		delta = self.time.time()-self.lastFrameTime
 		self.lastFrameTime = self.time.time()
@@ -44,7 +44,8 @@ class School:
 			if not vel is None:
 				boid.vel = vel
 class Anim:
-	def __init__(self,fsh,time):
+	def __init__(self,fsh,time,bounds):
+		self.bounds = bounds
 		self.g = V(0,120)
 		self.time = time
 		self.timel = 2 + random.random()
@@ -54,18 +55,35 @@ class Anim:
 		self.startv = V()
 		self.anim = False
 		self.endscale = 0.5
+		self.movedscale = 0.1
+		self.moved = False
+		self.movedt = 0
+	def rodmoved(self):
+		self.moved = True
+		self.movedt = self.time.time()
 	def scale(self):
+		if self.moved:
+			t = self.movedt*2 - self.time.time()
+			s = self.endscale + (self.startt+self.timel-t)/self.timel * (1-self.endscale)
+			if s >1:
+				s = 1
+			return s
 		return self.endscale + (self.startt+self.timel- self.time.time())/self.timel * (1-self.endscale)
 	def start(self,end):
-		self.startt = self.time.time()
-		self.startp = self.fsh.pos
-		self.startv = ((end - self.startp)-1/2 * self.g * self.timel**2)/self.timel
-		self.anim = True
+		if not self.anim:		
+			self.moved= False
+			self.startt = self.time.time()
+			self.startp = self.fsh.pos
+			self.startv = ((end - self.startp)-1/2 * self.g * self.timel**2)/self.timel
+			self.anim = True
 	def isAnim(self):
 		if self.anim:
-			if self.time.time() -self.startt > self.timel:
+			if (self.time.time() -self.startt > self.timel and not self.moved) or (self.bounds.contains(self.pos(),self.fsh.size) and self.moved):
 				self.anim = False
-				self.fsh.reset()
+				if self.moved:
+					self.fsh.release()
+				else:
+					self.fsh.court()
 		return self.anim
 	def pos(self):
 		t = self.time.time() - self.startt
@@ -75,7 +93,8 @@ class Anim:
 		return self.startv + self.g *t
 
 class Fsh:
-	def __init__(self,pos,bounds,imgl,imgr,time):
+	def __init__(self,pos,bounds,imgl,imgr,time,die):
+		self.die = die
 		self.bounds = bounds
 		self.max_vel = 75
 		self.imgr = imgr
@@ -89,11 +108,17 @@ class Fsh:
 		self.pos = pos
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
-		self.anim =Anim(self,time)
+		self.anim =Anim(self,time,bounds)
+	def release(self):
+		self.scale = 1
+		self.fixed = False
 	def reset(self):
 		self.bounds.random_start(self)
 		self.scale = 1
 		self.fixed = False
+	def court(self):
+		self.die.catch(self)
+		self.reset()
 	def animstart(self,end):
 		self.anim.start(end)
 	def draw(self,canvas,playerx =0,fish=[]):
@@ -203,15 +228,11 @@ class Fsh:
 			self.scale = self.anim.scale()
 
 class Shark(Fsh):
-	def __init__(self,pos,bounds,imgl,imgr,time):
-		addr = os.getcwd()
-		self.time = time
-		super().__init__(pos,bounds,imgl,imgr,time)
+	def __init__(self,pos,bounds,imgl,imgr,time,die):
+		super().__init__(pos,bounds,imgl,imgr,time,die)
 		self.size = 40
 		self.max_vel = 150
 		self.per = self.size*3
-	def animstart(self,end):
-		self.reset()
 	def update(self,delta,fish):
 		if not self.fixed:
 			self.vel += self.allign(fish)* -self.max_vel/50
@@ -222,6 +243,10 @@ class Shark(Fsh):
 			self.vel.rotate((random.random()*2-1)*delta*20)
 			self.pos += self.vel * delta
 			self.pos = self.bounds.correct(self)
+		elif self.anim.isAnim():
+			self.vel = self.anim.vel()
+			self.pos = self.anim.pos()
+			self.scale = self.anim.scale()
 	def seperation(self,fish, minDistance):
 		if len(fish) < 1:
 			return V()
@@ -245,6 +270,10 @@ class Bounds:
 	def __init__(self,pos,dim):
 		self.pos = pos
 		self.dim = dim
+	def contains(self,pos,size):
+		x = pos.x-size >= self.pos.x and pos.x+size < self.dim.x + self.pos.x
+		y = pos.y-size >= self.pos.y and pos.y+size < self.dim.y + self.pos.y
+		return x and y
 	def random_start(self,fish):
 		if random.random() > 0.5:
 			fish.pos = self.pos + V(self.dim.x+fish.size,0)

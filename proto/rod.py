@@ -13,8 +13,7 @@ def polar(ang,r):
 	return Vector(round(pX),round(pY))
 
 class Rod:
-	def __init__(self,player,windowheight,time,catch):
-			self.catch = catch
+	def __init__(self,player,windowheight,time):
 			self.time = time
 			addr = os.getcwd()
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
@@ -22,33 +21,55 @@ class Rod:
 			self.swing = True
 			self.player = player
 			self.pos = Vector()
-			self.rnorm = 150
+			self.rnorm = 120
 			self.r = self.rnorm
 			self.direction = 0
 			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
 			self.rmax = windowheight-(position).y-50/2
 			self.courtFish = []
+			self.flyingFish = []
 			self.lastFrameTime = self.time.time()
+			self.moved = False
+	def playermoved(self):
+		if not self.moveable():
+			self.moved = True
+			for fish in self.flyingFish:
+					fish.anim.rodmoved()
+			self.flyingFish=[]
+			for fish in self.courtFish:
+				fish.release()
+			self.courtFish = []
+			if self.direction != 0:
+				self.up()
+		else:
+			self.moved = False
+
 	def down(self):
 		if self.direction == 0:
 			self.direction = 1
 	def up(self):
+		print("up")
 		self.direction = -1
+	def moveable(self):
+		return len(self.courtFish) ==0 and len(self.flyingFish) ==0 and self.direction == 0
+	def catch(self,fish):
+		self.flyingFish.remove(fish)
 	def catch_fish(self,school):
+		if self.moveable():
+			self.moved = False
 		if self.direction != 0:
-			self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos()[0],10))
+			if not self.moved:
+				self.courtFish = self.mergerlist(self.courtFish,school.touching_fish(self.hookpos()[0],10))
+			school.move_fish(self.hookpos()[0],self.courtFish,self.hookvel())
 		else:
-			self.catch.catch(self.courtFish)
 			for fish in self.courtFish:
 				fish.animstart(self.player.getPos()-Vector(40,0))
+				self.flyingFish.append(fish)
 			self.courtFish = []
-		
-		school.move_fish(self.hookpos()[0],self.courtFish,self.hookvel())
-		if self.direction == 1 and len(self.courtFish)>0:
-			self.up()
 	def mergerlist(self,a,b):
 		for item in b:
 			if not item in a:
+				self.up()
 				a.append(item)
 		return a
 	def hookpos(self):
