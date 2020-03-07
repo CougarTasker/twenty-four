@@ -16,7 +16,7 @@ class Score:
 		t = self.maxtime - (self.time.time() - self.starttime)
 		if t <= 0:
 			t = 0
-			self.die.gameover()
+			self.die.gameOver()
 		return round(t)
 	def resetScore(self):
 		self.score = 0
