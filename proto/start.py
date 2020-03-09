@@ -7,7 +7,7 @@ except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 # The canvas dimensions
-CANVAS_WIDTH = 1000
+CANVAS_WIDTH = 1200
 CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
 		
 

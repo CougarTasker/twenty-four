@@ -20,11 +20,11 @@ class Player:
 	
 		self.cen = (self.dim[0]/2, self.dim[1]/2)
 		self.draw_dim = (140, 160)
-		self.y_offset = 45
+		self.y_offset = 80
 		#self.x_offset
 
-	  ##player position and other attributes (variables)
-		self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/2+self.y_offset)
+	  ##player position and other attrbutes (variables)
+		self.pos = Vector(self.draw_dim[0]/2,self.draw_dim[1]/5+self.canvas_dim[1]*0.3-self.y_offset)
 		self.vel = Vector(0,0)
 	  #self.rod = Rod(radius, "file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
 
