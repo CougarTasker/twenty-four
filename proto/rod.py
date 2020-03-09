@@ -53,7 +53,8 @@ class Rod:
 	def moveable(self):
 		return len(self.courtFish) ==0 and len(self.flyingFish) ==0 and self.direction == 0
 	def catch(self,fish):
-		self.flyingFish.remove(fish)
+		if fish in self.flyingFish:
+			self.flyingFish.remove(fish)
 	def catch_fish(self,school):
 		if self.moveable():
 			self.moved = False
