@@ -15,7 +15,7 @@ class Overlay:
 		self.kbd = kbd
 		self.inter = inter
 		
-		self.start = Screen(self.time,self.dim,self.frame,"press space to start")
+		self.start = Screen(self.time,self.dim,self.frame,"press space to start","start.png",offset=(-30,30))
 		self.playing = Screen(self.time,self.dim,self.frame,"press p to pause",autohide=True)
 		self.paused = Screen(self.time,self.dim,self.frame,"press p to play","pause.png")
 		self.gameover = Screen(self.time,self.dim,self.frame,"press space to try again","game_over.png")
@@ -66,9 +66,10 @@ class State(Enum):
 	PAUSED = 2
 	GAMEOVER = 3
 class Screen:
-	def __init__(self,time,dim,frame,text="",img="",autohide = False):
+	def __init__(self,time,dim,frame,text="",img="",offset=(0,0),autohide = False):
 		self.frame = frame
 		self.showing = False
+		self.imgoff = offset
 		self.length = 0.8
 		self.autohide = autohide
 		self.time = time
@@ -105,12 +106,12 @@ class Screen:
 
 	def drawImg(self,canvas):
 		s = self.state()
-		height = 300
+		height = (self.dim[1] - 45*2)*0.95
 		if self.img != None and s*height>1:
 			source_centre = (self.img.get_width() / 2, self.img.get_height() / 2)
 			source_size = (self.img.get_width(), self.img.get_height())
 			dest_size = (height*s*self.img.get_width()/self.img.get_height(),height*s)
-			dest_centre = (self.dim[0]/2,self.dim[1]/2)
+			dest_centre = (self.dim[0]/2+self.imgoff[0] *s,self.dim[1]/2 +self.imgoff[1]*s)
 			canvas.draw_image(self.img,
 				source_centre,
 				source_size,
@@ -135,7 +136,7 @@ class Screen:
 		self.drawImg(canvas)
 
 	def hide(self,swap = None):
-		self.swap = sw
+		self.swap = swap
 		if self.showing:
 			self.showing = False
 			self.start = self.time.time()
