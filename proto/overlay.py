@@ -16,7 +16,7 @@ class Overlay:
 		self.inter = inter
 		
 		self.start = Screen(self.time,self.dim,self.frame,"press space to start")
-		self.playing = Screen(self.time,self.dim,self.frame,"press p to pause")
+		self.playing = Screen(self.time,self.dim,self.frame,"press p to pause",autohide=True)
 		self.paused = Screen(self.time,self.dim,self.frame,"press p to play","pause.png")
 		self.gameover = Screen(self.time,self.dim,self.frame,"press space to try again","game_over.png")
 
@@ -27,9 +27,8 @@ class Overlay:
 		self.inter.time.pause()
 	def swapState(self,now):
 		if now != self.state:
-			self.state.hide()
+			self.state.hide(now)
 			self.state = now
-			now.show()
 	def checkKbd(self):
 		if self.state == self.start:
 			if self.kbd.space:
@@ -67,11 +66,11 @@ class State(Enum):
 	PAUSED = 2
 	GAMEOVER = 3
 class Screen:
-	def __init__(self,time,dim,frame,text="",img=""):
+	def __init__(self,time,dim,frame,text="",img="",autohide = False):
 		self.frame = frame
 		self.showing = False
-		self.length = 1
-		
+		self.length = 0.8
+		self.autohide = autohide
 		self.time = time
 		self.start = time.time()
 		addr = os.getcwd()
@@ -81,18 +80,25 @@ class Screen:
 			self.img = simplegui.load_image("file:///"+addr+"/images/"+img)
 		self.text = text
 		self.dim = dim
-	def show(self):
+		self.swap = None
+	def show(self,swap=None):
+		self.swap = swap
 		if not self.showing:
 			self.showing = True
 			self.start = self.time.time()
 	def state(self):# 0 fully hidden 1= showing
 		s = (self.time.time() - self.start)/self.length
-		if self.showing:
-			s -= 1
-			if s < 0:
-				s = 0
 		if s > 1:
+			if self.autohide and s > 5 and self.showing:
+				self.hide()
 			s = 1
+			if not self.swap is None:
+				if self.showing:
+					self.swap.hide()
+				else:
+					self.swap.show()
+				self.swap = None
+
 		if not self.showing:
 			s = 1-s
 		return 3*s**2-2*s**3
@@ -128,7 +134,8 @@ class Screen:
 		self.drawString(canvas)
 		self.drawImg(canvas)
 
-	def hide(self):
+	def hide(self,swap = None):
+		self.swap = sw
 		if self.showing:
 			self.showing = False
 			self.start = self.time.time()
