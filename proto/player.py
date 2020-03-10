@@ -12,6 +12,7 @@ except ImportError:
 class Player:
 	def __init__(self, dimensions,time):
 		self.time = time
+		self.lastFrameTime = self.time.time()
 		self.canvas_dim = dimensions
 		addr = os.getcwd()
 		##image info + dimensions (constants)
@@ -39,7 +40,9 @@ class Player:
 	def addVel(self, velocity):
 		self.vel.add(velocity)
 	def update(self):
-		self.pos.add(self.vel)
+		delta = self.time.time()-self.lastFrameTime
+		self.lastFrameTime = self.time.time()
+		self.pos.add(self.vel*delta)
 		self.vel.multiply(0.85)
 		#print(self.pos.get_p())
 	  
@@ -49,9 +52,9 @@ class Player:
 	def set(self):
 		self.vel *= -1
 		if (self.pos.get_p()[0]< self.canvas_dim[0]/2):
-			self.pos = Vector(self.draw_dim[0]/2+1,self.pos.x)
+			self.pos = Vector(self.draw_dim[0]/2+1,self.pos.y)
 		else:
-			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.pos.x)
+			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.pos.y)
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
 		#canvas.draw_circle((self.getPos()+Vector(8,-25)).get_p(),3,3,"red","red")

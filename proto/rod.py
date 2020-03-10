@@ -35,9 +35,10 @@ class Rod:
 		if not self.moveable():
 			self.moved = True
 			for fish in self.flyingFish:
-					if type(fish) != Shark:
-						fish.anim.rodmoved()
-						self.flyingFish.remove(fish)
+				print("fish")
+				if type(fish) != Shark:
+					fish.anim.rodmoved()
+					self.flyingFish.remove(fish)
 			for fish in self.courtFish:
 				if type(fish) != Shark:
 					fish.release()
@@ -71,7 +72,7 @@ class Rod:
 					fish.animstart(self.player.getPos()-Vector(30,-25))
 				else:
 					fish.animstart(self.player.getPos()+Vector(8,-25))
-					self.flyingFish.append(fish)
+				self.flyingFish.append(fish)
 			self.courtFish = []
 	def mergerlist(self,a,b):
 		for item in b:
@@ -92,7 +93,7 @@ class Rod:
 		direction = self.hookpos()[0] - self.rodpos()
 		return self.direction * direction.normalize()
 	def update_length(self,delta):
-		self.r += self.direction * delta * 80
+		self.r += self.direction * delta * 150
 		if(self.r< self.rnorm):
 			self.r = self.rnorm
 			self.direction = 0
