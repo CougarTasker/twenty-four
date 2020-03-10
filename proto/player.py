@@ -38,19 +38,6 @@ class Player:
 		return self.vel
 	def addVel(self, velocity):
 		self.vel.add(velocity)
-
-	def getLives(self):
-		return self.lives
-	def setLives(self, life):
-		self.lives = life
-   
-	def setToZero(self):
-		self.points = 0
-	def setPoints(self, newP):
-		self.points = newP
-	def getPoints(self):
-		return self.points
-
 	def update(self):
 		self.pos.add(self.vel)
 		self.vel.multiply(0.85)
@@ -62,9 +49,9 @@ class Player:
 	def set(self):
 		self.vel *= -1
 		if (self.pos.get_p()[0]< self.canvas_dim[0]/2):
-			self.pos = Vector(self.draw_dim[0]/2+1,self.draw_dim[1]/2+self.y_offset)
+			self.pos = Vector(self.draw_dim[0]/2+1,self.pos[1])
 		else:
-			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.draw_dim[1]/2+self.y_offset)
+			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.pos[1])
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
 		#canvas.draw_circle((self.getPos()-Vector(30,-25)).get_p(),3,3,"red","red")

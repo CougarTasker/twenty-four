@@ -123,14 +123,14 @@ class Screen:
 			p=5
 			top = h + 3*p
 			offset = (1-self.state()) * top
-			w = self.frame.get_canvas_textwidth(self.text, h)
+			w = self.frame.get_canvas_textwidth(self.text, h,"sans-serif")
 			pos =((self.dim[0]-w)/2,self.dim[1]-h/2-p+offset)
 			self.back(canvas,(self.dim[0]/2,self.dim[1]-(h+p*2)/2-p+offset),w+p*2,h+p*2)
-			canvas.draw_text(self.text,pos, h, "red")
+			canvas.draw_text(self.text,pos, h, "yellow","sans-serif")
 	def back(self,canvas,pos,w,h):
 		pos = (pos[0]-w/2,pos[1]-h/2)
 		dim = (w+pos[0],h+pos[1])
-		canvas.draw_polygon((pos,(pos[0],dim[1]),dim,(dim[0],pos[1])),1,"rgba(255,255,255,0)","rgba(100,100,100,0.5)")
+		canvas.draw_polygon((pos,(pos[0],dim[1]),dim,(dim[0],pos[1])),1,"rgba(255,255,255,0)","rgba(50,50,50,0.7)")
 	def draw(self,canvas):
 		self.drawString(canvas)
 		self.drawImg(canvas)

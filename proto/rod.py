@@ -1,4 +1,5 @@
 import random, math, os,time
+from fish import Shark
 from  vect import Vector
 from keyboard import Keyboard 
 try:
@@ -34,11 +35,13 @@ class Rod:
 		if not self.moveable():
 			self.moved = True
 			for fish in self.flyingFish:
-					fish.anim.rodmoved()
-			self.flyingFish=[]
+					if type(fish) != Shark:
+						fish.anim.rodmoved()
+						self.flyingFish.remove(fish)
 			for fish in self.courtFish:
-				fish.release()
-			self.courtFish = []
+				if type(fish) != Shark:
+					fish.release()
+					self.courtFish.remove(fish)
 			if self.direction != 0:
 				self.up()
 		else:

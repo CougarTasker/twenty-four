@@ -109,6 +109,7 @@ class Fsh:
 		angle = random.random()*math.pi*2
 		self.vel = V(math.cos(angle),math.sin(angle)) * 20
 		self.anim =Anim(self,time,bounds)
+		
 	def release(self):
 		self.scale = 1
 		self.fixed = False
