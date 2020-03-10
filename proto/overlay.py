@@ -73,7 +73,7 @@ class Screen:
 		self.length = 0.8
 		self.autohide = autohide
 		self.time = time
-		self.start = time.time()
+		self.start = time.time()-self.length*2
 		addr = os.getcwd()
 		if img == "":
 			self.img = None
@@ -99,7 +99,6 @@ class Screen:
 				else:
 					self.swap.show()
 				self.swap = None
-
 		if not self.showing:
 			s = 1-s
 		return 3*s**2-2*s**3
