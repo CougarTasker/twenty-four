@@ -10,6 +10,7 @@ from overlay import Overlay
 import random,math,time,os
 from fish import Shark
 from score import Score
+from snd import Snd
 try:
 	import simplegui
 except ImportError:
@@ -24,8 +25,8 @@ class Interaction:
 		self.fish = School(30,dimensions,self.time,self)
 		self.keyboard = kbd
 		self.overlay = Overlay(kbd,self,dimensions,self.frame)
+		self.sound = Snd(self.time,"waves.ogg",0.05,47)
 		self.start()
-
 	def start(self): #separte method tos and reset the game without calling init
 		self.player = Player(self.dimensions,self.time)
 		self.hearts = Hearts(self.dimensions,self.time,self.overlay)

@@ -4,7 +4,7 @@ except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import os
 from vect import Vector
-
+from snd import Snd
 ##class to draw the hearts onto the screen for the player lives
 
 class Hearts:
@@ -24,7 +24,7 @@ class Hearts:
         self.offset = Vector(self.draw_dim[0],0)
         self.lives_max = 3
         self.lives = self.lives_max
-        self.sound = simplegui.load_sound("file:///"+addr+"/sounds/bite2.ogg")
+        self.sound = Snd(self.time,"bite2.ogg")
     def resetLives(self):
         self.lives = self.lives_max
     def getLives(self):

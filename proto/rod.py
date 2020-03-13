@@ -2,6 +2,7 @@ import random, math, os,time
 from fish import Shark
 from  vect import Vector
 from keyboard import Keyboard 
+from snd import Snd
 try:
 	import simplegui
 except ImportError:
@@ -31,6 +32,7 @@ class Rod:
 			self.flyingFish = []
 			self.lastFrameTime = self.time.time()
 			self.moved = False
+			self.sound = Snd(self.time,"splash.ogg")
 	def playermoved(self):
 		if not self.moveable():
 			self.moved = True
@@ -48,7 +50,8 @@ class Rod:
 			self.moved = False
 
 	def down(self):
-		if self.direction == 0:
+		if self.direction==0 and self.player.vel.length() < 1:
+			self.sound.play()
 			self.direction = 1
 	def up(self):
 		#print("up")

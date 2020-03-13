@@ -1,4 +1,5 @@
 from vect import Vector
+from snd import Snd
 try:
     import simplegui
 except ImportError:
@@ -16,9 +17,7 @@ class Score:
         self.size = Vector(frame.get_canvas_textwidth("Score: "+'{:04d}'.format(self.score), self.scoreh,"sans-serif")+self.padding*2,self.padding*2+self.scoreh+self.timeh)
         self.pos = Vector(((Vector(dim[0],dim[1]) - self.size)/2).x,0)
         self.die = die
-        addr = os.getcwd()
-        self.sound = simplegui.load_sound("file:///"+addr+"/sounds/point.ogg")
-        self.sound.set_volume(0.5)
+        self.sound = Snd(self.time,"point.ogg",0.5)
         
     def timeleft(self):
         t = self.maxtime - (self.time.time() - self.starttime)
