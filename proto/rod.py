@@ -35,7 +35,6 @@ class Rod:
 		if not self.moveable():
 			self.moved = True
 			for fish in self.flyingFish:
-				print("fish")
 				if type(fish) != Shark:
 					fish.anim.rodmoved()
 					self.flyingFish.remove(fish)
@@ -97,6 +96,7 @@ class Rod:
 		if(self.r< self.rnorm):
 			self.r = self.rnorm
 			self.direction = 0
+			self.moved = False
 		if(self.r > self.rmax):
 			self.r = self.rmax
 			self.direction = -1
