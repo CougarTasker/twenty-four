@@ -7,6 +7,8 @@ import os
 from spritesheet import SpriteSheet as SS
 from timehandel import TimeHandeler
 from vect import Vector
+from snd import Snd
+
 class Overlay:
 	def __init__(self,kbd,inter,dim,frame):
 		self.time = TimeHandeler()
@@ -15,10 +17,10 @@ class Overlay:
 		self.kbd = kbd
 		self.inter = inter
 		
-		self.start = Screen(self.time,self.dim,self.frame,"press space to start","start.png",offset=(-30,30))
-		self.playing = Screen(self.time,self.dim,self.frame,"press p to pause",autohide=True)
-		self.paused = Screen(self.time,self.dim,self.frame,"press p to play","pause.png")
-		self.gameover = Screen(self.time,self.dim,self.frame,"press space to try again","game_over.png")
+		self.start = Screen(self.time,self.dim,self.frame,Snd(self.time,"start.ogg",0.1,97),"press space to start","start.png",offset=(-30,30))
+		self.playing = Screen(self.time,self.dim,self.frame,Snd(self.time,"waves.ogg",0.05,47),"press p to pause",autohide=True)
+		self.paused = Screen(self.time,self.dim,self.frame,Snd(self.time,"paused.ogg",0.5,58),"press p to play","pause.png")
+		self.gameover = Screen(self.time,self.dim,self.frame,Snd(self.time,"gameover.ogg",0.5,99),"press space to try again","game_over.png")
 
 		self.state = self.start
 		self.start.show()
@@ -66,7 +68,8 @@ class State(Enum):
 	PAUSED = 2
 	GAMEOVER = 3
 class Screen:
-	def __init__(self,time,dim,frame,text="",img="",offset=(0,0),autohide = False):
+	def __init__(self,time,dim,frame,sound=None,text="",img="",offset=(0,0),autohide = False):
+		self.sound = sound
 		self.frame = frame
 		self.showing = False
 		self.imgoff = offset
@@ -85,6 +88,8 @@ class Screen:
 	def show(self,swap=None):
 		self.swap = swap
 		if not self.showing:
+			if not self.sound is None:
+				self.sound.play()
 			self.showing = True
 			self.start = self.time.time()
 	def state(self):# 0 fully hidden 1= showing
@@ -137,5 +142,7 @@ class Screen:
 	def hide(self,swap = None):
 		self.swap = swap
 		if self.showing:
+			if not self.sound is None and not swap is None:
+				self.sound.pause()
 			self.showing = False
 			self.start = self.time.time()

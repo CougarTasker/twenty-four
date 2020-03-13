@@ -9,6 +9,7 @@ class Snd:
 		self.time = time
 		self.time.addHandel(self)
 		addr = os.getcwd()
+		self.name = sound
 		self.sound = simplegui.load_sound("file:///"+addr+"/sounds/"+sound)
 		self.sound.set_volume(volume)
 		self.length = length# if greater than one the sound will loop
@@ -22,6 +23,7 @@ class Snd:
 		else:
 			self.pause()
 	def play(self):
+		#print("playing "+self.name)
 		if self.time.isPlaying():
 			if self.length >0:
 				self.timer.start()
@@ -30,6 +32,7 @@ class Snd:
 			self.sound.play()
 			self.playing = True
 	def pause(self):
+		#print("pausing "+self.name)
 		if self.playing:
 			if self.length >0:
 				self.timer.stop()
