@@ -14,7 +14,7 @@ CANVAS_HEIGHT = round(CANVAS_WIDTH*9/16)
 kbd = Keyboard()
 addr = os.getcwd()
 sound = simplegui.load_sound("file:///"+addr+"/sounds/waves.ogg")
-
+sound.set_volume(0.05)
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("Fisherman's Catch", CANVAS_WIDTH, CANVAS_HEIGHT,0)
 i = Interaction((CANVAS_WIDTH, CANVAS_HEIGHT),kbd,frame)
