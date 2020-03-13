@@ -14,6 +14,7 @@ class Snd:
 		self.sound.set_volume(volume)
 		self.length = length# if greater than one the sound will loop
 		self.playing = False
+		self.volume = volume
 		if self.length > 0:
 			self.timer = simplegui.create_timer(self.length*1000, self.play)
 	def timeTrigger(self,playing):
@@ -22,8 +23,10 @@ class Snd:
 				self.play()
 		else:
 			self.pause()
+	def setVol(self,vol):
+		self.sound.set_volume(self.volume*vol)
 	def play(self):
-		#print("playing "+self.name)
+		print("playing "+self.name)
 		if self.time.isPlaying():
 			if self.length >0:
 				self.timer.start()
@@ -32,7 +35,7 @@ class Snd:
 			self.sound.play()
 			self.playing = True
 	def pause(self):
-		#print("pausing "+self.name)
+		print("pausing "+self.name)
 		if self.playing:
 			if self.length >0:
 				self.timer.stop()

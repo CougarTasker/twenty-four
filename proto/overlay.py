@@ -97,15 +97,20 @@ class Screen:
 		if s > 1:
 			if self.autohide and s > 5 and self.showing:
 				self.hide()
+				return self.state()
 			s = 1
 			if not self.swap is None:
 				if self.showing:
 					self.swap.hide()
 				else:
 					self.swap.show()
+					if not self.sound is None:
+						self.sound.pause()
 				self.swap = None
 		if not self.showing:
 			s = 1-s
+		if not self.sound is None and (not self.swap is None or self.showing):
+			self.sound.setVol(s) #fade the sound in an out 
 		return 3*s**2-2*s**3
 
 	def drawImg(self,canvas):
@@ -142,7 +147,5 @@ class Screen:
 	def hide(self,swap = None):
 		self.swap = swap
 		if self.showing:
-			if not self.sound is None and not swap is None:
-				self.sound.pause()
 			self.showing = False
 			self.start = self.time.time()
