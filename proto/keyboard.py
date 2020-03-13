@@ -2,7 +2,7 @@ try:
 	import simplegui
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+import os
 class Keyboard:
 #class used for recognising keyboard events, these events are handled in sub.py
     def __init__(self):
@@ -13,6 +13,8 @@ class Keyboard:
         self.up = False
         self.p = False
         self.r = False
+        addr = os.getcwd()
+        self.sound = simplegui.load_sound("file:///"+addr+"/sounds/splash.ogg")
     def keyDown(self, key):
         #print(key)
         if key == simplegui.KEY_MAP['right'] or key == simplegui.KEY_MAP['d']:
@@ -20,6 +22,7 @@ class Keyboard:
         if key == simplegui.KEY_MAP['left'] or key == simplegui.KEY_MAP['a']:
             self.left = True
         if key == simplegui.KEY_MAP['down'] or key == simplegui.KEY_MAP['s']:
+            self.sound.play()
             self.down = True
         if key == simplegui.KEY_MAP['up'] or key == simplegui.KEY_MAP['w']:
             self.up = True
