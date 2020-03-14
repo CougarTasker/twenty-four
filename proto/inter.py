@@ -27,6 +27,7 @@ class Interaction:
 		self.start()
 	def start(self): #separte method tos and reset the game without calling init
 		self.player = Player(self.dimensions,self.time)
+		self.fish.restart()
 		self.hearts = Hearts(self.dimensions,self.time,self.overlay)
 		self.score = Score(self.time,self.dimensions,self.overlay,self.frame)
 		self.rod = Rod(self.player,self.dimensions[1],self.time)
@@ -42,7 +43,7 @@ class Interaction:
 				self.rod.down()
 		else:
 			self.player.set()
-		if self.player.vel.length() > 1:
+		if self.player.vel.length() > 5:
 			self.rod.playermoved()
 		self.player.update()
 	def catch(self,fish):

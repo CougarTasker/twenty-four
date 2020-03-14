@@ -30,7 +30,9 @@ class School:
 			if self.time.isPlaying():
 				fish.update(delta,self.fish)
 			fish.draw(canvas,playerx,fish=self.fish)
-
+	def restart(self):
+		for fish in self.fish:
+			fish.restart()
 	def touching_fish(self,pos,r):
 		out = []
 		for boid in self.fish:
@@ -76,6 +78,8 @@ class Anim:
 			self.startp = self.fsh.pos
 			self.startv = ((end - self.startp)-1/2 * self.g * self.timel**2)/self.timel
 			self.anim = True
+	def stop(self):
+		self.anim = False
 	def isAnim(self):
 		if self.anim:
 			if (self.time.time() -self.startt > self.timel and not self.moved) or (self.bounds.contains(self.pos(),self.fsh.size) and self.moved):
@@ -113,6 +117,10 @@ class Fsh:
 	def release(self):
 		self.scale = 1
 		self.fixed = False
+	def restart(self):
+		if self.anim.anim:
+			self.anim.stop()
+			self.reset()
 	def reset(self):
 		self.bounds.random_start(self)
 		self.scale = 1

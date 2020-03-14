@@ -50,7 +50,7 @@ class Rod:
 			self.moved = False
 
 	def down(self):
-		if self.direction==0 and self.player.vel.length() < 1:
+		if self.direction==0 and self.player.vel.length() < 5:
 			self.sound.play()
 			self.direction = 1
 	def up(self):

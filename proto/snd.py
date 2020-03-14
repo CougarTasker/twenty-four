@@ -26,7 +26,7 @@ class Snd:
 	def setVol(self,vol):
 		self.sound.set_volume(self.volume*vol)
 	def play(self):
-		print("playing "+self.name)
+		#print("playing "+self.name)
 		if self.time.isPlaying():
 			if self.length >0:
 				self.timer.start()
@@ -35,7 +35,7 @@ class Snd:
 			self.sound.play()
 			self.playing = True
 	def pause(self):
-		print("pausing "+self.name)
+		#print("pausing "+self.name)
 		if self.playing:
 			if self.length >0:
 				self.timer.stop()
