@@ -41,49 +41,41 @@ class Background:
 			ang *= 2*math.pi
 			path.append((x/pollycount*self.dimensions[0],((math.sin(ang)*waveheight/2+height)*self.dimensions[1])))
 		return path
-	def sub(self,pollycount,a,b,c):
+	def sub(self,a,b):#returns the loops of the polygon a that extend further than b
 		paths = []
-		drawing = False
+		drawing = False # keeps track if we are addign more points to the loop
 		forward = []
 		backward = []
-		for x in range(pollycount+1):
-			if a[x][1] <= b[x][1] and a[x][1] <= c[x][1]:
-				if not drawing:
-					drawing = True
+		for x in range(len(a)):
+			if a[x][1] <= b[x][1]: #for each point if a does extend futher than b 
+				if not drawing:# if this is the fist point 
+					drawing = True #reset the loop varibles
 					forward = []
-					if x>0:
-						bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-						cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-						if bint[1] < cint[1]:
-							forward.append(bint)
-						else:
-							forward.append(cint)
-						
 					backward = []
-				forward.append(a[x])
-				if b[x][1]<c[x][1]:
-					backward.append(b[x])
-				else:
-					backward.append(c[x])
-			else:
-				if drawing:
-					bint = self.intersection(a[x-1],a[x],b[x-1],b[x])
-					cint = self.intersection(a[x-1],a[x],c[x-1],c[x])
-					if bint[1] < cint[1]:
-						forward.append(bint)
-					else:
-						forward.append(cint)
-
-					drawing = False
-					backward.reverse()
-					paths.append(forward+backward)
-
-		if drawing: 
+					if x>0: # if there is a previus point then there must be a intersection 
+						forward.append(self.intersection(a[x-1],a[x],b[x-1],b[x]))
+						#add the intersection
+				forward.append(a[x])#add the points for moving forward and backwards along this loop
+				backward.append(b[x])
+			elif drawing:# if this doesnt extend futether but we were drawing points then we are done
+				forward.append(self.intersection(a[x-1],a[x],b[x-1],b[x]))
+				#add the closing intersection between the forwad and backwards part of the loop
+				drawing = False#we arent drawing more of the loop now
+				backward.reverse()# reverse the backward part so it is in the right direction
+				paths.append(forward+backward)#add the forwars and backwads par to create a full loop and add this to the output
+		if drawing: #if still drawign anfter the end of the loop close off the end section 
 			drawing = False
 			backward.reverse()
 			paths.append(forward+backward)
-		return paths
-
+		return paths#return the output
+	def max(self,a,b):#this returns the max of a and b polygons 
+		out = []
+		for x in range(len(a)):
+			if a[x][1] <= b[x][1]:
+				out.append(a[x])
+			else:
+				out.append(b[x])
+		return out
 	def intersection(self,a,b,c,d):
 		a = V(a[0],a[1])
 		b = V(b[0],b[1])
@@ -119,21 +111,24 @@ class Background:
 		self.lastFrameTime = self.time.time()
 		#if delta !=0:
 			#print("fps: "+ str(1/delta))
-		self.draw_water_world(canvas)
-		self.draw_carol(canvas,0.2)
+		self.draw_water_world(canvas)#draw the large background image
+		self.draw_carol(canvas,0.2)#draw the animating fetures at the bottom of the screen
 		self.draw_carol(canvas,0.7)
 		self.draw_perl(canvas,0.5)
-		pollycount = 50
-		self.background(canvas,pollycount,2,0.2,0.3,0.05,"rgb(0,0,250)")
+		pollycount = 35
+		self.background(canvas,pollycount,2,0.2,0.3,0.05,"rgb(0,0,250)")#draw the bacground wave
+
 		big = self.poly(pollycount,2,0.2,0.3,0.05) #rgb(0,0,250)
 		middle = self.poly(pollycount,3,-0.6,0.3,0.04) # rgb(0,0,150)
 		small = self.poly(pollycount,4,1,0.3,0.03) #rgb(0,0,100)
-		middles = self.sub(pollycount,middle,big,big)
-		smalls = self.sub(pollycount,small,middle,big)
-		self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")
+
+
+		middles = self.sub(middle,big) #subtract the bigger wave from the middle size one
+		smalls = self.sub(small,self.max(middle,big)) # subtract the combined top wave from the smallest one
+		self.draw_wave_parts(canvas,middles,"rgb(0,0,150)")#draw these wave sections
 		self.draw_wave_parts(canvas,smalls,"rgb(0,0,100)")
 		
-		self.looping_clouds(canvas,0.05,0.2)
+		self.looping_clouds(canvas,0.05,0.2)#draw the parlax clouds and the sun element in the sky 
 		self.draw_sun(canvas,0.3)
 		self.looping_clouds(canvas,0.03,0.25)
 		
