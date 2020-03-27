@@ -13,16 +13,19 @@ class Snd:
 		self.sound = simplegui.load_sound("file:///"+addr+"/sounds/"+sound)
 		self.sound.set_volume(volume)
 		self.length = length# if greater than one the sound will loop
-		self.playing = False
+		self.playing = False#is the sound currently being played
 		self.volume = volume
+		self.timepaused = False#wether the sound has just been paused becuase the time has been paused
 		if self.length > 0:
-			self.timer = simplegui.create_timer(self.length*1000, self.play)
-	def timeTrigger(self,playing):
-		if playing:
-			if self.length > 0:
+			self.timer = time.create_timer(self.length, self.play) #simplegui.create_timer(self.length*1000, self.play)
+	def timeTrigger(self,play):
+		if play:
+			if self.timepaused:
 				self.play()
 		else:
-			self.pause()
+			if self.playing: 
+				self.pause()
+				self.timepaused = True
 	def setVol(self,vol):
 		self.sound.set_volume(self.volume*vol)
 	def play(self):
