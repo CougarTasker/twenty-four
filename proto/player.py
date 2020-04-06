@@ -1,6 +1,5 @@
 import os
 from vect import Vector
-from rod import Rod
 from fish import Shark
 try:
 	import simplegui
