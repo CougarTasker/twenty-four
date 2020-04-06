@@ -18,7 +18,7 @@ class Background:
 		self.bubbles = SS("file:///"+addr+"/images/Bubble1.png",(6,5),time=1250,scale=0.22,timehand = self.time)
 		self.carol = SS("file:///"+addr+"/images/carol.png",(5,1),time=800,scale=0.22,timehand = self.time)
 		self.perl = SS("file:///"+addr+"/images/pearl.png",(3,3),time=3000,scale=0.22,looping=False,timehand = self.time)
-		#self.floor = simplegui.load_image()
+
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
 		path = [(0,self.dimensions[1])]
 		offset = self.lastFrameTime%(1/frequency)*frequency
