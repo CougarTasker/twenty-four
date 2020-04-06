@@ -16,7 +16,7 @@ class Overlay:
 		self.dim = dim
 		self.kbd = kbd
 		self.inter = inter
-		
+		#establishing states as screen objects
 		self.start = Screen(self.time,self.dim,self.frame,Snd(self.time,"start.ogg",0.1,97),"press space to start","start.png",offset=(-30,30))
 		self.playing = Screen(self.time,self.dim,self.frame,Snd(self.time,"waves.ogg",0.05,47),"press p to pause",autohide=True)
 		self.paused = Screen(self.time,self.dim,self.frame,Snd(self.time,"paused.ogg",0.5,58),"press p to play","pause.png")
@@ -61,6 +61,8 @@ class Overlay:
 		self.paused.draw(canvas)
 		self.gameover.draw(canvas)
 
+
+
 class Screen:
 	def __init__(self,time,dim,frame,sound=None,text="",img="",offset=(0,0),autohide = False):
 		self.sound = sound
@@ -76,9 +78,12 @@ class Screen:
 			self.img = None
 		else:
 			self.img = simplegui.load_image("file:///"+addr+"/images/"+img)
+			#used to generate local image directory if image is provided in argument
 		self.text = text
 		self.dim = dim
 		self.swap = None
+
+        #sets the original start state, called by overlay __init__ method with start object
 	def show(self,swap=None):
 		self.swap = swap
 		if not self.showing:
@@ -86,6 +91,8 @@ class Screen:
 				self.sound.play()
 			self.showing = True
 			self.start = self.time.time()
+
+	
 	def state(self):# 0 fully hidden 1= showing
 		s = (self.time.time() - self.start)/self.length
 		if s > 1:
@@ -107,6 +114,7 @@ class Screen:
 			self.sound.setVol(s) #fade the sound in an out 
 		return 3*s**2-2*s**3
 
+        #method to draw the image argument, e.g. start.png
 	def drawImg(self,canvas):
 		s = self.state()
 		height = (self.dim[1] - 45*2)*0.95
@@ -120,6 +128,7 @@ class Screen:
 				source_size,
 				dest_centre,
 				dest_size)
+	#used to draw string onto screen, e.g. 'press p to pause'
 	def drawString(self,canvas):
 		if self.text != "":
 			h=30
@@ -130,6 +139,8 @@ class Screen:
 			pos =((self.dim[0]-w)/2,self.dim[1]-h/2-p+offset)
 			self.back(canvas,(self.dim[0]/2,self.dim[1]-(h+p*2)/2-p+offset),w+p*2,h+p*2)
 			canvas.draw_text(self.text,pos, h, "yellow","sans-serif")
+			
+	#sets background for text drawn to screen, called in drawString() method
 	def back(self,canvas,pos,w,h):
 		pos = (pos[0]-w/2,pos[1]-h/2)
 		dim = (w+pos[0],h+pos[1])
@@ -138,6 +149,7 @@ class Screen:
 		self.drawString(canvas)
 		self.drawImg(canvas)
 
+        #sets a state to hidden so user no longer sees it
 	def hide(self,swap = None):
 		self.swap = swap
 		if self.showing:
