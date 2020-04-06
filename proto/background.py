@@ -54,7 +54,7 @@ class Background:
 		forward = []
 		backward = []
 		for x in range(len(a)):
-			if a[x][1] <= b[x][1]: #for each point if a does extend futher than b 
+			if a[x][1] <= b[x][1]: #for each point if a does extend further than b 
 				if not drawing:# if this is the first point 
 					drawing = True #reset the loop varibles
 					forward = []
@@ -75,6 +75,7 @@ class Background:
 			backward.reverse()
 			paths.append(forward+backward)
 		return paths#return the output
+	
 	def max(self,a,b):#this returns the max of a and b polygons 
 		out = []
 		for x in range(len(a)):
@@ -83,6 +84,8 @@ class Background:
 			else:
 				out.append(b[x])
 		return out
+
+	#used by sub method to determine where an intersection occurs when determining wave polygon points
 	def intersection(self,a,b,c,d):
 		a = V(a[0],a[1])
 		b = V(b[0],b[1])
@@ -93,7 +96,7 @@ class Background:
 		u = (a.cross(ab)-c.cross(ab))/cd.cross(ab)
 		l = (c.cross(cd)-a.cross(cd))/ab.cross(cd)
 		if u>=0 and u<= 1 and l >= 0 and l <= 1:
-			return (u * cd + c).get_p()	
+			return (u * cd + c).get_p()	        
 		else:
 			return (0,1000)
 
