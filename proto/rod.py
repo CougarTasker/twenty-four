@@ -54,7 +54,7 @@ class Rod:
 			self.sound.play()
 			self.direction = 1
 	def up(self):
-		#print("up")
+		
 		self.direction = -1
 	def moveable(self):
 		return len(self.courtFish) ==0 and len(self.flyingFish) ==0 and self.direction == 0
@@ -122,25 +122,4 @@ class Rod:
 						dest_size,hookpos[2])
 
 
-#org = True
-#hookRotate = 0
-#kbd = Keyboard()
 
-#addr = os.getcwd()
-#rod = Rod("file:///"+addr+"/images/hook.png", "file:///"+addr+"/images/colouredBoth.png")
-
-
-
-#inter = Interaction(rod, kbd)
-
-#def draw(canvas):
-	#inter.update()
-	#rod.draw_handler(canvas)
-
-#frame = simplegui.create_frame('Testing', 1980, 1080)
-#frame.set_draw_handler(draw)
-#frame.set_keydown_handler(kbd.keyDown)
-#frame.set_keyup_handler(kbd.keyUp)
-#frame.set_canvas_background("white")
-
-#frame.start()
