@@ -9,9 +9,8 @@ class Keyboard:
         self.right = False
         self.left = False
         self.down= False 
-        self.up = False
         self.p = False
-        self.r = False
+
     def keyDown(self, key):
         if key == simplegui.KEY_MAP['right'] or key == simplegui.KEY_MAP['d']:
             self.right = True
