@@ -57,16 +57,4 @@ class Player:
 			self.pos = Vector(self.canvas_dim[0]-self.draw_dim[0]/2-1,self.pos.y)
 	def draw(self,canvas):
 		canvas.draw_image(self.img, self.cen, self.dim, self.pos.get_p(), self.draw_dim)
-		#canvas.draw_circle((self.getPos()+Vector(8,-25)).get_p(),3,3,"red","red")
-						
-##def draw(canvas):
-##    play = Player((900,400))
-##
-##    play.draw(canvas)
-##
-##frame = simplegui.create_frame("ship test", 600,400)
-##
-##
-##frame.set_draw_handler(draw)
-### Start the frame animation
-##frame.start()
+								
