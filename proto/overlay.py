@@ -2,7 +2,6 @@ try:
 	import simplegui
 except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-from enum import Enum
 import os
 from spritesheet import SpriteSheet as SS
 from timehandel import TimeHandeler
@@ -24,13 +23,19 @@ class Overlay:
 
 		self.state = self.start
 		self.start.show()
+		
+	#separate method required when user reaches gameover as timer needs to be paused 
 	def gameOver(self):
 		self.swapState(self.gameover)
 		self.inter.time.pause()
+		
+	#sets old state to hidden so is not visible to user	
 	def swapState(self,now):
 		if now != self.state:
 			self.state.hide(now)
 			self.state = now
+			
+        #checks for keyboard interaction which would cause a change of state
 	def checkKbd(self):
 		if self.state == self.start:
 			if self.kbd.space:
@@ -60,7 +65,7 @@ class Overlay:
 		self.playing.draw(canvas)
 		self.paused.draw(canvas)
 		self.gameover.draw(canvas)
-
+        #calls all draw methods, but only one state is visible
 
 
 class Screen:
