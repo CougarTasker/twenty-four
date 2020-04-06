@@ -51,7 +51,7 @@ class Interaction:
 			self.player.set()
 		if self.player.vel.length() > 5:
                         #checks whether player has moved and so fish would be released
-			self.rod.playermoved()a 
+			self.rod.playermoved()
 		self.player.update()
 		
 	#updates hearts and score when fish/shark caught
