@@ -48,7 +48,7 @@ class TimeHandeler:
 			return time.time()-self.offset
 		else:
 			return self.pausestart-self.offset
-
+#used to mimic simpleGUI time module
 class Increment:
 	def __init__(self,length,method):
 		self.len = length
