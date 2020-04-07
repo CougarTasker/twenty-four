@@ -62,11 +62,6 @@ class Overlay:
 		self.gameover.draw(canvas)
 
 
-class State(Enum):
-	START = 0
-	PLAYING = 1
-	PAUSED = 2
-	GAMEOVER = 3
 class Screen:
 	def __init__(self,time,dim,frame,sound=None,text="",img="",offset=(0,0),autohide = False):
 		self.sound = sound

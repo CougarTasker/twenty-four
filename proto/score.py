@@ -9,7 +9,7 @@ class Score:
     def __init__(self,time,dim,die,frame):
         self.score = 0
         self.time = time
-        self.maxtime = 99
+        self.maxtime = 99.999
         self.starttime = self.time.time()
         self.scoreh = 30
         self.timeh = 20
