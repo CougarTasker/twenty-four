@@ -37,7 +37,6 @@ class Hearts:
     def resetLives(self):
         self.lives = self.lives_max
 
-
     def getLives(self):
         return self.lives
 
