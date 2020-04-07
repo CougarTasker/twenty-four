@@ -49,14 +49,17 @@ class Hearts:
             self.die.gameOver()
 
 
-    
+    #methods for drawing hearts to screen
     def draw(self,canvas):
+        #prevents negative lives
         if self.lives < 0:
             self.lives = 0
+        #draws full then empty hearts dependant on lives
         for i in range(0,self.lives):
             self.drawheart(canvas, self.img_full, i)
         for i in range(self.lives, self.lives_max):
             self.drawheart(canvas, self.img_empty,i)
+
     def drawheart(self,canvas,img,i):
         canvas.draw_image(img, self.cen, self.dim, (self.pos+Vector(self.pading,self.pading)+self.offset*i).get_p(),self.draw_dim)
         
