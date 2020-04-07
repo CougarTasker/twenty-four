@@ -44,9 +44,10 @@ class Hearts:
     #when shark caught user loses life
     def loseLife(self):
         self.sound.play() #shark 'chomp' sound
-        self.lives -= 1
+        self.lives -= 1 
         if self.lives <= 0:
             self.die.gameOver()
+        #when user reaches zero self.die.gameover calls the method in overlay to change to gameover state
 
 
     #methods for drawing hearts to screen
