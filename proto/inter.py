@@ -27,10 +27,10 @@ class Interaction:
 		#creates a school of 30 fish
 		self.keyboard = kbd
 		self.overlay = Overlay(kbd,self,dimensions,self.frame)
-		self.start()
+		self.start(False)
 
 	#separte method to start and reset the game without calling init
-	def start(self): 
+	def start(self,resetFish = True): 
 		self.player = Player(self.dimensions,self.time)
 		if resetFish:
 			self.fish.restart()
