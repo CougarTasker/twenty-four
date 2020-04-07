@@ -154,62 +154,64 @@ class Fsh:#this is all of the details of the fish
 		#used to debug the fish
 		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
-	def allign(self,fish):#align the fishes velocity with the average of the fish it can see
+
+	#align the fishes velocity with the average of the fish it can see
+	def allign(self,fish):
 		if len(fish) < 1:
-			return
+			return V()#if there is no fish you cant algin to them
 		# calculate the average velocities of the other boids
-		avg = V()
-		count = 0
+		avg = V()#store the average velocity
+		count = 0#number of fish around
 		for boid in fish:
-			if(boid.pos - self.pos).length()<self.per:
+			#count each fish if they are close enough and arent the orignal fish
+			if(boid.pos - self.pos).length()<self.per and not self is boid:
 				count+=1
 				avg += boid.vel
-		
-		if count>0:
-			avg /= count		
-			# set our velocity towards the others
-			return (avg).normalize()
+		if count>0:#check for divide by zero error
+			avg /= count#take the mean
+			# move our velocity towards the others
+			return (avg).normalize()#normalize it so only the direction matters
 		else:
 			return V()
-	def cohesion(self,fish):# try to move to the center of mass of the fish around it
-		if len(fish) < 1:
-			return
 
+	# try to move to the center of mass of the fish around it
+	def cohesion(self,fish):
+		if len(fish) < 1:
+			return V()#if there is no fish then you cant be attracted to them
 		# calculate the average distances from the other boids
 		com = V()
 		count = 0
 		for boid in fish:
-			if boid.pos == self.pos:
-				continue
-			elif (boid.pos - self.pos).length()<self.per:
-				com += (self.pos - boid.pos)
+			#count each fish if they are close enough and arent the orignal fish
+			if (boid.pos - self.pos).length()<self.per and not self is boid:
+				com += (boid.pos - self.pos)# add the vector to this new position
 				count+=1
-		if count>0:
-			com /= count
-			return -com.normalize()
+		if count>0 and com != V():#check for divide by zero error
+			com /= count#take the mean
+			# move our velocity towards the centre of mass =
+			return com.normalize()#normalize it so only the direction matter
 		else:
 			return V()
-	def seperation(self,fish, minDistance):#avoid toucing other fish
-		if len(fish) < 1:
+	# try to avoid coliding and moving towared any other fish		
+	def seperation(self,fish, minDistance):#avoid touching other fish
+		if len(fish) < 1:# if there are no fish cant move away from them
 			return V()
-
-		distance = 0
-		numClose = 0
+		count = 0
 		distsum = V()
+		distance = 0
 		for boid in fish:
-			distance = (self.pos-boid.pos).length()
-			if distance < minDistance and distance != 0:
-				numClose += 1
-				distsum += (boid.pos-self.pos)/distance**2
-
-		if numClose == 0:
+			#count each fish if they are close enough and arent the orignal fish
+			distance =(self.pos-boid.pos).length()
+			if distance < minDistance and not self is boid and distance != 0:
+				count += 1
+				distsum += (boid.pos-self.pos)/distance**2#add the distance with more ephasis on fish that are closer
+		if count == 0:#check for divide by zero error
 			return V()
-
-		return  (-distsum/numClose).normalize()
+		return  (-distsum/count).normalize()#move away from where the avrage is.
+	
 	def sharkawarness(self,fish):#avoid the sharks it can see
 		if len(fish) < 1:
 			return V()
-
 		distance = 0
 		numClose = 0
 		distsum = V()
@@ -327,4 +329,3 @@ class Bounds:#this is for dealing with keeping everthing in the water
 			
 			p *= 1/(1-safe) 
 		return V(0,p)
-

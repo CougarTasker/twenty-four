@@ -19,6 +19,7 @@ class Interaction:
 	def __init__(self,dimensions, kbd,frame):
 		self.frame = frame
 		self.time = TimeHandeler()
+		self.time.pause()
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
 		self.back = Bg(dimensions,self.time)
@@ -26,12 +27,13 @@ class Interaction:
 		#creates a school of 30 fish
 		self.keyboard = kbd
 		self.overlay = Overlay(kbd,self,dimensions,self.frame)
-		self.start()
+		self.start(False)
 
 	#separte method to start and reset the game without calling init
-	def start(self): 
+	def start(self,resetFish = True): 
 		self.player = Player(self.dimensions,self.time)
-		self.fish.restart()
+		if resetFish:
+			self.fish.restart()
 		self.hearts = Hearts(self.dimensions,self.time,self.overlay)
 		self.score = Score(self.time,self.dimensions,self.overlay,self.frame)
 		self.rod = Rod(self.player,self.dimensions[1],self.time)
