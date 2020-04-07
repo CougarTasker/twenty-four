@@ -16,11 +16,15 @@ class TimeHandeler:
 	def triggerHandel(self):
 		for i in self.pausehandelers:
 			i.timeTrigger(self.playing)
+
+	#plays timer and increments to offset var the time spent paused
 	def play(self):
 		if not self.playing:
 			self.playing = True 
 			self.offset+= time.time()-self.pausestart
 			self.triggerHandel()
+
+	#when timer is paused this is recorded as an offset in the ongoing timer
 	def pause(self):
 		if self.playing:
 			self.playing = False
@@ -28,11 +32,15 @@ class TimeHandeler:
 			self.triggerHandel()
 	def isPlaying(self):
 		return self.playing
+
+	#swaps between states
 	def alt(self):
 		if self.playing:
 			self.pause()
 		else:
 			self.play()
+
+        #returns time, taking into account pauses/game restarts as the offset
 	def time(self):
 		for i in self.incHandel:
 			i.check()
@@ -40,7 +48,7 @@ class TimeHandeler:
 			return time.time()-self.offset
 		else:
 			return self.pausestart-self.offset
-
+#used to mimic simpleGUI time module
 class Increment:
 	def __init__(self,length,method):
 		self.len = length
