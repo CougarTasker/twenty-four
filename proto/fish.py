@@ -245,6 +245,7 @@ class Fsh:#this is all of the details of the individual fish
 			return V()
 
 		return  (-distsum/numClose).normalize()
+	
 	def update(self,delta,fish):#update the positon of the fish
 		if not self.fixed:#if the fish is free to move
 			self.vel += self.allign(fish)* self.max_vel/50#change the velocity based on the above rules
@@ -255,15 +256,17 @@ class Fsh:#this is all of the details of the individual fish
 			self.vel = self.vel.normalize() * self.max_vel#make sure fish is moving at the same velocity
 			self.vel.rotate((random.random()*2-1)*delta*20)
 			#add a random factor so the movement isn't completely predictable and boring
+			
 			self.pos += self.vel * delta#move the position by the velocity and the amount of time that has passed
 			self.pos = self.bounds.correct(self)#fix the position so it doesn't leave the screen
+			
 		elif self.anim.isAnim():#if the fish is animating 
 			self.vel = self.anim.vel()#set the position velocity and scale aproprately
 			self.pos = self.anim.pos()
 			self.scale = self.anim.scale()
 
 class Shark(Fsh):
-	def __init__(self,bounds,imgl,imgr,time,die):#shark is like a fish but has slightly diffrent behviour
+	def __init__(self,bounds,imgl,imgr,time,die):#shark is like a fish but has slightly different behviour
 		super().__init__(bounds,imgl,imgr,time,die)
 		self.size = 40#it is bigger and it moves faster and can see further
 		self.max_vel = 150
