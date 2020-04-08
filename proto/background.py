@@ -12,6 +12,7 @@ class Background:
 		self.time = time
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
+		#resource addresses
 		self.clouds = simplegui.load_image("file:///"+addr+"/images/background_clouds.png")
 		self.sun = simplegui.load_image("file:///"+addr+"/images/sun.png")
 		self.water_world = simplegui.load_image("file:///"+addr+"/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
@@ -25,6 +26,7 @@ class Background:
 	def background(self,canvas,pollycount,wavecount,frequency,height,waveheight,color):
 		path = [(0,self.dimensions[1])]
 		offset = self.lastFrameTime%(1/frequency)*frequency
+		#iteration creates points on the wave 
 		for x in range(pollycount+1):
 			ang = x/pollycount*wavecount + offset
 			ang *= 2*math.pi
@@ -50,7 +52,7 @@ class Background:
 		return path
 	def sub(self,a,b):#returns the loops of the polygon a that extend further than b
 		paths = []
-		drawing = False # keeps track if we are adding more points to the loop
+		drawing = False #keeps track if we are adding more points to the loop
 		forward = []
 		backward = []
 		for x in range(len(a)):
@@ -67,16 +69,17 @@ class Background:
 			elif drawing:# if this doesn't extend further but we were drawing points then we are done
 				forward.append(self.intersection(a[x-1],a[x],b[x-1],b[x]))
 				#add the closing intersection between the forward and backwards part of the loop
-				drawing = False#we arent drawing more of the loop now
-				backward.reverse()# reverse the backward part so it is in the right direction
+				drawing = False#we aren't drawing more of the loop now
+				backward.reverse()#reverse the backward part so it is in the right direction
 				paths.append(forward+backward)#add the forwards and backwards part to create a full loop and add this to the output
 		if drawing: #if still drawing after the end of the loop close off the end section 
 			drawing = False
 			backward.reverse()
 			paths.append(forward+backward)
 		return paths#return the output
-	
-	def max(self,a,b):#this returns the max of a and b polygons 
+
+	#this returns the max of a and b polygons 
+	def max(self,a,b):
 		out = []
 		for x in range(len(a)):
 			if a[x][1] <= b[x][1]:
@@ -126,9 +129,9 @@ class Background:
         #draw method to call above 3 methods as well as generate the background waves and call methods to draw clouds/sun
 	def draw(self, canvas):
 		self.lastFrameTime = self.time.time()
-
 		self.draw_water_world(canvas)#draw the large background image
-		self.draw_carol(canvas,0.2)#draw the animating features at the bottom of the screen
+                #draw the animating features at the bottom of the screen
+		self.draw_carol(canvas,0.2)
 		self.draw_carol(canvas,0.7)
 		self.draw_perl(canvas,0.5)
 
