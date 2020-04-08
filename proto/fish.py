@@ -6,48 +6,60 @@ except ImportError:
 from vect import Vector as V
 from spritesheet import SpriteSheet as SS
 class School:
+        #handles all the fish and shark objects 
 	def __init__(self,count,dim,time,die):
-		self.fish = []# a list conting all the fish objectes in this school of fish
+		self.fish = []# a list containing all the fish objects in this school of fish
 		self.time = time# a time object to control when the fish are paused
 		self.lastFrameTime = self.time.time()
 		random.seed(time.time()) 
 		addr = os.getcwd()
-		#the left and right sprite sheet of the fish to be shared across them to improve perfomance and fix transpaency issue
+		
+		#the left and right sprite sheet of the fish to be shared across them to improve performance and fix transparency issue
 		self.imgr = SS("file:///"+addr+"/images/right.png",(2,2),time=400,scale=0.2,timehand = self.time)
 		self.imgl = SS("file:///"+addr+"/images/left.png",(2,2),time=400,scale=0.2,timehand = self.time)
-		#create half of the fish that will be beanth the fish -- thanks dave choen for this idea 
+
+		#create half of the fish that will be beneanth the sharks -- thanks dave cohen for this idea
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
 		self.shrl = SS("file:///"+addr+"/images/Sharkleft.png",(5,1),time=600,scale=1,timehand = self.time)# the shark sprite sheets 
 		self.shrr = SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1,timehand = self.time)
+
+                #create sharks
 		for i in range(3):
 			self.fish.append(Shark(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time,die))
+
 		#the rest of the fish
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
+
 	def draw(self,canvas):#draw the fish
-		delta = self.time.time()-self.lastFrameTime #calcuralte the amount of time that has passed
+		delta = self.time.time()-self.lastFrameTime #calculate the amount of time that has passed
 		self.lastFrameTime = self.time.time()
 		for fish in self.fish:#draw all of the fish
-			if self.time.isPlaying():#if the game isnt paused do the physics on the fish
+			if self.time.isPlaying():#if the game isn't paused do the physics on the fish
 				fish.update(delta,self.fish)
-			fish.draw(canvas)#draw the fish 
+			fish.draw(canvas)#draw the fish
+			
 	def restart(self):#if the game needs to restart the fish this is quicker than recreating all the fish
 		for fish in self.fish:
 			fish.restart()
-	def touching_fish(self,pos,r):#this method is used by the rod class but it returns all the fish that are touching a pretuclar circle
+			
+	def touching_fish(self,pos,r):#this method is used by the rod class but it returns all the fish that are touching a particular circle (ie hook)
 		out = []
 		for boid in self.fish:
 			if (boid.pos- pos).length() < (boid.size+r):
 				out.append(boid)
 		return out
-	def move_fish(self,pos,fish,vel = None):#this moves a group of fish to a postion
+	
+	def move_fish(self,pos,fish,vel = None):#this moves a group of fish to a position
 		for boid in fish:
-			boid.fixed = True#make sure the boid algorth wont move the fish
+			boid.fixed = True#make sure the boid algorithm won't move the fish
 			boid.pos = pos
 			if not vel is None:
 				boid.vel = vel
-class Anim:#this is used to control the fish while it is animating 
+
+#this is used to control the fish while it is animating			
+class Anim:
 	def __init__(self,fsh,time,bounds):
 		self.bounds = bounds#the bounds of the water it might fall into 
 		self.g = V(0,120)# the gravity the fish will fall under
@@ -151,7 +163,7 @@ class Fsh:#this is all of the details of the fish
 		img.draw(canvas,rotation=a)#draw the image
 		img.scale = old
 		
-		#used to debug the fish
+		##used to debug the fish
 		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 
@@ -289,7 +301,7 @@ class Bounds:#this is for dealing with keeping everthing in the water
 		y = pos.y-size >= self.pos.y and pos.y+size < self.dim.y + self.pos.y
 		return x and y
 	def random_start(self,fish):
-	#move a fish to a random postion of the screen this means it can swim on without anyone noticing
+	#move a fish to a random postion from off the screen this means it can swim on without anyone noticing 
 		if random.random() > 0.5:
 			fish.pos = self.pos + V(self.dim.x+fish.size,0)
 			fish.pos.y = self.dim.y * random.random()
