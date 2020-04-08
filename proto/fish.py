@@ -58,62 +58,69 @@ class School:
 			if not vel is None:
 				boid.vel = vel
 
-#this is used to control the fish while it is animating			
+#this is used to control the fish while it is animating	
 class Anim:
 	def __init__(self,fsh,time,bounds):
 		self.bounds = bounds#the bounds of the water it might fall into 
-		self.g = V(0,120)# the gravity the fish will fall under
+		self.g = V(0,120)#the gravity the fish will fall under
 		self.time = time
 		self.timel = 2 + random.random()#the length of the animation
-		self.startt = 0 # the time the animation starts
-		self.fsh = fsh# the fish that will be animated
-		self.startp = V()#the start postion and velocty 
+		self.startt = 0 #the time the animation starts
+		self.fsh = fsh#the fish that will be animated
+		self.startp = V()#the start position and velocity 
 		self.startv = V()
 		self.anim = False#is the fish currently being animated
-		self.endscale = 0.5# the size of the fish at the end of the animation
-		self.moved = False # has the boat been moved
+		self.endscale = 0.5#the size of the fish at the end of the animation
+		self.moved = False#has the boat been moved
 		self.movedt = 0#the time when the boat has been moved
+		
+        #called when the rod is moved but the fish is in the animation
 	def rodmoved(self):
-		self.moved = True#called when the rod is moved but the fish is in the animation
+		self.moved = True
 		self.movedt = self.time.time()
-	def scale(self):# calcute the scale the fish should be at
+		
+	def scale(self):#calculate the scale the fish should be at
 		if self.moved:# if the fish has been moved make the fish get bigger again to the full size
 			t = self.movedt*2 - self.time.time()
 			s = self.endscale + (self.startt+self.timel-t)/self.timel * (1-self.endscale)
 			if s >1:
 				s = 1
 			return s
-		# the scale is a liner tranforamtion from the start to end size
+		# the scale is a linear transformation from the start to end size
 		return self.endscale + (self.startt+self.timel- self.time.time())/self.timel * (1-self.endscale)
+	
 	def start(self,end):#start the animation the end is the end postion
-		if not self.anim:# only start the animation if the pervious animation has stoped
-			self.moved= False#it cant have moved if the animation has just started
+		if not self.anim:#only start the animation if the previous animation has stopped
+			self.moved= False#it can't have moved if the animation has just started
 			self.startt = self.time.time()#what is the time
-			self.startp = self.fsh.pos# what is the old positon of the fish
+			self.startp = self.fsh.pos#what is the old position of the fish
 			self.startv = ((end - self.startp)-1/2 * self.g * self.timel**2)/self.timel
-			# calcuate the velocity needed to get the fish to the end position
+			#calculate the velocity needed to get the fish to the end position
 			self.anim = True
 	def stop(self):
 		self.anim = False
 		#stop the animation
+	
 	def isAnim(self):#check if the fish is being animated
-		if self.anim:# if it is spuuosed to be animating is that still the case?
+		if self.anim:#if it is supposed to be animating is that still the case?
 			if (self.time.time() -self.startt > self.timel and not self.moved) or (self.bounds.contains(self.pos(),self.fsh.size) and self.moved):
 				#if the animation is over or it has hit the water
 				self.anim = False#if it shoulnt be animating then stop it
 				if self.moved:#if the boat has moved 
-					self.fsh.release()#relese the fish back into the water
+					self.fsh.release()#release the fish back into the water
 				else:
 					self.fsh.court()#let the user catch the fish
 		return self.anim#return if the fish is being animated
-	def pos(self):# get the postion of the fish
+	
+	def pos(self):#get the position of the fish
 		t = self.time.time() - self.startt
 		return self.startp + self.startv * t + 0.5 * self.g * t**2
+	
 	def vel(self):#get the velocity of the fish
 		t = self.time.time() - self.startt
 		return self.startv + self.g *t
 
-class Fsh:#this is all of the details of the fish
+class Fsh:#this is all of the details of the individual fish
 	def __init__(self,bounds,imgl,imgr,time,die):
 		self.die = die#keep a refrance of what to call when the fish dies eg its been cought or eaten
 		self.bounds = bounds#what are the boundries of the water
