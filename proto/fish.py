@@ -303,7 +303,7 @@ class Shark(Fsh):
 		return  (-distsum/numClose).normalize()
 		
 
-class Bounds:#this is for dealing with keeping everthing in the water
+class Bounds:#this is for dealing with keeping everything in the water
 	def __init__(self,pos,dim):
 		self.pos = pos
 		self.dim = dim
@@ -312,7 +312,7 @@ class Bounds:#this is for dealing with keeping everthing in the water
 		y = pos.y-size >= self.pos.y and pos.y+size < self.dim.y + self.pos.y
 		return x and y
 	def random_start(self,fish):
-	#move a fish to a random postion from off the screen this means it can swim on without anyone noticing 
+	#move a fish to a random position from off the screen this means it can swim on without anyone noticing 
 		if random.random() > 0.5:
 			fish.pos = self.pos + V(self.dim.x+fish.size,0)
 			fish.pos.y = self.dim.y * random.random()
@@ -320,7 +320,7 @@ class Bounds:#this is for dealing with keeping everthing in the water
 			fish.pos = self.pos - V(fish.size,0)
 			fish.pos.y = self.dim.y * random.random()
 	def correct(self,fish):
-		#correct the fishes postion if it goes out of the bounds of the water.
+		#correct the fishes position if it goes out of the bounds of the water.
 		return V(self.cord(self.pos.x,self.pos.x+self.dim.x,fish),self.cora(self.pos.y,self.pos.y+self.dim.y,fish))
 	def cord(self,mn,mx,val):
 		if val.pos.x+val.size<mn:
@@ -336,7 +336,7 @@ class Bounds:#this is for dealing with keeping everthing in the water
 			val.vel.y *= -1
 			return mx-val.size
 		return val.pos.y
-	def repel(self,fish):#repel fish from the top and bottom so they dont hit the boundry so much
+	def repel(self,fish):#repel fish from the top and bottom so they don't hit the boundary as much
 		a = self.pos.y + fish.size
 		b = self.pos.y + self.dim.y - fish.size
 		r = (b-a)/2
