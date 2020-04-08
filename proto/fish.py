@@ -122,20 +122,20 @@ class Anim:
 
 class Fsh:#this is all of the details of the individual fish
 	def __init__(self,bounds,imgl,imgr,time,die):
-		self.die = die#keep a refrance of what to call when the fish dies eg its been cought or eaten
-		self.bounds = bounds#what are the boundries of the water
+		self.die = die#keep a reference of what to call when the fish dies e.g. its been caught
+		self.bounds = bounds#what are the boundaries of the water
 		self.max_vel = 75#what is the max speed of the fish
-		self.imgr = imgr# what images 
+		self.imgr = imgr#what images 
 		self.imgl = imgl
-		self.time = time#keep track of the tiem
+		self.time = time#keep track of the time
 		self.size = 25#what is the size of the fish
 		self.scale = 1#what is the scale of the fish image
 		self.per = self.size*3#how far can the fish see 
-		self.fixed = False# is the position of the fish fixed
+		self.fixed = False#is the position of the fish fixed
 		self.pos = V(random.random()*bounds.dim.x+bounds.pos.x,random.random()*bounds.dim.y+bounds.pos.y)#set the position of the fish
 		angle = random.random()*math.pi*2#angle the fish randomle 
-		self.vel = V(math.cos(angle),math.sin(angle)) * 20#set the velosicy in the angle of the direction of the fish
-		self.anim =Anim(self,time,bounds)#add the animation handeler
+		self.vel = V(math.cos(angle),math.sin(angle)) * 20#set the velocity in the angle of the direction of the fish
+		self.anim =Anim(self,time,bounds)#add the animation handler
 		
 	def release(self):
 		self.scale = 1#set the fish back to the correct scale
@@ -143,18 +143,18 @@ class Fsh:#this is all of the details of the individual fish
 	def restart(self):
 		if self.anim.anim:#if the fish is animating 
 			self.anim.stop()#stop it 
-		self.reset()#rest the fish
+		self.reset()#reset the fish
 	def reset(self):
-		self.bounds.random_start(self)#rest the postion to somthing random
+		self.bounds.random_start(self)#rest the position to something random
 		self.scale = 1#set the fish back to the correct scale
 		self.fixed = False#let it move on its own accord
 	def court(self):
-		self.die.catch(self)#let the game know this fish has been cought
-		self.reset()#reset the fish as if it didnt die
+		self.die.catch(self)#let the game know this fish has been caught
+		self.reset()#reset the fish as if it didn't die
 	def animstart(self,end):
 		self.anim.start(end)#start the animation handeler
 	def draw(self,canvas):
-		#calcuate the angle of the fish from the direction of the velcotiy
+		#calculate the angle of the fish from the direction of the velocity
 		a = self.vel.angle(V(0,1))
 		if self.vel.x > 0: 
 			a *= -1 
@@ -162,7 +162,7 @@ class Fsh:#this is all of the details of the individual fish
 			a += math.pi/2
 		else:
 			a -= math.pi/2
-			img = self.imgl#if moveing left use the left image 
+			img = self.imgl#if moving left use the left image 
 		
 		img.pos = self.pos#set the image position to the fish position
 		old = img.scale#set the scale of the image
@@ -174,21 +174,21 @@ class Fsh:#this is all of the details of the individual fish
 		#canvas.draw_line(self.pos.get_p(),(self.pos+self.vel).get_p(),2,"blue")
 		#canvas.draw_circle(self.pos.get_p(),self.size,1,"black")
 
-	#align the fishes velocity with the average of the fish it can see
+	#align the velocity with the average of the fish it can see
 	def allign(self,fish):
 		if len(fish) < 1:
-			return V()#if there is no fish you cant algin to them
+			return V()#if there is no fish you can't align to them
 		# calculate the average velocities of the other boids
 		avg = V()#store the average velocity
 		count = 0#number of fish around
 		for boid in fish:
-			#count each fish if they are close enough and arent the orignal fish
+			#count each fish if they are close enough and aren't the original fish
 			if(boid.pos - self.pos).length()<self.per and not self is boid:
 				count+=1
 				avg += boid.vel
 		if count>0:#check for divide by zero error
 			avg /= count#take the mean
-			# move our velocity towards the others
+			#move our velocity towards the others
 			return (avg).normalize()#normalize it so only the direction matters
 		else:
 			return V()
@@ -196,37 +196,38 @@ class Fsh:#this is all of the details of the individual fish
 	# try to move to the center of mass of the fish around it
 	def cohesion(self,fish):
 		if len(fish) < 1:
-			return V()#if there is no fish then you cant be attracted to them
+			return V()#if there is no fish then you can't be attracted to them
 		# calculate the average distances from the other boids
 		com = V()
 		count = 0
 		for boid in fish:
-			#count each fish if they are close enough and arent the orignal fish
+			#count each fish if they are close enough and arent the original fish
 			if (boid.pos - self.pos).length()<self.per and not self is boid:
 				com += (boid.pos - self.pos)# add the vector to this new position
 				count+=1
 		if count>0 and com != V():#check for divide by zero error
 			com /= count#take the mean
-			# move our velocity towards the centre of mass =
+			# move our velocity towards the centre of mass
 			return com.normalize()#normalize it so only the direction matter
 		else:
 			return V()
-	# try to avoid coliding and moving towared any other fish		
+		
+	# try to avoid coliding and moving towared any other fish
 	def seperation(self,fish, minDistance):#avoid touching other fish
-		if len(fish) < 1:# if there are no fish cant move away from them
+		if len(fish) < 1:# if there are no fish can't move away from them
 			return V()
 		count = 0
 		distsum = V()
 		distance = 0
 		for boid in fish:
-			#count each fish if they are close enough and arent the orignal fish
+			#count each fish if they are close enough and aren't the original fish
 			distance =(self.pos-boid.pos).length()
 			if distance < minDistance and not self is boid and distance != 0:
 				count += 1
-				distsum += (boid.pos-self.pos)/distance**2#add the distance with more ephasis on fish that are closer
+				distsum += (boid.pos-self.pos)/distance**2#add the distance with more emphasis on fish that are closer
 		if count == 0:#check for divide by zero error
 			return V()
-		return  (-distsum/count).normalize()#move away from where the avrage is.
+		return  (-distsum/count).normalize()#move away from where the average is
 	
 	def sharkawarness(self,fish):#avoid the sharks it can see
 		if len(fish) < 1:
@@ -253,11 +254,11 @@ class Fsh:#this is all of the details of the individual fish
 			self.vel += self.bounds.repel(self)*self.max_vel * 0.4#try not to hit the top or bottom of the water
 			self.vel = self.vel.normalize() * self.max_vel#make sure fish is moving at the same velocity
 			self.vel.rotate((random.random()*2-1)*delta*20)
-			#add a random factor so the movment isnt completly prodictalbe and boring
-			self.pos += self.vel * delta#move the postion by the velocity and the amount of time that has passed
-			self.pos = self.bounds.correct(self)#fix the psotion so it doesnt leave the screen
+			#add a random factor so the movement isn't completely predictable and boring
+			self.pos += self.vel * delta#move the position by the velocity and the amount of time that has passed
+			self.pos = self.bounds.correct(self)#fix the position so it doesn't leave the screen
 		elif self.anim.isAnim():#if the fish is animating 
-			self.vel = self.anim.vel()#set the positon velocity and scale aproprately
+			self.vel = self.anim.vel()#set the position velocity and scale aproprately
 			self.pos = self.anim.pos()
 			self.scale = self.anim.scale()
 
