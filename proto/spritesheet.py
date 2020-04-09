@@ -1,5 +1,5 @@
 from vect import Vector
-from timehandel import TimeHandeler
+from timehandel import TimeHandler
 import random,math,time
 try:
     import simplegui
@@ -11,7 +11,7 @@ class SpriteSheet(object):
 	"""SpriteSheet class used to handle animation of spritesheets
         param for init: image, size of sheet, position on canvas, framecount, time, scale, loop=true/false, timeHandeler object
         return: draws next relevant iteration of spritesheet"""
-	def __init__(self, url,size=(1,1),pos = Vector(),framecount = -1,time = 1000,scale = 1,looping=True,timehand=TimeHandeler()):
+	def __init__(self, url,size=(1,1),pos = Vector(),framecount = -1,time = 1000,scale = 1,looping=True,timehand=TimeHandler()):
 		if framecount == -1:
 			framecount = size[0]*size[1]
 		self.timehand = timehand

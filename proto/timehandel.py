@@ -1,12 +1,41 @@
 import time,math
-class TimeHandeler:
+class TimeHandler:
 	def __init__(self):
-		self.playing = True
-		self.offset = 0
-		self.pausestart = 0
-		self.pausehandelers = []
-		self.incHandel = []
-
+		self.playing = True#is the game paused
+		self.offset = 0#the amount of time lost to the game being paused
+		self.pausestart = 0#stores when the pause was started
+		self.pausehandelers = []# keep refrences to all the pause handelers
+		self.incHandel = []#keep a refrace to all the timers
+		self.lastproof = -1
+	#start time
+	def play(self):
+		if not self.playing:#only do this if paused
+			self.playing = True #set the playing varible
+			self.offset+= time.time()-self.pausestart#calcualte offset
+			self.triggerHandel()
+	#pause time  
+	def pause(self):
+		if self.playing:# only pause if not already paused 
+			self.playing = False #set the playing varible
+			self.pausestart = time.time()#record when the pause was started
+			self.triggerHandel()
+	    #get the current time in seconds since the unix epoch
+	def time(self):
+		for i in self.incHandel:#check if any timeres have elapsed
+			i.check()
+		if self.playing:#if playing caluclate the time
+			return time.time()-self.offset
+		else:
+			return self.pausestart-self.offset
+			#if paused the time is the time the pause started
+	def isPlaying(self):
+		return self.playing
+	def check_running(self):
+		if self.lastproof > 0:
+			return time.time()-self.lastproof<0.5
+		return True
+	def prove_running(self):
+		self.lastproof = time.time()
 	def create_timer(self,length,method):
 		out = Increment(length,method)
 		self.incHandel.append(out)
@@ -16,22 +45,8 @@ class TimeHandeler:
 	def triggerHandel(self):
 		for i in self.pausehandelers:
 			i.timeTrigger(self.playing)
-
 	#plays timer and increments to offset var the time spent paused
-	def play(self):
-		if not self.playing:
-			self.playing = True 
-			self.offset+= time.time()-self.pausestart
-			self.triggerHandel()
-
-	#when timer is paused this is recorded as an offset in the ongoing timer
-	def pause(self):
-		if self.playing:
-			self.playing = False
-			self.pausestart = time.time()
-			self.triggerHandel()
-	def isPlaying(self):
-		return self.playing
+	
 
 	#swaps between states
 	def alt(self):
@@ -41,29 +56,26 @@ class TimeHandeler:
 			self.play()
 
         #returns time, taking into account pauses/game restarts as the offset
-	def time(self):
-		for i in self.incHandel:
-			i.check()
-		if self.playing:
-			return time.time()-self.offset
-		else:
-			return self.pausestart-self.offset
+
 #used to mimic simpleGUI time module
 class Increment:
 	def __init__(self,length,method):
-		self.len = length
-		self.method = method
+		self.len = length#how often it should be called
+		self.method = method#what should be called
 		self.called = 0#number of times it has been called
-		self.startTime = time.time()
-		self.running = False
+		self.startTime = time.time()#when did the time start
+		self.running = False#is the timer currently running
 	def check(self):
 		if self.running:
 			if (time.time()-self.startTime)//self.len > self.called:
-				self.called +=1
-				self.method()
+			#if the method hasnt been called enough times
+				self.called +=1#increse the number of time called
+				self.method()#call the method 
 	def start(self):
+		#start the timer
 		self.running=True
 		self.startTime = time.time()
 		self.called = 0
 	def stop(self):
+		#stop the timer
 		self.running=False

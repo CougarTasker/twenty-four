@@ -5,10 +5,11 @@ from player import Player
 from keyboard import Keyboard
 from hearts import Hearts 
 from vect import Vector
-from timehandel import TimeHandeler
+from timehandel import TimeHandler
 from overlay import Overlay
 import random,math,time,os
 from fish import Shark
+import cProfile, pstats, io
 from score import Score
 try:
 	import simplegui
@@ -18,7 +19,7 @@ except ImportError:
 class Interaction:
 	def __init__(self,dimensions, kbd,frame):
 		self.frame = frame
-		self.time = TimeHandeler()
+		self.time = TimeHandler()
 		self.time.pause()
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
@@ -65,9 +66,21 @@ class Interaction:
 		self.rod.catch(fish)
 
 	#calls draw method on all objects to draw to the canvas	
+	def debugfps(self):
+			delta = self.time.time()-self.lastFrameTime #calcuralte the amount of time that has passed
+			self.lastFrameTime = self.time.time()
+			if(delta != 0):
+				print("fps: "+str(1/delta))
 	def draw(self, canvas):	
+		#profiling code
+		
+		# pr = cProfile.Profile()
+		# pr.enable()
+		# self.debugfps()
+
 		if self.time.isPlaying():
-			self.update()	
+			self.update()
+		self.time.prove_running()
 		self.back.draw(canvas)
 		self.fish.draw(canvas)
 		self.player.draw(canvas)
@@ -75,3 +88,10 @@ class Interaction:
 		self.hearts.draw(canvas)
 		self.score.draw(canvas)
 		self.overlay.draw(canvas)
+
+		# pr.disable()
+		# s = io.StringIO()
+		# sortby = 'cumulative'
+		# ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+		# ps.print_stats()
+		# print(s.getvalue())

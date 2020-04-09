@@ -1,4 +1,4 @@
-import random,math,time,os
+import random,math,time,os,threading
 try:
 	import simplegui
 except ImportError:
@@ -25,12 +25,10 @@ class School:
 		#the rest of the fish
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
-	def draw(self,canvas):#draw the fish
-		delta = self.time.time()-self.lastFrameTime #calcuralte the amount of time that has passed
-		self.lastFrameTime = self.time.time()
-		for fish in self.fish:#draw all of the fish
-			if self.time.isPlaying():#if the game isnt paused do the physics on the fish
-				fish.update(delta,self.fish)
+		t = threading.Thread(target=self.update,args=())
+		t.start()
+	def draw(self,canvas):#draw all the fish
+		for fish in self.fish:
 			fish.draw(canvas)#draw the fish 
 	def restart(self):#if the game needs to restart the fish this is quicker than recreating all the fish
 		for fish in self.fish:
@@ -47,6 +45,16 @@ class School:
 			boid.pos = pos
 			if not vel is None:
 				boid.vel = vel
+	def update(self):
+		while self.time.check_running():#while the game is running
+			delta = self.time.time()-self.lastFrameTime #calcuralte the amount of time that has passed
+			self.lastFrameTime = self.time.time()
+			for fish in self.fish:#draw all of the fish
+				if self.time.isPlaying():#if the game isnt paused do the physics on the fish
+					fish.update(delta,self.fish)
+			time.sleep(max(1/60-(self.time.time()-self.lastFrameTime),0))
+			#if running faster than 60hz sleep the correct amount of time
+
 class Anim:#this is used to control the fish while it is animating 
 	def __init__(self,fsh,time,bounds):
 		self.bounds = bounds#the bounds of the water it might fall into 
@@ -138,9 +146,8 @@ class Fsh:#this is all of the details of the fish
 		#calcuate the angle of the fish from the direction of the velcotiy
 		a = self.vel.angle(V(0,1))
 		if self.vel.x > 0: 
-			a *= -1 
 			img = self.imgr#if moving right use the right image 
-			a += math.pi/2
+			a = math.pi/2 -a
 		else:
 			a -= math.pi/2
 			img = self.imgl#if moveing left use the left image 
@@ -192,6 +199,7 @@ class Fsh:#this is all of the details of the fish
 			return com.normalize()#normalize it so only the direction matter
 		else:
 			return V()
+
 	# try to avoid coliding and moving towared any other fish		
 	def seperation(self,fish, minDistance):#avoid touching other fish
 		if len(fish) < 1:# if there are no fish cant move away from them
@@ -204,7 +212,8 @@ class Fsh:#this is all of the details of the fish
 			distance =(self.pos-boid.pos).length()
 			if distance < minDistance and not self is boid and distance != 0:
 				count += 1
-				distsum += (boid.pos-self.pos)/distance**2#add the distance with more ephasis on fish that are closer
+				distsum += (boid.pos-self.pos)/distance**2
+				#add the distance with more ephasis on fish that are closer
 		if count == 0:#check for divide by zero error
 			return V()
 		return  (-distsum/count).normalize()#move away from where the avrage is.

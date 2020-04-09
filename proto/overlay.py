@@ -4,13 +4,13 @@ except ImportError:
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import os
 from spritesheet import SpriteSheet as SS
-from timehandel import TimeHandeler
+from timehandel import TimeHandler
 from vect import Vector
 from snd import Snd
 
 class Overlay:
 	def __init__(self,kbd,inter,dim,frame):
-		self.time = TimeHandeler()
+		self.time = TimeHandler()
 		self.frame = frame
 		self.dim = dim
 		self.kbd = kbd
@@ -21,44 +21,48 @@ class Overlay:
 		self.paused = Screen(self.time,self.dim,self.frame,Snd(self.time,"paused.ogg",0.5,58),"press p to play","pause.png")
 		self.gameover = Screen(self.time,self.dim,self.frame,Snd(self.time,"gameover.ogg",0.5,99),"press space to try again","game_over.png")
 
-		self.state = self.start
-		self.start.show()
+		self.state = self.start#the first state is the start state
+		self.state.show()#show the start overlay
 		
-	#separate method required when user reaches gameover as timer needs to be paused 
+	
+
+	def swapState(self,now):
+		if now != self.state:#only swap if trasitioning to a new state
+			self.state.hide(now)#sets old state to hidden so is not visible to user
+			#the old state will show "now" once it is hidden
+			self.state = now#updates the current state
+	#state transtitons below	
+	#separate method required when user reaches gameover since it isn't a keybord input 
 	def gameOver(self):
 		self.swapState(self.gameover)
 		self.inter.time.pause()
-		
-	#sets old state to hidden so is not visible to user	
-	def swapState(self,now):
-		if now != self.state:
-			self.state.hide(now)
-			self.state = now
-			
-        #checks for keyboard interaction which would cause a change of state
+    #checks for keyboard interaction which would cause a change of state
 	def checkKbd(self):
 		if self.state == self.start:
-			if self.kbd.space:
-				self.swapState(self.playing)
-				self.inter.start()
-				self.inter.time.play()
+			if self.kbd.space:#check each key
+				self.swapState(self.playing)#swap the state where nessary
+				self.inter.start()#reset the game
+				self.inter.time.play()#play
 				self.kbd.space = False
+				# set the key to up once the transition has been made
+				# so each transition takes one key press
 		if self.state == self.playing:
 			if self.kbd.p:
 				self.swapState(self.paused)
-				self.inter.time.pause()
+				self.inter.time.pause()#pause the game
 				self.kbd.p = False
 		if self.state == self.paused:
 			if self.kbd.p:
 				self.swapState(self.playing)
-				self.inter.time.play()
+				self.inter.time.play()#resume the game
 				self.kbd.p = False
 		if self.state == self.gameover:
 			if self.kbd.space:
 				self.swapState(self.playing)
-				self.inter.start()
+				self.inter.start()#reset the game 
 				self.inter.time.play()
 				self.kbd.space = False
+
 	def draw(self,canvas):
 		self.checkKbd()
 		self.start.draw(canvas)
@@ -116,12 +120,11 @@ class Screen:
 		if not self.showing:
 			s = 1-s
 		if not self.sound is None and (not self.swap is None or self.showing):
-			self.sound.setVol(s) #fade the sound in an out 
+			self.sound.setVol(s) #fade the source_centrend in an out 
 		return 3*s**2-2*s**3
 
         #method to draw the image argument, e.g. start.png
-	def drawImg(self,canvas):
-		s = self.state()
+	def drawImg(self,canvas,s):
 		height = (self.dim[1] - 45*2)*0.95
 		if self.img != None and s*height>1:
 			source_centre = (self.img.get_width() / 2, self.img.get_height() / 2)
@@ -134,12 +137,12 @@ class Screen:
 				dest_centre,
 				dest_size)
 	#used to draw string onto screen, e.g. 'press p to pause'
-	def drawString(self,canvas):
+	def drawString(self,canvas,s):
 		if self.text != "":
 			h=30
 			p=5
 			top = h + 3*p
-			offset = (1-self.state()) * top
+			offset = (1-s) * top
 			w = self.frame.get_canvas_textwidth(self.text, h,"sans-serif")
 			pos =((self.dim[0]-w)/2,self.dim[1]-h/2-p+offset)
 			self.back(canvas,(self.dim[0]/2,self.dim[1]-(h+p*2)/2-p+offset),w+p*2,h+p*2)
@@ -151,8 +154,10 @@ class Screen:
 		dim = (w+pos[0],h+pos[1])
 		canvas.draw_polygon((pos,(pos[0],dim[1]),dim,(dim[0],pos[1])),1,"rgba(255,255,255,0)","rgba(50,50,50,0.7)")
 	def draw(self,canvas):
-		self.drawString(canvas)
-		self.drawImg(canvas)
+		s = self.state()
+		if s > 0:
+			self.drawString(canvas,s)
+			self.drawImg(canvas,s)
 
         #sets a state to hidden so user no longer sees it
 	def hide(self,swap = None):
