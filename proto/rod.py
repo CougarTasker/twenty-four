@@ -16,27 +16,27 @@ def polar(ang,r):
 
 class Rod:
 	def __init__(self,player,windowheight,time):
-			self.time = time
-			self.lastFrameTime = self.time.time()
-			addr = os.getcwd()
+		self.time = time
+		self.lastFrameTime = self.time.time()
+		addr = os.getcwd()
 
-			#image and sound resources
-			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
-			self.sound = Snd(self.time,"splash.ogg")
+		#image and sound resources
+		self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
+		self.sound = Snd(self.time,"splash.ogg")
 
-			#main attributes for calculating the rods positioning 
-			self.swing = True
-			self.player = player
-			self.pos = Vector()
-			self.rnorm = 120
-			self.r = self.rnorm
-			self.direction = 0
-			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
-			self.rmax = windowheight-(position).y-50/2
+		#main attributes for calculating the rods positioning 
+		self.swing = True
+		self.player = player
+		self.pos = Vector()
+		self.rnorm = 120
+		self.r = self.rnorm
+		self.direction = 0
+		position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
+		self.rmax = windowheight-(position).y-50/2
 
-			self.courtFish = []#stores the fish attached to the hook
-			self.flyingFish = []#stores the fish in the air (between sea and bucket)
-			self.moved = False#used to check if the player has moved before fish have reached the bucket
+		self.courtFish = []#stores the fish attached to the hook
+		self.flyingFish = []#stores the fish in the air (between sea and bucket)
+		self.moved = False#used to check if the player has moved before fish have reached the bucket
 			
 	#check if player has moved while attempting to catch fish
 	def playermoved(self):
