@@ -26,13 +26,17 @@ class Rod:
 		self.sound = Snd(self.time,"splash.ogg")
 
 		#main attributes for calculating the rods positioning 
+		self.hook_size = (50,50)#size of the when drawn
 		self.player = player#the player that is holding the rod
 		self.rnorm = 120#the normal lenth of the string. this is the smallest it will ever be
 		self.r = self.rnorm# r = the lenth of the string. it begins at the normal length
 		self.direction = 0#what direction is the hok moving in 0 no direction 1 is down and -1 is up
-		self.rmax = windowheight-self.rodpos()
+		self.rmax = windowheight-self.rodpos().y-self.hook_size[1]/2
+		
+		#the max length of the rope is the distance from the top of the rod to the bottom of the screen 
+		#subract half the hight of the image
+		
 		self.hookspeed = 150
-		#the max length of the rope is the distance from the top of the rod to the bottom of the screen
 
 		self.courtFish = []#stores the fish attached to the hook
 		self.flyingFish = []#stores the fish in the air (between sea and bucket)
@@ -155,14 +159,13 @@ class Rod:
 		#the hook image propites
 		source_centre = (self.hook.get_width() / 2, self.hook.get_height() / 2)
 		source_size = (self.hook.get_width(), self.hook.get_height())
-		dest_size = (50,50)
 
 		#draw the hook 
 		canvas.draw_image(self.hook,
 						source_centre,
 						source_size,
 						hookpos[0].get_p(),
-						dest_size,hookpos[2])
+						self.hook_size,hookpos[2])
 
 
 
