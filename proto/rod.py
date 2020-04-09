@@ -63,7 +63,7 @@ class Rod:
 			self.direction = 1
 	def up(self):
 		if self.direction == 1:#if the hook is moving downwards it can move upwards
-		self.direction = -1
+			self.direction = -1
 	def moveable(self):#should the user move the boat. false if the user is cathing fish 
 		return len(self.courtFish) ==0 and len(self.flyingFish) ==0 and self.direction == 0
 
