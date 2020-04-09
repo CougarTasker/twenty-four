@@ -112,17 +112,18 @@ class Rod:
 		frequency = 3#speed at witch the hook moves
 		#calcuate the angle of the hook
 		ang = math.sin(((self.lastFrameTime)%frequency)/frequency * math.pi*2)*30/((self.r-self.rnorm)/60+1)+90
-		endPos = (polar(ang,self.r)+self.rodpos())#calcuate the end position from the angle and length using the polar method
+		endPos = (polar(ang,self.r)+self.rodpos())#calculate the end position from the angle and length using the polar method
 
 		return [endPos+Vector(15,-5).rotate(ang),endPos,(ang-90)*math.pi/180]
-		#the hook has a center as well as an atachment point the first argument is the center the second is the attachment point
-		
-		#the third compoent is the angle as its needed elswhere and there is no point in calcuating it twice
-		#it is rotated and converted to radians as that is waht simplegui uses 
+		#the hook has a center as well as an attachment point t
+                #he first argument is the center the second is the attachment point
+		#the third component is the angle as its needed elswhere and there is no point in calculating it twice
+		#it is rotated and converted to radians as that is what simplegui uses 
 
 	#calculates where the top of the rod is (where rod meets player sprite)
 	def rodpos(self):
 		return Vector(self.player.getPos().x+65,self.player.getPos().y-70)
+                #calculates based on player position 
 
 	#calculate hook velocity based on hook/rod position
 	def hookvel(self):
