@@ -25,8 +25,8 @@ class Background:
 		self.mWaveParts = []
 		self.sWaveParts = []
 		self.pollycount = 35
-		t = threading.Thread(target=self.update,args=())
-		t.start()
+		#t = threading.Thread(target=self.update,args=())
+		#t.start()
 
 	#draw a wave's polygons to the screen
 	def draw_wave_parts(self,canvas,poly,color):
@@ -121,7 +121,7 @@ class Background:
 
 		#draw method to call above 3 methods as well as generate the background waves and call methods to draw clouds/sun
 	def update(self):
-		while self.time.check_running(): #while the game is running
+		#while self.time.check_running(): #while the game is running
 			#establish 3 different wave paths
 			self.lastFrameTime = self.time.time()
 			big = self.poly(self.pollycount,2,0.2,0.3,0.05) #rgb(0,0,250)

@@ -42,6 +42,8 @@ class Interaction:
 		
         #called by draw method to check user in bounds and if fish caught
 	def update(self):
+		self.back.update()
+		self.fish.update()
 		self.rod.catch_fish(self.fish)
 		if self.player.inBounds():
 			if self.keyboard.right:
@@ -76,7 +78,7 @@ class Interaction:
 		
 		# pr = cProfile.Profile()
 		# pr.enable()
-		# self.debugfps()
+		#self.debugfps()
 
 		if self.time.isPlaying():
 			self.update()

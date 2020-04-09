@@ -32,7 +32,7 @@ class TimeHandler:
 		return self.playing
 	def check_running(self):
 		if self.lastproof > 0:
-			return time.time()-self.lastproof<0.5
+			return time.time()-self.lastproof<2
 		return True
 	def prove_running(self):
 		self.lastproof = time.time()

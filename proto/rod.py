@@ -22,9 +22,9 @@ class Rod:
 
 			#image and sound resources
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
-                        self.sound = Snd(self.time,"splash.ogg")
+			self.sound = Snd(self.time,"splash.ogg")
 
-                        #main attributes for calculating the rods positioning 
+			#main attributes for calculating the rods positioning 
 			self.swing = True
 			self.player = player
 			self.pos = Vector()
@@ -102,7 +102,7 @@ class Rod:
 	def rodpos(self):
 		return Vector(self.player.getPos().x+65,self.player.getPos().y-70) + self.pos
 
-        #calculate hook velocity based on hook/rod position
+		#calculate hook velocity based on hook/rod position
 	def hookvel(self):
 		direction = self.hookpos()[0] - self.rodpos()
 		return self.direction * direction.normalize()
