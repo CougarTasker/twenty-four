@@ -17,9 +17,14 @@ def polar(ang,r):
 class Rod:
 	def __init__(self,player,windowheight,time):
 			self.time = time
+			self.lastFrameTime = self.time.time()
 			addr = os.getcwd()
+
+			#image and sound resources
 			self.hook = simplegui.load_image("file:///"+addr+"/images/hook.png")
-			#self.radius = 50
+                        self.sound = Snd(self.time,"splash.ogg")
+
+                        #main attributes for calculating the rods positioning 
 			self.swing = True
 			self.player = player
 			self.pos = Vector()
@@ -28,11 +33,12 @@ class Rod:
 			self.direction = 0
 			position = Vector(player.getPos().x+65,player.getPos().y-70) + self.pos
 			self.rmax = windowheight-(position).y-50/2
-			self.courtFish = []
-			self.flyingFish = []
-			self.lastFrameTime = self.time.time()
-			self.moved = False
-			self.sound = Snd(self.time,"splash.ogg")
+
+			self.courtFish = []#stores the fish attached to the hook
+			self.flyingFish = []#stores the fish in the air (between sea and bucket)
+			self.moved = False#used to check if the player has moved before fish have reached the bucket
+			
+	#check if player has moved while attempting to catch fish
 	def playermoved(self):
 		if not self.moveable():
 			self.moved = True
@@ -82,6 +88,8 @@ class Rod:
 				self.up()
 				a.append(item)
 		return a
+
+	#calculates the position of the hook 
 	def hookpos(self):
 		frequency = 3
 
@@ -89,11 +97,17 @@ class Rod:
 		endPos = (polar(ang,self.r)+self.rodpos())
 
 		return [endPos+Vector(15,-5).rotate(ang),endPos,(ang-90)*math.pi/180]
+
+	#calculates where the top of the rod is (where rod meets player sprite)
 	def rodpos(self):
 		return Vector(self.player.getPos().x+65,self.player.getPos().y-70) + self.pos
+
+        #calculate hook velocity based on hook/rod position
 	def hookvel(self):
 		direction = self.hookpos()[0] - self.rodpos()
 		return self.direction * direction.normalize()
+
+
 	def update_length(self,delta):
 		self.r += self.direction * delta * 150
 		if(self.r< self.rnorm):
@@ -103,6 +117,7 @@ class Rod:
 		if(self.r > self.rmax):
 			self.r = self.rmax
 			self.direction = -1
+			
 	def draw(self,canvas):
 		delta = self.time.time()-self.lastFrameTime
 		self.lastFrameTime = self.time.time()

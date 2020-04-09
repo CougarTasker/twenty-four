@@ -12,6 +12,7 @@ class Background:
 		self.time = time
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
+		#resource addresses
 		self.clouds = simplegui.load_image("file:///"+addr+"/images/background_clouds.png")
 		self.sun = simplegui.load_image("file:///"+addr+"/images/sun.png")
 		self.water_world = simplegui.load_image("file:///"+addr+"/images/underwater-seamless-landscape-cartoon-background-vector-7524975.png")
@@ -44,7 +45,7 @@ class Background:
 		return path
 	def sub(self,a,b):#returns the loops of the polygon a that extend further than b
 		paths = []
-		drawing = False # keeps track if we are adding more points to the loop
+		drawing = False #keeps track if we are adding more points to the loop
 		forward = []
 		backward = []
 		for x in range(len(a)):
@@ -61,16 +62,17 @@ class Background:
 			elif drawing:# if this doesn't extend further but we were drawing points then we are done
 				forward.append(self.intersection(a[x-1],a[x],b[x-1],b[x]))
 				#add the closing intersection between the forward and backwards part of the loop
-				drawing = False#we arent drawing more of the loop now
-				backward.reverse()# reverse the backward part so it is in the right direction
+				drawing = False#we aren't drawing more of the loop now
+				backward.reverse()#reverse the backward part so it is in the right direction
 				paths.append(forward+backward)#add the forwards and backwards part to create a full loop and add this to the output
 		if drawing: #if still drawing after the end of the loop close off the end section 
 			drawing = False
 			backward.reverse()
 			paths.append(forward+backward)
 		return paths#return the output
-	
-	def max(self,a,b):#this returns the max of a and b polygons 
+
+	#this returns the max of a and b polygons 
+	def max(self,a,b):
 		out = []
 		for x in range(len(a)):
 			if a[x][1] <= b[x][1]:
@@ -129,16 +131,18 @@ class Background:
 			self.mWaveParts = self.sub(middle,big) #subtract the bigger wave from the middle size one
 			self.sWaveParts = self.sub(small,self.max(middle,big)) # subtract the combined top wave from the smallest one
 
-
 			big.append((self.dimensions[0],0))
 			big.append((0,0))#add the points so that the background is coverd and complet the loop
 
 			self.bWaveParts = [big]
 			time.sleep(max(1/30-(self.time.time()-self.lastFrameTime),0))
 			#if running faster than 30hz sleep the correct amount of time
+
+	#draw method to call above 3 methods as well as generate the background waves and call methods to draw clouds/sun
 	def draw(self, canvas):
 		self.draw_water_world(canvas)#draw the large background image
-		self.draw_carol(canvas,0.2)#draw the animating features at the bottom of the screen
+                #draw the animating features at the bottom of the screen
+		self.draw_carol(canvas,0.2)
 		self.draw_carol(canvas,0.7)
 		self.draw_perl(canvas,0.5)
 
