@@ -31,8 +31,8 @@ class School:
 		#the rest of the fish
 		for i in range(int(count/2)):
 			self.fish.append(Fsh(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.imgl,self.imgr,time,die))
-		#t = threading.Thread(target=self.update,args=())
-		#t.start()
+		t = threading.Thread(target=self.update,args=())
+		t.start()
 	def draw(self,canvas):#draw all the fish
 		for fish in self.fish:
 			fish.draw(canvas)#draw the fish
@@ -55,13 +55,13 @@ class School:
 			if not vel is None:
 				boid.vel = vel
 	def update(self):
-		#while self.time.check_running():#while the game is running
+		while self.time.check_running():#while the game is running
 			delta = self.time.time()-self.lastFrameTime #calcuralte the amount of time that has passed
 			self.lastFrameTime = self.time.time()
 			for fish in self.fish:#draw all of the fish
 				if self.time.isPlaying():#if the game isnt paused do the physics on the fish
 					fish.update(delta,self.fish)
-			time.sleep(max(1/60-(self.time.time()-self.lastFrameTime),0))
+			time.sleep(max(1/30-(self.time.time()-self.lastFrameTime),0))
 			#if running faster than 60hz sleep the correct amount of time
 
 class Anim:#this is used to control the fish while it is animating 

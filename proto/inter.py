@@ -24,8 +24,9 @@ class Interaction:
 		self.lastFrameTime = self.time.time()
 		self.dimensions = dimensions
 		self.back = Bg(dimensions,self.time)
-		self.fish = School(30,dimensions,self.time,self)
 		#creates a school of 30 fish
+		self.fish = School(30,dimensions,self.time,self)
+		
 		self.keyboard = kbd
 		self.overlay = Overlay(kbd,self,dimensions,self.frame)
 		self.start(False)
@@ -42,8 +43,8 @@ class Interaction:
 		
         #called by draw method to check user in bounds and if fish caught
 	def update(self):
-		self.back.update()
-		self.fish.update()
+		#self.back.update()
+		#self.fish.update()
 		self.rod.catch_fish(self.fish)
 		if self.player.inBounds():
 			if self.keyboard.right:
@@ -78,7 +79,7 @@ class Interaction:
 		
 		# pr = cProfile.Profile()
 		# pr.enable()
-		#self.debugfps()
+		self.debugfps()
 
 		if self.time.isPlaying():
 			self.update()
