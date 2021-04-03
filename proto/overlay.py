@@ -126,7 +126,7 @@ class Screen:
         #method to draw the image argument, e.g. start.png
 	def drawImg(self,canvas,s):
 		height = (self.dim[1] - 45*2)*0.95
-		if self.img != None and s*height>1:
+		if self.img != None and self.img.get_height() > 0 and s*height>1:
 			source_centre = (self.img.get_width() / 2, self.img.get_height() / 2)
 			source_size = (self.img.get_width(), self.img.get_height())
 			dest_size = (height*s*self.img.get_width()/self.img.get_height(),height*s)

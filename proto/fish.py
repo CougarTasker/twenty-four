@@ -8,7 +8,7 @@ from spritesheet import SpriteSheet as SS
 class School:
         #handles all the fish and shark objects 
 	def __init__(self,count,dim,time,die):
-		self.fish = []# a list containing all the fish objects in this school of fish
+		self.fish = [] # a list containing all the fish objects in this school of fish
 		self.time = time# a time object to control when the fish are paused
 		self.lastFrameTime = self.time.time()
 		random.seed(time.time()) 
@@ -25,7 +25,7 @@ class School:
 		self.shrr = SS("file:///"+addr+"/images/Sharkright.png",(5,1),time=600,scale=1,timehand = self.time)
 
                 #create sharks
-		for i in range(3):
+		for i in range(1):
 			self.fish.append(Shark(Bounds(V(0,0.325*dim[1]),V(dim[0],dim[1]*0.675)),self.shrl,self.shrr,time,die))
 
 		#the rest of the fish
@@ -254,11 +254,13 @@ class Fsh:#this is all of the details of the individual fish
 	
 	def update(self,delta,fish):#update the positon of the fish
 		if not self.fixed:#if the fish is free to move
-			self.vel += self.allign(fish)* self.max_vel/50#change the velocity based on the above rules
-			self.vel += self.cohesion(fish)* self.max_vel/50
-			self.vel += self.seperation(fish,self.per*3/5) * self.max_vel/30
-			self.vel += self.sharkawarness(fish) * self.max_vel*1.5
-			self.vel += self.bounds.repel(self)*self.max_vel * 0.4#try not to hit the top or bottom of the water
+			self.vel += self.allign(fish) * 1
+			self.vel += self.cohesion(fish) * 6
+			self.vel += self.seperation(fish,self.per*3/5) * 7
+			self.vel += self.sharkawarness(fish) * 4
+			self.vel += self.bounds.repel(self) * 6
+      
+      #try not to hit the top or bottom of the water
 			self.vel = self.vel.normalize() * self.max_vel#make sure fish is moving at the same velocity
 			self.vel.rotate((random.random()*2-1)*delta*20)
 			#add a random factor so the movement isn't completely predictable and boring

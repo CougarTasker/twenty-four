@@ -62,7 +62,7 @@ class Keyboard:
 
 lines = []
 last = None
-wallImg = simplegui.load_image("file:///C:/Users/Couga/Documents/repos/twenty-four/testing/wall.png")
+wallImg = simplegui.load_image("http://www.cougartasker.com/wall.png")
 def mouse(pos):
 	#print("click")
 	global lines,last

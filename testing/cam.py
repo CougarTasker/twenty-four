@@ -7,8 +7,8 @@ except ImportError :
 	import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 class Camera:
 	"""docstring for Camera"""
-	WIDTH = 500
-	HEIGHT = 500
+	WIDTH = 800
+	HEIGHT = 800
 	def __init__(self,pos=Vector(),fov=90,zoom=10,rotation=0,height=50,rays=256,vrot=0):
 		if pos == Vector():
 			pos = Vector(self.WIDTH/2,self.HEIGHT/2)
@@ -43,7 +43,7 @@ class Camera:
 					d = intersection[0]*line.norm.dot(direction)# / (direction.length() * line.norm.length())
 					walls.append([d,wall,intersection[1]])#distance to wall, the wall and the real x value 
 				walls.sort(key = self.wallsorting)
-				out = []]
+				out = []
 				
 				for wall in walls:
 					if wall[0] > 0:
@@ -65,10 +65,6 @@ class Camera:
 		cx = cpos.y*self.zoom/2/cpos.x/ wid * Camera.WIDTH
 		cy = y *self.zoom/2/cpos.x/hig * Camera.HEIGHT
 		return (cx+Camera.WIDTH/2,-cy+Camera.HEIGHT/2)
-	def drawfloor(self,canvas,size):
-		pass
-	def drawsquare():
-		pass
 	def wallsorting(self,a):
 		return a[0]
 	def boundry(self):
